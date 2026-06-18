@@ -55,7 +55,13 @@ function styles() {
         includePaths: [paths.nodeModules],
         // Bootstrap 5 still ships legacy @import partials; silence the noise.
         quietDeps: true,
-        silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'legacy-js-api'],
+        silenceDeprecations: [
+          'import',
+          'global-builtin',
+          'color-functions',
+          'legacy-js-api',
+          'if-function',
+        ],
       }).on('error', sass.logError),
     )
     .pipe(postcss(processors))
