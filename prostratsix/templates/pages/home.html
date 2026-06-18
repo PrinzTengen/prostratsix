@@ -1,1 +1,60 @@
 {% extends "base.html" %}
+
+{% block title %}
+  ProStratSix — R6 Esport League
+{% endblock title %}
+{% block hero %}
+  <section class="hero">
+    <div class="container">
+      <span class="eyebrow">Rainbow Six · Competitive League</span>
+      <h1 class="hero__title mt-2">
+        Where the <span class="text-accent">best squads</span> clash.
+      </h1>
+      <p class="hero__lead lead mt-3">
+        Follow live matches, climb the standings and track every team across the ProStratSix
+        season — built for players, casters and fans.
+      </p>
+      <div class="d-flex flex-wrap gap-2 mt-4">
+        <a href="{% url 'styleguide' %}" class="btn btn-primary btn-lg">View matches</a>
+        <a href="{% url 'about' %}" class="btn btn-outline-light btn-lg">Learn more</a>
+      </div>
+    </div>
+  </section>
+{% endblock hero %}
+{% block content %}
+  <div class="row g-4">
+    <div class="col-md-6 col-lg-4">
+      <div class="card match-card is-live h-100">
+        <div class="card-body">
+          <span class="eyebrow"><span class="live-dot me-1"></span>Live now</span>
+          <div class="match-card__teams mt-3">
+            <span class="match-card__team">NAVI</span>
+            <span class="match-card__score">5 : 4</span>
+            <span class="match-card__team">G2</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="card match-card card--accent h-100">
+        <div class="card-body">
+          <span class="eyebrow">Upcoming · 20:00</span>
+          <div class="match-card__teams mt-3">
+            <span class="match-card__team">FaZe</span>
+            <span class="match-card__score">vs</span>
+            <span class="match-card__team">BDS</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="card team-card card--hover h-100">
+        <div class="card-body">
+          <div class="team-card__logo">PS6</div>
+          <div class="team-card__name">ProStratSix</div>
+          <p class="text-muted small mb-0 mt-1">Featured roster of the week</p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
