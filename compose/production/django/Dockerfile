@@ -28,6 +28,22 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --locked --no-dev
 
+# Frontend asset build stage (Bootstrap + SCSS theme -> static/css/project.css)
+FROM node:20-bookworm-slim AS client-builder
+
+ARG APP_HOME=/app
+WORKDIR ${APP_HOME}
+ENV NODE_ENV=production
+
+# Install JS dependencies first so the layer is cached across source changes.
+COPY ./package.json ${APP_HOME}/
+RUN npm install && npm cache clean --force
+
+COPY . ${APP_HOME}
+# Compiles assets/scss into prostratsix/static/css/project.css (minified) and
+# copies the Bootstrap JS bundle into prostratsix/static/js/vendors.js.
+RUN npm run build
+
 # Python 'run' stage
 FROM python:3.14-slim-bookworm AS python-run-stage
 
@@ -76,6 +92,8 @@ RUN chmod +x /start-flower
 
 # Copy the application from the builder
 COPY --from=python-build-stage --chown=django:django ${APP_HOME} ${APP_HOME}
+# Overlay the compiled frontend assets (generated, not committed) from the node stage
+COPY --from=client-builder --chown=django:django ${APP_HOME}/prostratsix/static ${APP_HOME}/prostratsix/static
 # explicitly create the media folder before changing ownership below
 RUN mkdir -p ${APP_HOME}/prostratsix/media
 
