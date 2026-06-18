@@ -1,0 +1,56 @@
+// ==========================================================================
+// Buttons — competitive, slightly "techy" styling.
+// ==========================================================================
+
+.btn {
+  --bs-btn-font-family: #{$headings-font-family};
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    background-color 0.12s ease,
+    border-color 0.12s ease;
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+// Primary action glows on hover for an arena/neon feel.
+.btn-primary {
+  --bs-btn-color: #ffffff;
+  --bs-btn-hover-color: #ffffff;
+
+  &:hover,
+  &:focus-visible {
+    box-shadow: 0 0 0 0.2rem rgba($rs-blue, 0.35);
+  }
+}
+
+// Accent (cyan) call-to-action used for highlights.
+.btn-accent {
+  --bs-btn-color: #04141a;
+  --bs-btn-bg: #{$rs-cyan};
+  --bs-btn-border-color: #{$rs-cyan};
+  --bs-btn-hover-color: #04141a;
+  --bs-btn-hover-bg: #{lighten($rs-cyan, 6%)};
+  --bs-btn-hover-border-color: #{lighten($rs-cyan, 6%)};
+  --bs-btn-active-bg: #{darken($rs-cyan, 4%)};
+  --bs-btn-active-border-color: #{darken($rs-cyan, 4%)};
+
+  &:hover,
+  &:focus-visible {
+    box-shadow: 0 0 0 0.2rem rgba($rs-cyan, 0.35);
+  }
+}
+
+// Outline variant tuned to the dark surface.
+.btn-outline-light {
+  --bs-btn-color: #{$rs-text};
+  --bs-btn-border-color: #{$rs-border};
+  --bs-btn-hover-bg: #{$rs-surface-2};
+  --bs-btn-hover-border-color: #{$rs-blue};
+  --bs-btn-hover-color: #ffffff;
+}

@@ -1,0 +1,33 @@
+// ==========================================================================
+// ProStratSix — main stylesheet
+//
+// Compiled by Gulp (dart-sass) into prostratsix/static/css/project.css.
+// Do NOT edit the generated CSS; edit these SCSS sources instead.
+//
+// Import order matters:
+//   1. Bootstrap functions   — needed by our variable overrides
+//   2. Our variable overrides — win over Bootstrap's `!default` values
+//   3. Bootstrap core         — variables, maps, mixins, root, components
+//   4. Our theme layers       — refine the compiled Bootstrap output
+//
+// Bootstrap's SCSS sources are resolved from node_modules via the Gulp
+// `loadPaths` option (run `npm install` to fetch them).
+// ==========================================================================
+
+// 1. Bootstrap functions
+@import "bootstrap/scss/functions";
+
+// 2. Theme variable overrides
+@import "abstracts/variables";
+
+// 3. Bootstrap core (full framework)
+@import "bootstrap/scss/bootstrap";
+
+// 4. Theme layers
+@import "base/typography";
+@import "base/global";
+@import "components/buttons";
+@import "components/cards";
+@import "components/navbar";
+@import "layout/header";
+@import "layout/footer";

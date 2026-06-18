@@ -1,0 +1,89 @@
+// ==========================================================================
+// Global / element-level styling and the dark-theme baseline.
+// ==========================================================================
+
+// Reinforce the dark surfaces as Bootstrap CSS custom properties so that all
+// components (dropdowns, modals, list-groups, …) follow the league look even
+// where we don't style them explicitly.
+[data-bs-theme="dark"] {
+  --bs-body-bg: #{$rs-bg};
+  --bs-body-color: #{$rs-text};
+  --bs-secondary-bg: #{$rs-surface};
+  --bs-tertiary-bg: #{$rs-surface-2};
+  --bs-border-color: #{$rs-border};
+  --bs-emphasis-color: #ffffff;
+  --bs-secondary-color: #{$rs-muted};
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  // Subtle radial glow behind the content for an arena feel.
+  background-image:
+    radial-gradient(circle at 50% -10%, rgba($rs-blue, 0.12), transparent 55%);
+  background-attachment: fixed;
+}
+
+// Page layout scaffold so the footer always sits at the bottom.
+.layout {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.layout__main {
+  flex: 1 0 auto;
+}
+
+::selection {
+  background-color: rgba($rs-cyan, 0.35);
+  color: #ffffff;
+}
+
+a {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+hr {
+  border-color: $rs-border;
+  opacity: 1;
+}
+
+// --- Custom scrollbar (WebKit) -------------------------------------------
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: $rs-bg;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $rs-surface-2;
+  border-radius: 10px;
+
+  &:hover {
+    background: lighten($rs-surface-2, 8%);
+  }
+}
+
+// --- Legacy alert tweaks (migrated from the old project.css) --------------
+.alert-debug {
+  color: $rs-text;
+  background-color: $rs-surface;
+  border-color: $rs-border;
+}
+
+.alert-error {
+  color: #ffffff;
+  background-color: rgba($rs-red, 0.18);
+  border-color: $rs-red;
+}
