@@ -53,6 +53,11 @@ coverage.xml
 # Django stuff:
 staticfiles/
 
+# Generated frontend assets (compiled by Gulp from assets/scss — never committed)
+prostratsix/static/css/project.css
+prostratsix/static/css/project.css.map
+prostratsix/static/js/vendors.js
+
 # Sphinx documentation
 docs/_build/
 
