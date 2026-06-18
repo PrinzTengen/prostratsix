@@ -39,6 +39,39 @@ To run the tests, check your test coverage, and generate an HTML coverage report
 
     uv run pytest
 
+### Frontend / Styling (Bootstrap + SCSS theme)
+
+The site uses a custom dark esport theme built on top of Bootstrap and compiled
+with **Gulp + dart-sass** (no Ruby/Sass server required).
+
+- SCSS sources live in `assets/scss/` (`main.scss` + `abstracts/`, `base/`,
+  `components/`, `layout/`). Bootstrap's own SCSS is pulled from `node_modules`.
+- The compiled bundle `prostratsix/static/css/project.css` and the self-hosted
+  `prostratsix/static/js/vendors.js` (Bootstrap bundle) are **generated, not
+  committed**. Run a build before serving.
+
+First-time setup (downloads Bootstrap and the build tooling):
+
+    npm install
+
+One-off build:
+
+    npm run build            # development (expanded CSS)
+    NODE_ENV=production npm run build   # minified, used by the production image
+
+Watch + live-reload during development (browser-sync proxies Django on :8000,
+serving on http://localhost:3000):
+
+    npm run dev
+
+When running the Docker stack, the dedicated **`node`** service (see
+`docker-compose.local.yml`) runs `npm run dev` automatically. In the production
+image the assets are compiled in a Node build stage of
+`compose/production/django/Dockerfile`.
+
+A live reference of the theme components (typography, buttons, cards, tables) is
+available at the `/styleguide/` route.
+
 ### Live reloading and Sass CSS compilation
 
 Moved to [Live reloading and SASS compilation](https://cookiecutter-django.readthedocs.io/en/latest/2-local-development/developing-locally.html#using-webpack-or-gulp).
