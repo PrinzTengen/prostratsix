@@ -1,0 +1,29 @@
+// ==========================================================================
+// Header / hero
+// ==========================================================================
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: $zindex-sticky;
+}
+
+// Page hero used on the landing / styleguide pages.
+.hero {
+  position: relative;
+  padding: clamp(3rem, 8vw, 6rem) 0;
+  overflow: hidden;
+  border-bottom: 1px solid $rs-border;
+  background:
+    linear-gradient(180deg, rgba($rs-surface, 0.6), transparent),
+    radial-gradient(circle at 80% 0%, rgba($rs-cyan, 0.12), transparent 45%);
+
+  .hero__title {
+    font-size: clamp(2.25rem, 6vw, 4rem);
+    line-height: 1.05;
+  }
+
+  .hero__lead {
+    max-width: 38rem;
+  }
+}

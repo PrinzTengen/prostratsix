@@ -1,0 +1,120 @@
+// ==========================================================================
+// Cards — base surface plus League / Match / Team variants.
+// ==========================================================================
+
+.card {
+  border: 1px solid $rs-border;
+  background-color: $rs-surface;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+// Interactive cards (clickable tiles) lift and highlight on hover.
+.card--hover {
+  &:hover {
+    transform: translateY(-3px);
+    border-color: rgba($rs-blue, 0.6);
+    box-shadow: 0 0.75rem 1.75rem rgba(0, 0, 0, 0.45);
+  }
+}
+
+// Thin accent bar on the left edge — used to flag a card's category.
+.card--accent {
+  border-left: 3px solid $rs-blue;
+}
+
+.card--accent-cyan { border-left-color: $rs-cyan; }
+.card--accent-red  { border-left-color: $rs-red; }
+
+// --- Match card -----------------------------------------------------------
+// Two teams + score, optionally flagged "live".
+.match-card {
+  .match-card__teams {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .match-card__team {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: $headings-font-family;
+    font-weight: 600;
+  }
+
+  .match-card__score {
+    font-family: $headings-font-family;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  &.is-live {
+    border-color: rgba($rs-red, 0.7);
+  }
+}
+
+// Pulsing "LIVE" indicator.
+.live-dot {
+  display: inline-block;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background-color: $rs-red;
+  box-shadow: 0 0 0 0 rgba($rs-red, 0.7);
+  animation: rs-pulse 1.6s infinite;
+}
+
+@keyframes rs-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba($rs-red, 0.6); }
+  70%  { box-shadow: 0 0 0 0.5rem rgba($rs-red, 0); }
+  100% { box-shadow: 0 0 0 0 rgba($rs-red, 0); }
+}
+
+// --- Team card ------------------------------------------------------------
+.team-card {
+  text-align: center;
+
+  .team-card__logo {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 0.75rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background-color: $rs-surface-2;
+    border: 1px solid $rs-border;
+    font-family: $headings-font-family;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: $rs-cyan;
+  }
+
+  .team-card__name {
+    font-family: $headings-font-family;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+}
+
+// --- League / standings table ---------------------------------------------
+.table-standings {
+  --bs-table-bg: #{$rs-surface};
+  --bs-table-color: #{$rs-text};
+  --bs-table-border-color: #{$rs-border};
+  overflow: hidden;
+  border-radius: $border-radius-lg;
+
+  thead th {
+    font-family: $headings-font-family;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $rs-muted;
+  }
+}

@@ -1,0 +1,28 @@
+// ==========================================================================
+// Footer
+// ==========================================================================
+
+.site-footer {
+  flex-shrink: 0;
+  margin-top: 3rem;
+  padding: 2rem 0;
+  background-color: $rs-surface;
+  border-top: 1px solid $rs-border;
+  color: $rs-muted;
+
+  a {
+    color: $rs-muted;
+
+    &:hover {
+      color: $rs-text;
+    }
+  }
+
+  .site-footer__brand {
+    font-family: $headings-font-family;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #ffffff;
+  }
+}

@@ -1,0 +1,44 @@
+// ==========================================================================
+// Base typography
+// ==========================================================================
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.display-1, .display-2, .display-3,
+.display-4, .display-5, .display-6 {
+  letter-spacing: 0.02em;
+}
+
+// Lead / muted helpers tuned for the dark surface.
+.lead {
+  color: rgba($rs-text, 0.85);
+  font-weight: 400;
+}
+
+.text-muted {
+  color: $rs-muted !important;
+}
+
+// Eyebrow / kicker label above headings (e.g. "LIVE MATCH").
+.eyebrow {
+  display: inline-block;
+  font-family: $headings-font-family;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: $rs-cyan;
+}
+
+// Accent text colour used for highlights.
+.text-accent {
+  color: $rs-cyan !important;
+}
+
+code, kbd, pre, samp {
+  color: $rs-cyan;
+}

@@ -1,0 +1,71 @@
+// ==========================================================================
+// Theme variables — Bootstrap overrides
+//
+// Imported AFTER `bootstrap/functions` and BEFORE the Bootstrap core, so every
+// value here wins over Bootstrap's `!default` declarations.
+// ==========================================================================
+
+// --- Brand palette --------------------------------------------------------
+$rs-blue:   #2f81f7; // primary — competitive R6 / esport blue
+$rs-cyan:   #22d3ee; // accent highlight
+$rs-yellow: #facc15; // warning / highlight
+$rs-red:    #f7506b; // danger / live indicator
+$rs-green:  #3fb950; // success / win
+
+// --- Dark surfaces --------------------------------------------------------
+$rs-bg:        #0d1117; // page background (near black)
+$rs-surface:   #161b22; // cards / raised surfaces
+$rs-surface-2: #1c2330; // hover / nested surfaces
+$rs-border:    #2a3343; // hairline borders
+$rs-muted:     #8b949e; // muted text
+$rs-text:      #e6edf3; // primary text
+
+// --- Bootstrap theme colors ----------------------------------------------
+$primary:   $rs-blue;
+$secondary: #21262d;
+$success:   $rs-green;
+$info:      $rs-cyan;
+$warning:   $rs-yellow;
+$danger:    $rs-red;
+$light:     #c9d1d9;
+$dark:      #0b0e14;
+
+// --- Global look & feel ---------------------------------------------------
+$body-bg:    $rs-bg;
+$body-color: $rs-text;
+
+// Dark-mode variants used when `data-bs-theme="dark"` is set on <html>.
+$body-bg-dark:           $rs-bg;
+$body-color-dark:        $rs-text;
+$body-secondary-bg-dark: $rs-surface;
+$body-tertiary-bg-dark:  $rs-surface-2;
+$border-color-dark:      $rs-border;
+
+// --- Borders, radius, effects --------------------------------------------
+$enable-rounded:   true;
+$enable-shadows:   false;
+$enable-gradients: false;
+
+$border-color:     $rs-border;
+$border-radius:    0.4rem;
+$border-radius-sm: 0.25rem;
+$border-radius-lg: 0.6rem;
+
+// --- Cards ----------------------------------------------------------------
+$card-bg:            $rs-surface;
+$card-border-color:  $rs-border;
+$card-cap-bg:        $rs-surface-2;
+$card-border-radius: $border-radius-lg;
+
+// --- Navbar ---------------------------------------------------------------
+$navbar-dark-color:        rgba($rs-text, 0.75);
+$navbar-dark-hover-color:  $rs-text;
+$navbar-dark-active-color: $rs-cyan;
+
+// --- Typography -----------------------------------------------------------
+$font-family-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$headings-font-family:   "Chakra Petch", #{$font-family-sans-serif};
+$headings-font-weight:   700;
+$headings-color:         #ffffff;
+$font-weight-base:       400;
+$line-height-base:       1.6;
