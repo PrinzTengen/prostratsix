@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Styleguide — ProStratSix
+{% endblock title %}
+{% block hero %}
+  <section class="hero">
+    <div class="container">
+      <span class="eyebrow">Design System</span>
+      <h1 class="hero__title mt-2">Theme Styleguide</h1>
+      <p class="hero__lead lead mt-3">
+        A quick reference of the core building blocks: typography, buttons and the
+        league / match / team card components.
+      </p>
+    </div>
+  </section>
+{% endblock hero %}
+{% block content %}
+  <!-- Typography -->
+  <section class="mb-5">
+    <span class="eyebrow">Typography</span>
+    <hr />
+    <h1>Heading 1</h1>
+    <h2>Heading 2</h2>
+    <h3>Heading 3</h3>
+    <h4>Heading 4</h4>
+    <p class="lead">Lead paragraph — sets the tone for a section.</p>
+    <p>
+      Body copy on the dark surface. The <a href="#">accent link</a> uses the primary blue,
+      while <span class="text-accent">highlighted text</span> uses the cyan accent.
+    </p>
+    <p class="text-muted">Muted secondary text for captions and metadata.</p>
+  </section>
+  <!-- Buttons -->
+  <section class="mb-5">
+    <span class="eyebrow">Buttons</span>
+    <hr />
+    <div class="d-flex flex-wrap gap-2 align-items-center">
+      <button type="button" class="btn btn-primary">Primary</button>
+      <button type="button" class="btn btn-accent">Accent</button>
+      <button type="button" class="btn btn-secondary">Secondary</button>
+      <button type="button" class="btn btn-outline-light">Outline</button>
+      <button type="button" class="btn btn-danger">Danger</button>
+      <button type="button" class="btn btn-primary btn-lg">Large</button>
+      <button type="button" class="btn btn-primary btn-sm">Small</button>
+    </div>
+  </section>
+  <!-- Cards -->
+  <section class="mb-5">
+    <span class="eyebrow">Cards</span>
+    <hr />
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4">
+        <div class="card match-card is-live h-100">
+          <div class="card-header">
+            <span class="eyebrow"><span class="live-dot me-1"></span>Live</span>
+          </div>
+          <div class="card-body">
+            <div class="match-card__teams">
+              <span class="match-card__team">NAVI</span>
+              <span class="match-card__score">5 : 4</span>
+              <span class="match-card__team">G2</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card team-card card--hover h-100">
+          <div class="card-body">
+            <div class="team-card__logo">PS6</div>
+            <div class="team-card__name">ProStratSix</div>
+            <p class="text-muted small mb-0 mt-1">Team card · hover to lift</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card card--accent card--accent-cyan h-100">
+          <div class="card-body">
+            <h5 class="card-title">League Card</h5>
+            <p class="card-text text-muted">A generic surface card with a cyan accent edge for categorisation.</p>
+            <a href="#" class="btn btn-accent btn-sm">Details</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Standings table -->
+  <section class="mb-5">
+    <span class="eyebrow">Standings</span>
+    <hr />
+    <div class="table-responsive">
+      <table class="table table-standings align-middle mb-0">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Team</th>
+            <th scope="col" class="text-center">W</th>
+            <th scope="col" class="text-center">L</th>
+            <th scope="col" class="text-end">Pts</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>NAVI</td>
+            <td class="text-center">9</td>
+            <td class="text-center">1</td>
+            <td class="text-end fw-bold">27</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>G2 Esports</td>
+            <td class="text-center">8</td>
+            <td class="text-center">2</td>
+            <td class="text-end fw-bold">24</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Team BDS</td>
+            <td class="text-center">7</td>
+            <td class="text-center">3</td>
+            <td class="text-end fw-bold">21</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <!-- Alerts -->
+  <section class="mb-5">
+    <span class="eyebrow">Alerts</span>
+    <hr />
+    <div class="alert alert-primary" role="alert">Primary alert — informational message.</div>
+    <div class="alert alert-success" role="alert">Success alert — match result saved.</div>
+    <div class="alert alert-danger" role="alert">Danger alert — something went wrong.</div>
+  </section>
+{% endblock content %}
