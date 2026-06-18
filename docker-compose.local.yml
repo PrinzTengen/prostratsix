@@ -24,6 +24,27 @@ services:
       - '8000:8000'
     command: /start
 
+  node:
+    build:
+      context: .
+      dockerfile: ./compose/local/node/Dockerfile
+    image: prostratsix_local_node
+    container_name: prostratsix_local_node
+    depends_on:
+      - django
+    volumes:
+      - .:/app:z
+      # Keep the image's installed dependencies; don't let the host shadow them.
+      - /app/node_modules
+    environment:
+      # browser-sync proxies the running Django dev server.
+      - DJANGO_HOST=django:8000
+    command: npm run dev
+    ports:
+      # browser-sync served site + UI
+      - '3000:3000'
+      - '3001:3001'
+
   postgres:
     build:
       context: .
