@@ -1,0 +1,64 @@
+// ==========================================================================
+// Auth / entrance pages (login, signup, password reset)
+// ==========================================================================
+
+.auth {
+  // Break out of the centered .container so the diagonal spans the full
+  // viewport width, and cancel the container's vertical .py-4 padding.
+  width: 100vw;
+  margin: -1.5rem 0;
+  margin-inline: calc(50% - 50vw);
+
+  display: flex;
+  align-items: center;
+  justify-content: center; // mobile: card centered
+  min-height: calc(100vh - 12rem); // rough header + footer allowance
+  padding: 3rem 1rem;
+
+  // From large screens up, push the card toward the right edge but keep a
+  // comfortable gap from it.
+  @include media-breakpoint-up(lg) {
+    justify-content: flex-end;
+    padding-right: 8rem;
+  }
+
+  // Diagonal split: primary (top-left) meets the dark surface (bottom-right)
+  // at a hard colour stop, which renders as a clean diagonal line.
+  background: linear-gradient(
+    80deg,
+    $primary 0%,
+    $primary 70%,
+    $dark 70%,
+    $dark 100%
+  );
+}
+
+.auth__card {
+  width: 100%;
+  max-width: 26rem;
+  box-shadow: 0 1rem 3rem rgba(#000, 0.45);
+}
+
+// Keep the remember-me checkbox baseline-aligned with the forgot link.
+.auth__remember .mb-3 {
+  margin-bottom: 0 !important;
+}
+
+// "or" separator with a centered label between two hairlines.
+.auth__divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: $rs-muted;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 1 1 auto;
+    height: 1px;
+    background: $rs-border;
+  }
+}

@@ -2,6 +2,16 @@
 // Base typography
 // ==========================================================================
 
+// Self-hosted heading font. The file lives in static/fonts/headings/ and the
+// compiled CSS sits in static/css/, so the path is relative to css/.
+@font-face {
+  font-family: "Gochi Hand";
+  src: url("../fonts/headings/GochiHand-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
   letter-spacing: 0.01em;
@@ -31,14 +41,14 @@ h1, h2, h3, h4, h5, h6,
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: $rs-cyan;
+  color: $accent;
 }
 
 // Accent text colour used for highlights.
 .text-accent {
-  color: $rs-cyan !important;
+  color: $accent !important;
 }
 
 code, kbd, pre, samp {
-  color: $rs-cyan;
+  color: $accent;
 }

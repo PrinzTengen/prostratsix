@@ -1,0 +1,112 @@
+.player-card {
+  --card-color: #1e88ff;
+  --card-color-rgb: 30, 136, 255;
+
+  max-width: 320px;
+  background: linear-gradient(180deg, #07162e, #050816);
+  border: 1px solid var(--card-color);
+  border-radius: 18px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 0 25px rgba(var(--card-color-rgb), 0.35);
+  transition: 0.3s ease;
+}
+
+.player-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 0 40px rgba(var(--card-color-rgb), 0.7);
+}
+
+.player-role {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  z-index: 2;
+  background: rgba(var(--card-color-rgb), 0.15);
+  color: var(--card-color);
+  border: 1px solid rgba(var(--card-color-rgb), 0.4);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.player-badge {
+  background: rgba(var(--card-color-rgb), 0.15);
+  color: var(--card-color);
+}
+
+.player-img {
+  height: 200px;
+  width: 200px;
+  margin-top: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  opacity: 0.95;
+}
+
+.player-name {
+  font-weight: 900;
+  letter-spacing: 2px;
+  font-size: 2rem;
+  margin-bottom: 4px;
+}
+
+.player-realname {
+  color: #c7d2fe;
+  margin-bottom: 12px;
+}
+
+.player-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 14px 8px;
+}
+
+.player-stats div {
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.player-stats div:last-child {
+  border-right: none;
+}
+
+.player-stats small {
+  display: block;
+  color: #9ca3af;
+  font-size: 0.75rem;
+}
+
+.player-stats strong {
+  font-size: 1.2rem;
+}
+
+.player-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at top center,
+    rgba(var(--card-color-rgb), 0.35),
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+.player-card-magenta {
+  --card-color: #ff00ff;
+  --card-color-rgb: 255, 0, 255;
+}
+
+.player-card-red {
+  --card-color: #FF0606;
+  --card-color-rgb: 255, 6, 6;
+}
+
+.player-card-darkred {
+  --card-color: #660000;
+  --card-color-rgb: 102, 0, 0;
+}

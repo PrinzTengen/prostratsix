@@ -14,19 +14,21 @@
 // Interactive cards (clickable tiles) lift and highlight on hover.
 .card--hover {
   &:hover {
-    transform: translateY(-3px);
-    border-color: rgba($rs-blue, 0.6);
-    box-shadow: 0 0.75rem 1.75rem rgba(0, 0, 0, 0.45);
+    transform: scale(1.02);
+    border-color: rgba($accent, 0.6);
+    box-shadow: 0 0 0.25rem 0.25rem rgba(0, 0, 0, 0.45);
   }
 }
 
 // Thin accent bar on the left edge — used to flag a card's category.
 .card--accent {
-  border-left: 3px solid $rs-blue;
-}
+  border: 3px solid $accent;
 
-.card--accent-cyan { border-left-color: $rs-cyan; }
-.card--accent-red  { border-left-color: $rs-red; }
+  &:hover {
+    border-color: $accent;
+    box-shadow: 0 0 0.25rem 0.25rem rgba($accent, 0.45);
+  }
+}
 
 // --- Match card -----------------------------------------------------------
 // Two teams + score, optionally flagged "live".
