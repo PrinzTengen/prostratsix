@@ -52,7 +52,7 @@ services:
     image: prostratsix_production_postgres
     container_name: prostratsix_local_postgres
     volumes:
-      - prostratsix_local_postgres_data:/var/lib/postgresql/data
+      - prostratsix_local_postgres_data:/var/lib/postgresql
       - prostratsix_local_postgres_data_backups:/backups
     env_file:
       - ./.envs/.local/.postgres

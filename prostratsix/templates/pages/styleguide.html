@@ -39,6 +39,7 @@
       <button type="button" class="btn btn-primary">Primary</button>
       <button type="button" class="btn btn-accent">Accent</button>
       <button type="button" class="btn btn-secondary">Secondary</button>
+      <button type="button" class="btn btn-white">White</button>
       <button type="button" class="btn btn-outline-light">Outline</button>
       <button type="button" class="btn btn-danger">Danger</button>
       <button type="button" class="btn btn-primary btn-lg">Large</button>
@@ -86,43 +87,83 @@
   </section>
   <!-- Standings table -->
   <section class="mb-5">
-    <span class="eyebrow">Standings</span>
+    <span class="eyebrow">Standings Table</span>
     <hr />
-    <div class="table-responsive">
-      <table class="table table-standings align-middle mb-0">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Team</th>
-            <th scope="col" class="text-center">W</th>
-            <th scope="col" class="text-center">L</th>
-            <th scope="col" class="text-end">Pts</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>NAVI</td>
-            <td class="text-center">9</td>
-            <td class="text-center">1</td>
-            <td class="text-end fw-bold">27</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>G2 Esports</td>
-            <td class="text-center">8</td>
-            <td class="text-center">2</td>
-            <td class="text-end fw-bold">24</td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>Team BDS</td>
-            <td class="text-center">7</td>
-            <td class="text-center">3</td>
-            <td class="text-end fw-bold">21</td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Header: only meaningful when columns align, so md and up only -->
+    <div class="mb-3 px-4 d-none d-md-block">
+      <div class="row">
+        <div class="col-md-2"><strong>Platz</strong></div>
+        <div class="col-md-7"><strong>Team</strong></div>
+        <div class="col-md-1"><strong>Spiele</strong></div>
+        <div class="col-md-1"><strong>W/L/D</strong></div>
+        <div class="col-md-1"><strong>Punkte</strong></div>
+      </div>
+    </div>
+    <div class="row">
+      <!--One Team Standing Card-->
+      <div class="col-12 mb-3">
+        <div class="card card--hover">
+          <div class="card-body">
+            <div class="row gy-2 align-items-center">
+              <div class="col-6 col-md-2">
+                <span class="d-md-none text-muted">Platz</span><strong>1.</strong>
+              </div>
+              <div class="col-6 col-md-7"><strong>Bullige Bad Boys</strong></div>
+              <div class="col-4 col-md-1">
+                <span class="d-md-none text-muted d-block small">Spiele</span><strong>4</strong>
+              </div>
+              <div class="col-4 col-md-1">
+                <span class="d-md-none text-muted d-block small">W/L/D</span><strong>3/1/0</strong>
+              </div>
+              <div class="col-4 col-md-1">
+                <span class="d-md-none text-muted d-block small">Punkte</span><strong>13</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 mb-3">
+        <div class="card card--hover">
+          <div class="card-body">
+            <div class="row gy-2 align-items-center">
+              <div class="col-6 col-md-2">
+                <span class="d-md-none text-muted">Platz</span><strong>2.</strong>
+              </div>
+              <div class="col-6 col-md-7"><strong>Bullige Bad Boys</strong></div>
+              <div class="col-4 col-md-1">
+                <span class="d-md-none text-muted d-block small">Spiele</span><strong>4</strong>
+              </div>
+              <div class="col-4 col-md-1">
+                <span class="d-md-none text-muted d-block small">W/L/D</span><strong>3/1/0</strong>
+              </div>
+              <div class="col-4 col-md-1">
+                <span class="d-md-none text-muted d-block small">Punkte</span><strong>13</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 mb-3">
+        <div class="card card--hover">
+          <div class="card-body">
+            <div class="row gy-2 align-items-center">
+              <div class="col-6 col-md-2">
+                <span class="d-md-none text-muted">Platz</span><strong>3.</strong>
+              </div>
+              <div class="col-6 col-md-7"><strong>Bullige Bad Boys</strong></div>
+              <div class="col-4 col-md-1">
+                <span class="d-md-none text-muted d-block small">Spiele</span><strong>4</strong>
+              </div>
+              <div class="col-4 col-md-1">
+                <span class="d-md-none text-muted d-block small">W/L/D</span><strong>3/1/0</strong>
+              </div>
+              <div class="col-4 col-md-1">
+                <span class="d-md-none text-muted d-block small">Punkte</span><strong>13</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
   <!-- Alerts -->
@@ -132,5 +173,94 @@
     <div class="alert alert-primary" role="alert">Primary alert — informational message.</div>
     <div class="alert alert-success" role="alert">Success alert — match result saved.</div>
     <div class="alert alert-danger" role="alert">Danger alert — something went wrong.</div>
+  </section>
+  <!-- Player Cards  -->
+  <section>
+    <span class="eyebrow">Player Cards</span>
+    <hr />
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+      <div class="col">
+        <div class="card player-card player-card-magenta">
+          <div class="player-role badge">Fragger</div>
+          <img src="https://i.pravatar.cc/400/"
+               class="player-img mx-auto"
+               alt="Player" />
+          <div class="card-body text-center">
+            <h3 class="player-name">FROSTY</h3>
+            <p class="player-realname">Maximilian Bauer 🇩🇪</p>
+            <span class="badge player-badge mb-3">LFT</span>
+            <div class="player-stats">
+              <div>
+                <small>Games played</small>
+                <strong>190</strong>
+              </div>
+              <div>
+                <small>Win Rate</small>
+                <strong>72%</strong>
+              </div>
+              <div>
+                <small>Role</small>
+                <strong>Fragger</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Duplicate for testing -->
+      <div class="col">
+        <div class="card player-card player-card-red">
+          <div class="player-role badge">Fragger</div>
+          <img src="https://i.pravatar.cc/200/"
+               class="player-img mx-auto"
+               alt="Player" />
+          <div class="card-body text-center">
+            <h3 class="player-name">FROSTY</h3>
+            <p class="player-realname">Maximilian Bauer 🇩🇪</p>
+            <span class="badge player-badge mb-3">LFT</span>
+            <div class="player-stats">
+              <div>
+                <small>Games played</small>
+                <strong>190</strong>
+              </div>
+              <div>
+                <small>Win Rate</small>
+                <strong>72%</strong>
+              </div>
+              <div>
+                <small>Role</small>
+                <strong>Fragger</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card player-card player-card-darkred">
+          <div class="player-role badge">Fragger</div>
+          <img src="https://i.pravatar.cc/200/"
+               class="player-img mx-auto"
+               alt="Player" />
+          <div class="card-body text-center">
+            <h3 class="player-name">FROSTY</h3>
+            <p class="player-realname">Maximilian Bauer 🇩🇪</p>
+            <span class="badge player-badge mb-3">LFT</span>
+            <div class="player-stats">
+              <div>
+                <small>Games played</small>
+                <strong>190</strong>
+              </div>
+              <div>
+                <small>Win Rate</small>
+                <strong>72%</strong>
+              </div>
+              <div>
+                <small>Role</small>
+                <strong>Fragger</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 {% endblock content %}
