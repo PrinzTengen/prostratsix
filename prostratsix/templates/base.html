@@ -52,69 +52,11 @@
     {% endblock javascript %}
   </head>
   <body class="layout {% block bodyclass %}{% endblock bodyclass %}">
+    {% block navbar %}
+      {% include 'navbar/main_navbar.html' %}
+      {% include "navbar/offcanvas.html" %}
+    {% endblock navbar %}
     {% block body %}
-      <a href="#main" class="skip-link">{% translate "Zum Inhalt springen" %}</a>
-      <header class="site-header">
-        <nav class="navbar navbar-expand-md">
-          <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">ProStrat<span class="navbar-brand__accent">Six</span></a>
-            <button class="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul class="navbar-nav ms-auto mb-2 mb-md-0">
-                <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'about' %}">About</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'styleguide' %}">Styleguide</a>
-                </li>
-                {% if request.user.is_authenticated %}
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'users:list' %}">{% translate "Players" %}</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link position-relative"
-                       href="{% url 'notifications:list' %}">
-                      {% translate "Notifications" %}
-                      {% if unread_notifications_count %}
-                        <span class="badge text-bg-danger rounded-pill">{{ unread_notifications_count }}</span>
-                      {% endif %}
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'users:detail' request.user.uuid %}">{% translate "My Profile" %}</a>
-                  </li>
-                  <li class="nav-item">
-                    {# URL provided by django-allauth/account/urls.py #}
-                    <a class="nav-link" href="{% url 'account_logout' %}">{% translate "Sign Out" %}</a>
-                  </li>
-                {% else %}
-                  {% if ACCOUNT_ALLOW_REGISTRATION %}
-                    <li class="nav-item">
-                      {# URL provided by django-allauth/account/urls.py #}
-                      <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">{% translate "Sign Up" %}</a>
-                    </li>
-                  {% endif %}
-                  <li class="nav-item">
-                    {# URL provided by django-allauth/account/urls.py #}
-                    <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">{% translate "Sign In" %}</a>
-                  </li>
-                {% endif %}
-              </ul>
-            </div>
-          </div>
-        </nav>
-      </header>
       <main id="main" tabindex="-1" class="layout__main">
         {% block hero %}
         {% endblock hero %}

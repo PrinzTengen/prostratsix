@@ -29,3 +29,55 @@
   --bs-btn-active-bg: #3c45a5;
   --bs-btn-active-border-color: #3c45a5;
 }
+
+$bar-w: 30px;
+$bar-h: 3px;
+$bar-color: white;
+
+.navbar-toggler-offcanvas {
+  position: relative;
+  width: $bar-w;
+  height: 24px;
+  cursor: pointer;
+
+  b {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: $bar-h;
+    background: $bar-color;
+    transition: all .50s ease;
+    transform-origin: center;
+
+    &:nth-child(1) {
+      top: 0;
+    }
+
+    &:nth-child(2) {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    &:nth-child(3) {
+      bottom: 0;
+    }
+  }
+
+  &.active {
+
+    b:nth-child(1) {
+      top: 50%;
+      transform: translateY(-50%) rotate(45deg);
+    }
+
+    b:nth-child(2) {
+      opacity: 0;
+    }
+
+    b:nth-child(3) {
+      bottom: auto;
+      top: 50%;
+      transform: translateY(-50%) rotate(-45deg);
+    }
+  }
+}
