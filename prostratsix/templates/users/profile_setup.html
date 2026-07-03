@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% load i18n crispy_forms_tags %}
+
+{% block title %}
+  {% trans "Set up your profile" %} — ProStratSix
+{% endblock title %}
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+      <form method="post"
+            action="{% url 'users:profile_setup' %}"
+            enctype="multipart/form-data"
+            class="form-panel">
+        <div class="form-panel__head">
+          <div>
+            <span class="eyebrow">{% trans "Willkommen" %}</span>
+            <h1 class="form-panel__title">{% trans "Profil vervollständigen" %}</h1>
+          </div>
+          <span class="tag tag--gold">{% trans "Schritt 1 / 2" %}</span>
+        </div>
+        <div class="form-panel__body">
+          <p class="text-muted mb-4">
+            {% trans "Wähle einen Usernamen und stell dich der Community vor, bevor es weitergeht." %}
+          </p>
+          {% csrf_token %}
+          {{ form|crispy }}
+        </div>
+        <div class="form-panel__foot">
+          <button type="submit" class="btn btn-primary btn-angular">{% trans "Speichern & weiter" %}</button>
+          <a href="{% url 'mfa_index' %}"
+             class="btn btn-outline-light btn-sm ms-md-auto">{% trans "2FA einrichten" %}</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock content %}

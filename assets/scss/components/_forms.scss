@@ -1,0 +1,315 @@
+// ==========================================================================
+// Forms — premium dark "wells" with a red focus glow.
+//
+// Inputs read as recessed surfaces (inset shadow + top highlight); focus
+// lifts a soft red ring. Labels are technical uppercase (Geist) for clarity.
+// Custom checkbox / radio / switch / range / select / file all on-brand.
+// ==========================================================================
+
+// --- Labels & helper text -------------------------------------------------
+.form-label,
+.col-form-label {
+  font-family: $font-family-sans-serif;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $rs-muted;
+  margin-bottom: 0.4rem;
+}
+
+.form-text {
+  color: $rs-muted;
+  font-size: 0.8rem;
+}
+
+// Optional required marker: <span class="req">*</span>
+.req { color: $rs-red; }
+
+// --- Text inputs, textareas, selects --------------------------------------
+.form-control,
+.form-select {
+  color: $rs-text;
+  background-color: $rs-surface-2;
+  border: 1px solid $rs-border;
+  border-radius: $border-radius;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 2px 6px rgba(0, 0, 0, 0.28);
+  transition:
+    border-color $dur-base $ease-snappy,
+    box-shadow $dur-base $ease-snappy,
+    background-color $dur-base $ease-snappy;
+
+  &::placeholder { color: rgba($rs-muted, 0.7); }
+
+  &:hover { border-color: rgba($rs-text, 0.25); }
+
+  &:focus {
+    color: $rs-text;
+    background-color: $rs-surface-2;
+    border-color: $rs-red;
+    box-shadow:
+      inset 0 2px 6px rgba(0, 0, 0, 0.28),
+      0 0 0 3px rgba($rs-red, 0.22);
+  }
+
+  &:disabled,
+  &[readonly] {
+    background-color: $rs-surface;
+    color: $rs-muted;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+
+  // Read-only should look distinct from disabled (point: read-only-distinction).
+  &[readonly]:not(:disabled) {
+    color: $rs-text;
+    border-style: dashed;
+    cursor: default;
+  }
+}
+
+textarea.form-control {
+  min-height: 7rem;
+  resize: vertical;
+}
+
+// Custom chevron so the select arrow matches the muted palette.
+.form-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%238b94a3' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+
+  &:focus {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23ff2e43' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+  }
+}
+
+// --- File input -----------------------------------------------------------
+.form-control[type="file"] {
+  padding-block: 0;
+  display: flex;
+  align-items: center;
+
+  &::file-selector-button {
+    margin: 0 0.75rem 0 0;
+    padding: 0.5rem 0.9rem;
+    color: $rs-text;
+    font-family: $headings-font-family;
+    background: $rs-surface;
+    border: 0;
+    border-right: 1px solid $rs-border;
+    transition: color $dur-base, background $dur-base;
+  }
+
+  &:hover::file-selector-button { color: $rs-red; }
+}
+
+// --- Input groups ---------------------------------------------------------
+.input-group-text {
+  color: $rs-muted;
+  background: $rs-surface;
+  border: 1px solid $rs-border;
+}
+
+// Light the affixes when any field in the group is focused.
+.input-group:focus-within .input-group-text {
+  border-color: rgba($rs-red, 0.5);
+  color: $rs-red;
+}
+
+// Signature angular submit/search button on the trailing edge of a group.
+.input-group .btn-angular {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%);
+}
+
+// --- Checkbox & radio -----------------------------------------------------
+.form-check-input {
+  background-color: $rs-surface-2;
+  border: 1px solid $rs-border;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: background-color $dur-fast $ease-snappy, border-color $dur-fast $ease-snappy;
+
+  &:checked {
+    background-color: $rs-red;
+    border-color: $rs-red;
+  }
+
+  &:focus {
+    border-color: $rs-red;
+    box-shadow: 0 0 0 3px rgba($rs-red, 0.22);
+  }
+
+  &:active { filter: brightness(0.95); }
+}
+
+// Switch knob colour comes from --bs-form-switch-bg; checked track = red above.
+.form-switch .form-check-input {
+  background-color: $rs-surface;
+
+  &:checked { background-color: $rs-red; }
+}
+
+// --- Range ----------------------------------------------------------------
+.form-range {
+  &::-webkit-slider-runnable-track {
+    background: $rs-surface-2;
+    border: 1px solid $rs-border;
+    border-radius: 1rem;
+  }
+
+  &::-moz-range-track {
+    background: $rs-surface-2;
+    border: 1px solid $rs-border;
+    border-radius: 1rem;
+  }
+
+  &::-webkit-slider-thumb {
+    background: $rs-red;
+    box-shadow: 0 0 10px rgba($rs-red, 0.5);
+    transition: transform $dur-fast $ease-overshoot;
+  }
+
+  &::-moz-range-thumb {
+    background: $rs-red;
+    border: 0;
+    box-shadow: 0 0 10px rgba($rs-red, 0.5);
+  }
+
+  &:active::-webkit-slider-thumb { transform: scale(1.2); }
+}
+
+// --- Floating labels ------------------------------------------------------
+.form-floating {
+  > label { color: $rs-muted; }
+
+  > .form-control:focus ~ label,
+  > .form-control:not(:placeholder-shown) ~ label,
+  > .form-select ~ label {
+    color: $rs-red;
+    opacity: 1;
+  }
+
+  // Stop the floated label's white pill bleeding over the dark field.
+  > .form-control:focus ~ label::after,
+  > .form-control:not(:placeholder-shown) ~ label::after {
+    background-color: $rs-surface-2;
+  }
+}
+
+// --- Validation states ----------------------------------------------------
+.form-control.is-valid,
+.was-validated .form-control:valid,
+.form-select.is-valid {
+  border-color: $rs-green;
+
+  &:focus { box-shadow: 0 0 0 3px rgba($rs-green, 0.22); }
+}
+
+.form-control.is-invalid,
+.was-validated .form-control:invalid,
+.form-select.is-invalid {
+  border-color: $rs-red;
+
+  &:focus { box-shadow: 0 0 0 3px rgba($rs-red, 0.22); }
+}
+
+.valid-feedback {
+  color: $rs-green;
+  font-size: 0.8rem;
+}
+
+.invalid-feedback {
+  color: $rs-red;
+  font-size: 0.8rem;
+}
+
+// --- Form panel (a premium fieldset surface) ------------------------------
+.form-panel {
+  background:
+    radial-gradient(circle at 100% 0%, rgba($rs-red, 0.08), transparent 42%),
+    $rs-surface;
+  border: 1px solid $rs-border;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+
+  .form-panel__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.1rem clamp(1.25rem, 4vw, 2rem);
+    border-bottom: 1px solid $rs-border;
+    background: rgba($rs-surface-2, 0.5);
+  }
+
+  .form-panel__title {
+    font-family: $headings-font-family;
+    font-size: 1.5rem;
+    margin: 0;
+  }
+
+  .form-panel__body { padding: clamp(1.25rem, 4vw, 2rem); }
+
+  .form-panel__foot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 1.1rem clamp(1.25rem, 4vw, 2rem);
+    border-top: 1px solid $rs-border;
+    background: rgba($rs-surface-2, 0.5);
+  }
+}
+
+// --- Settings side navigation ---------------------------------------------
+.settings-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+
+  // Horizontal scroll-snap on phones; vertical list on desktop.
+  @include media-breakpoint-down(lg) {
+    flex-direction: row;
+    overflow-x: auto;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+  }
+}
+
+.settings-nav__item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.85rem;
+  white-space: nowrap;
+  border-radius: $border-radius;
+  border: 1px solid transparent;
+  font-family: $headings-font-family;
+  letter-spacing: 0.02em;
+  color: $rs-muted;
+  transition: color $dur-base $ease-snappy, background $dur-base $ease-snappy, border-color $dur-base $ease-snappy;
+
+  &:hover {
+    color: $rs-text;
+    background: $rs-surface-2;
+    text-decoration: none;
+  }
+
+  &.active {
+    color: #ffffff;
+    background: $rs-surface;
+    border-color: rgba($rs-red, 0.4);
+  }
+}
+
+// Group legend inside a form (uses the eyebrow look).
+.form-legend {
+  font-family: $headings-font-family;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $rs-gold;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid $rs-border;
+}

@@ -144,6 +144,8 @@ lint.ignore = [
   # Deactivated because it can make the code slow:
   # https://github.com/astral-sh/ruff/issues/7871
 ]
+# Tests legitimately use literal status codes, local imports and date.today().
+lint.per-file-ignores."**/tests/**" = [ "DTZ011", "PLC0415", "PLR2004" ]
 lint.isort.force-single-line = true
 
 # ==== pyproject-fmt ====

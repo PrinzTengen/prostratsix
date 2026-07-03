@@ -79,7 +79,25 @@ class TestUserUpdateView:
 
 
 class TestUserRedirectView:
-    def test_get_redirect_url(self, user: User, rf: RequestFactory):
+    def test_redirects_to_setup_when_profile_incomplete(
+        self,
+        user: User,
+        rf: RequestFactory,
+    ):
+        user.profile_completed = False
+        view = UserRedirectView()
+        request = rf.get("/fake-url")
+        request.user = user
+
+        view.request = request
+        assert view.get_redirect_url() == reverse("users:profile_setup")
+
+    def test_redirects_to_detail_when_profile_complete(
+        self,
+        user: User,
+        rf: RequestFactory,
+    ):
+        user.profile_completed = True
         view = UserRedirectView()
         request = rf.get("/fake-url")
         request.user = user

@@ -10,3 +10,4 @@ class UsersConfig(AppConfig):
         """
         Override this method in subclasses to run code when Django starts.
         """
+        import prostratsix.users.signals  # noqa: F401, PLC0415

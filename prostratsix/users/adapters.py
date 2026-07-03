@@ -46,3 +46,22 @@ class SocialAccountAdapter(DefaultSocialAccountAdapter):
                 if last_name := data.get("last_name"):
                     user.name += f" {last_name}"
         return user
+
+    def save_user(
+        self,
+        request: HttpRequest,
+        sociallogin: SocialLogin,
+        form: typing.Any = None,
+    ) -> User:
+        """Persist the user and copy the Discord handle into the profile."""
+        user = super().save_user(request, sociallogin, form)
+        if sociallogin.account.provider == "discord":
+            extra = sociallogin.account.extra_data or {}
+            discord_name = extra.get("username") or extra.get("global_name")
+            if discord_name:
+                from prostratsix.users.models import UserProfile  # noqa: PLC0415
+
+                profile, _created = UserProfile.objects.get_or_create(user=user)
+                profile.discord = discord_name
+                profile.save()
+        return user

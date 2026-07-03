@@ -10,11 +10,8 @@ if TYPE_CHECKING:
 
 
 def test_detail(user: User):
-    assert (
-        reverse("users:detail", kwargs={"username": user.username})
-        == f"/users/{user.username}/"
-    )
-    assert resolve(f"/users/{user.username}/").view_name == "users:detail"
+    assert reverse("users:detail", kwargs={"uuid": user.uuid}) == f"/users/{user.uuid}/"
+    assert resolve(f"/users/{user.uuid}/").view_name == "users:detail"
 
 
 def test_update():

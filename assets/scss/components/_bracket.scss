@@ -1,0 +1,234 @@
+// ==========================================================================
+// Tournament bracket — broadcast double-elimination layout.
+//
+// Structure:
+//   .bracket
+//     .bracket__round
+//       .bracket__round-head
+//       .bracket__pairs
+//         .bracket__pair        (wraps 2 matches; feeds 1 match next round)
+//           .bracket__match
+//           .bracket__match
+//
+// The final round holds a single .bracket__match (no pair wrapper).
+// Connectors are drawn with pseudo-elements; $g is the inter-round gutter.
+// ==========================================================================
+
+$bracket-gutter: 2.5rem;
+
+.bracket {
+  display: flex;
+  gap: $bracket-gutter;
+  align-items: stretch;
+  overflow-x: auto; // brackets are inherently wide — horizontal scroll is expected here
+  padding-bottom: 0.5rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.bracket__round {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 200px;
+  min-width: 200px;
+}
+
+.bracket__round-head {
+  margin-bottom: 0.75rem;
+  text-align: center;
+  font-family: $headings-font-family;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: $rs-gold;
+}
+
+.bracket__pairs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+// Round holding a single final match: centre it vertically (margin auto)
+// instead of stretching it to the full column height.
+.bracket__round > .bracket__match {
+  margin-block: auto;
+  width: 100%;
+}
+
+.bracket__pair {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+// --- Connectors (only on rounds that feed another round) ------------------
+.bracket__round:not(:last-child) {
+
+  // Horizontal stub leaving each match.
+  .bracket__match::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    width: calc(#{$bracket-gutter} / 2);
+    height: 2px;
+    background: $rs-border;
+    transition: background $dur-base $ease-snappy;
+  }
+
+  // Vertical rail joining the two matches of a pair (centres at 25% / 75%).
+  .bracket__pair::after {
+    content: "";
+    position: absolute;
+    left: 100%;
+    top: 25%;
+    bottom: 25%;
+    width: 2px;
+    margin-left: calc(#{$bracket-gutter} / 2);
+    background: $rs-border;
+    transition: background $dur-base $ease-snappy, box-shadow $dur-base $ease-snappy;
+  }
+
+  // Feed line from the rail midpoint into the next round.
+  .bracket__pair::before {
+    content: "";
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    width: calc(#{$bracket-gutter} / 2);
+    height: 2px;
+    margin-left: calc(#{$bracket-gutter} / 2);
+    background: $rs-border;
+    transition: background $dur-base $ease-snappy, box-shadow $dur-base $ease-snappy;
+  }
+
+  // Light up the path when its pair is hovered.
+  .bracket__pair:hover {
+    &::after,
+    &::before {
+      background: $rs-red;
+      box-shadow: 0 0 8px rgba($rs-red, 0.6);
+    }
+  }
+}
+
+// --- Match node -----------------------------------------------------------
+.bracket__match {
+  position: relative;
+  background: $rs-surface;
+  border: 1px solid $rs-border;
+  border-radius: $border-radius;
+  overflow: hidden;
+  transition:
+    transform $dur-base $ease-overshoot,
+    border-color $dur-base $ease-snappy,
+    box-shadow $dur-base $ease-snappy;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: rgba($rs-red, 0.55);
+    box-shadow: 0 12px 28px -16px rgba(0, 0, 0, 0.85);
+    z-index: 2;
+  }
+}
+
+.bracket__match + .bracket__match {
+  margin-top: 0.75rem;
+}
+
+// One competitor row inside a match.
+.bracket__seed {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.65rem;
+  font-family: $headings-font-family;
+  font-size: 0.85rem;
+
+  & + & {
+    border-top: 1px solid $rs-border;
+  }
+
+  .bracket__logo {
+    flex: 0 0 auto;
+    width: 20px;
+    height: 20px;
+    display: grid;
+    place-items: center;
+    border-radius: 4px;
+    background: $rs-surface-2;
+    font-family: $font-family-display;
+    font-size: 0.6rem;
+    color: $rs-muted;
+  }
+
+  .bracket__name {
+    flex: 1 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: $rs-muted;
+  }
+
+  .bracket__score {
+    display: inline-block;
+    font-family: $font-family-display;
+    font-variant-numeric: tabular-nums;
+    color: $rs-muted;
+    transition: transform $dur-base $ease-overshoot;
+  }
+
+  // Winner row: brighten text + soft tint (no side border).
+  &.is-winner {
+    background: rgba($rs-red, 0.09);
+
+    .bracket__name { color: #ffffff; font-weight: 600; }
+    .bracket__score { color: $rs-red; }
+  }
+}
+
+// Hovering a match gives the winning scoreline a confident pop.
+.bracket__match:hover .bracket__seed.is-winner .bracket__score {
+  transform: scale(1.18);
+}
+
+// Grand-final card gets the gold champion treatment.
+.bracket__match.is-final {
+  border-color: rgba($rs-gold, 0.6);
+  box-shadow: 0 0 18px rgba($rs-gold, 0.18);
+
+  // Slow gold light passing across the card — premium, barely-there.
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(115deg, transparent 42%, rgba($rs-gold, 0.12) 50%, transparent 58%);
+    transform: translateX(-120%);
+    animation: rs-gold-sweep 4.5s ease-in-out infinite;
+  }
+
+  .bracket__seed {
+    position: relative;
+    z-index: 1;
+  }
+
+  .bracket__seed.is-winner {
+    background: rgba($rs-gold, 0.12);
+
+    .bracket__score { color: $rs-gold; }
+  }
+
+  &:hover .bracket__seed.is-winner .bracket__score { color: $rs-gold; }
+}
+
+@keyframes rs-gold-sweep {
+  0%        { transform: translateX(-120%); }
+  60%, 100% { transform: translateX(120%); }
+}

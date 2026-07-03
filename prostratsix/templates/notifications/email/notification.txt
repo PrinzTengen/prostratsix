@@ -1,0 +1,6 @@
+{{ notification.title }}
+
+{{ notification.message }}
+
+—
+ProStratSix

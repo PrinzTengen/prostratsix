@@ -8,7 +8,7 @@
   z-index: $zindex-sticky;
 }
 
-// Page hero used on the landing / styleguide pages.
+// --- Page hero (compact, used on inner pages e.g. styleguide) -------------
 .hero {
   position: relative;
   padding: clamp(3rem, 8vw, 6rem) 0;
@@ -16,14 +16,72 @@
   border-bottom: 1px solid $rs-border;
   background:
     linear-gradient(180deg, rgba($rs-surface, 0.6), transparent),
-    radial-gradient(circle at 80% 0%, rgba($rs-cyan, 0.12), transparent 45%);
+    radial-gradient(circle at 85% 0%, rgba($rs-red, 0.14), transparent 45%);
 
   .hero__title {
+    font-family: $headings-font-family;
     font-size: clamp(2.25rem, 6vw, 4rem);
     line-height: 1.05;
   }
 
   .hero__lead {
     max-width: 38rem;
+  }
+}
+
+// --- Landing hero (full broadcast splash) ---------------------------------
+.hero--landing {
+  padding: clamp(4rem, 12vw, 8.5rem) 0 clamp(3rem, 8vw, 6rem);
+  border-bottom: 2px solid $rs-red;
+  background:
+    radial-gradient(circle at 78% 12%, rgba($rs-red, 0.22), transparent 48%),
+    radial-gradient(circle at 12% 90%, rgba($rs-gold, 0.10), transparent 42%),
+    linear-gradient(180deg, $rs-surface 0%, $rs-bg 100%);
+
+  // Diagonal red sliver running off the right edge — broadcast accent.
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -8%;
+    width: 38%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent 35%, rgba($rs-red, 0.16));
+    transform: skewX(-12deg);
+    pointer-events: none;
+  }
+
+  .hero__title {
+    font-family: $headings-font-family;
+    font-size: clamp(2.75rem, 9vw, 6rem);
+    line-height: 0.98;
+    text-shadow: 0 0 40px rgba($rs-red, 0.35);
+  }
+
+  // Highlighted word inside the headline.
+  .hero__title em {
+    font-style: normal;
+    color: $rs-red;
+  }
+
+  .hero__lead {
+    max-width: 34rem;
+    font-size: 1.125rem;
+  }
+}
+
+// Live ticker strip that can sit under the hero CTA.
+.hero__ticker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+  font-family: $headings-font-family;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: $rs-muted;
+
+  strong {
+    color: $rs-text;
   }
 }

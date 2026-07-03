@@ -6,33 +6,77 @@
   border: 1px solid $rs-border;
   background-color: $rs-surface;
   transition:
-    transform 0.15s ease,
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
+    transform $dur-base $ease-overshoot,
+    border-color $dur-base $ease-snappy,
+    box-shadow $dur-base $ease-snappy;
 }
 
 // Interactive cards (clickable tiles) lift and highlight on hover.
 .card--hover {
+  cursor: pointer;
+  position: relative;
+
+  // A thin accent line that draws in along the top edge on hover.
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, $rs-red, rgba($rs-red, 0));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform $dur-base $ease-snappy;
+    z-index: 1;
+  }
+
   &:hover {
-    transform: scale(1.02);
-    border-color: rgba($accent, 0.6);
-    box-shadow: 0 0 0.25rem 0.25rem rgba(0, 0, 0, 0.45);
+    transform: translateY(-4px);
+    border-color: rgba($rs-red, 0.55);
+    box-shadow: 0 14px 34px -16px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba($rs-red, 0.2);
+  }
+
+  &:hover::before { transform: scaleX(1); }
+
+  // Tactile press — settle back down slightly.
+  &:active {
+    transform: translateY(-1px);
+    transition-duration: $dur-fast;
   }
 }
 
-// Thin accent bar on the left edge — used to flag a card's category.
+// Accent edge along the top — flags a card's category. Colour via modifiers.
 .card--accent {
-  border: 3px solid $accent;
-
-  &:hover {
-    border-color: $accent;
-    box-shadow: 0 0 0.25rem 0.25rem rgba($accent, 0.45);
-  }
+  border-top: 3px solid $rs-gold;
 }
+
+.card--accent-red  { border-top-color: $rs-red; }
+.card--accent-gold { border-top-color: $rs-gold; }
+.card--accent-cyan { border-top-color: $rs-cyan; }
 
 // --- Match card -----------------------------------------------------------
-// Two teams + score, optionally flagged "live".
+// Two teams + score, optionally flagged "live" / "upcoming" / "final".
 .match-card {
+  position: relative;
+  overflow: hidden;
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: transparent;
+    border-bottom: 1px solid $rs-border;
+  }
+
+  .match-card__meta {
+    font-family: $headings-font-family;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $rs-muted;
+  }
+
   .match-card__teams {
     display: flex;
     align-items: center;
@@ -46,18 +90,68 @@
     gap: 0.5rem;
     font-family: $headings-font-family;
     font-weight: 600;
+
+    &.is-winner { color: #ffffff; }
+    &.is-loser  { color: $rs-muted; }
   }
 
   .match-card__score {
-    font-family: $headings-font-family;
-    font-size: 1.5rem;
-    font-weight: 700;
+    display: inline-block;
+    font-family: $font-family-display;
+    font-variant-numeric: tabular-nums;
+    font-size: 1.6rem;
     color: #ffffff;
+    transition: transform $dur-base $ease-overshoot, letter-spacing $dur-base $ease-snappy;
+  }
+
+  // Hover lifts the card and gives the scoreline a confident little push.
+  &:hover {
+    transform: translateY(-3px);
+    border-color: rgba($rs-red, 0.45);
+    box-shadow: 0 14px 34px -18px rgba(0, 0, 0, 0.85);
+  }
+
+  &:hover .match-card__score {
+    transform: scale(1.06);
+    letter-spacing: 0.04em;
   }
 
   &.is-live {
     border-color: rgba($rs-red, 0.7);
+    box-shadow: 0 0 0 1px rgba($rs-red, 0.25);
+
+    // Slow light sweep across the top edge — reads "on air" without shouting.
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 2px;
+      width: 45%;
+      background: linear-gradient(90deg, rgba($rs-red, 0), $rs-red, rgba($rs-red, 0));
+      animation: rs-sweep 2.8s ease-in-out infinite;
+    }
   }
+
+  &.is-final  { border-color: $rs-border; }
+}
+
+@keyframes rs-sweep {
+  0%   { transform: translateX(-120%); }
+  100% { transform: translateX(320%); }
+}
+
+// Small status pills used in match headers.
+.match-status {
+  font-family: $headings-font-family;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+
+  &.is-live     { color: $rs-red; }
+  &.is-upcoming { color: $rs-gold; }
+  &.is-final    { color: $rs-muted; }
 }
 
 // Pulsing "LIVE" indicator.
@@ -90,33 +184,43 @@
     border-radius: 50%;
     background-color: $rs-surface-2;
     border: 1px solid $rs-border;
-    font-family: $headings-font-family;
-    font-weight: 700;
-    font-size: 1.25rem;
-    color: $rs-cyan;
+    font-family: $font-family-display;
+    font-size: 1.15rem;
+    color: $rs-red;
+    transition:
+      transform $dur-base $ease-overshoot,
+      border-color $dur-base $ease-snappy,
+      box-shadow $dur-base $ease-snappy;
   }
 
   .team-card__name {
+    display: inline-block;
+    position: relative;
     font-family: $headings-font-family;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.03em;
+
+    // Underline that draws out from the centre on hover.
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -3px;
+      height: 2px;
+      background: $rs-red;
+      transform: scaleX(0);
+      transition: transform $dur-base $ease-snappy;
+    }
   }
 }
 
-// --- League / standings table ---------------------------------------------
-.table-standings {
-  --bs-table-bg: #{$rs-surface};
-  --bs-table-color: #{$rs-text};
-  --bs-table-border-color: #{$rs-border};
-  overflow: hidden;
-  border-radius: $border-radius-lg;
-
-  thead th {
-    font-family: $headings-font-family;
-    font-size: 0.8rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: $rs-muted;
-  }
+// Hover choreography driven by the parent interactive card.
+.card--hover:hover .team-card__logo {
+  transform: scale(1.08) rotate(-5deg);
+  border-color: rgba($rs-red, 0.6);
+  box-shadow: 0 0 18px rgba($rs-red, 0.35);
 }
+
+.card--hover:hover .team-card__name::after { transform: scaleX(1); }

@@ -1,5 +1,10 @@
 // ==========================================================================
 // Base typography
+//
+// Heading face:  Gochi Hand  (self-hosted, handwritten brand voice)
+// Body face:     Geist       (loaded from Google Fonts in base.html)
+// Numeric data:  Geist + tabular figures (scores / ranks / seeds / stats),
+//                addressed via $font-family-display.
 // ==========================================================================
 
 // Self-hosted heading font. The file lives in static/fonts/headings/ and the
@@ -20,7 +25,26 @@ h1, h2, h3, h4, h5, h6,
 
 .display-1, .display-2, .display-3,
 .display-4, .display-5, .display-6 {
-  letter-spacing: 0.02em;
+  font-family: $headings-font-family;
+  line-height: 1.02;
+}
+
+// Page-level heading used on inner pages (settings, list, etc.).
+.page-title {
+  font-size: clamp(1.75rem, 4.5vw, 2.5rem);
+  line-height: 1;
+}
+
+// Numeric display helper — Geist with tabular figures (scores, timers, stats).
+.font-display {
+  font-family: $font-family-display !important;
+  font-variant-numeric: tabular-nums;
+}
+
+// Tabular figures keep scores / standings columns from jittering.
+.font-tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
 }
 
 // Lead / muted helpers tuned for the dark surface.
@@ -41,14 +65,18 @@ h1, h2, h3, h4, h5, h6,
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: $accent;
+  color: $rs-gold;
 }
 
-// Accent text colour used for highlights.
+// Accent text colours used for highlights.
 .text-accent {
-  color: $accent !important;
+  color: $rs-gold !important;
+}
+
+.text-red {
+  color: $rs-red !important;
 }
 
 code, kbd, pre, samp {
-  color: $accent;
+  color: $rs-gold;
 }

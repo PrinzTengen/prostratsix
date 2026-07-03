@@ -23,7 +23,8 @@ body {
 body {
   // Subtle radial glow behind the content for an arena feel.
   background-image:
-    radial-gradient(circle at 50% -10%, rgba($rs-blue, 0.12), transparent 55%);
+    radial-gradient(circle at 50% -10%, rgba($rs-red, 0.10), transparent 55%),
+    radial-gradient(circle at 92% 4%, rgba($rs-gold, 0.06), transparent 40%);
   background-attachment: fixed;
 }
 
@@ -39,7 +40,7 @@ body {
 }
 
 ::selection {
-  background-color: rgba($rs-cyan, 0.35);
+  background-color: rgba($rs-red, 0.40);
   color: #ffffff;
 }
 
@@ -86,4 +87,86 @@ hr {
   color: #ffffff;
   background-color: rgba($rs-red, 0.18);
   border-color: $rs-red;
+}
+
+// --- Broadcast utilities --------------------------------------------------
+
+// Angular "knife-cut" corner — the signature tactical-broadcast shape.
+.clip-angular {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
+}
+
+.clip-angular-lg {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 28px), calc(100% - 28px) 100%, 0 100%);
+}
+
+// Thin diagonal slash accent (e.g. before a section eyebrow).
+.slash-divider {
+  display: inline-block;
+  width: 2.25rem;
+  height: 2px;
+  margin-right: 0.6rem;
+  vertical-align: middle;
+  background: $rs-red;
+  transform: skewX(-30deg);
+}
+
+// Allow flex children to shrink so `.text-truncate` works inside flex rows.
+.min-w-0 { min-width: 0; }
+
+// Constrain a centred content block (e.g. an example form panel).
+.mw-narrow {
+  max-width: 52.5rem;
+  margin-inline: auto;
+}
+
+// Faint tactical grid backdrop for hero / section panels.
+.bg-grid {
+  background-image:
+    linear-gradient(rgba($rs-border, 0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba($rs-border, 0.35) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+// --- Accessibility: visible keyboard focus & skip link --------------------
+:focus-visible {
+  outline: 2px solid $rs-red;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+// Mouse users keep clean buttons; keyboard users get the ring above.
+:focus:not(:focus-visible) { outline: none; }
+
+.skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: -4rem;
+  z-index: 2000;
+  padding: 0.6rem 1rem;
+  font-family: $headings-font-family;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  background: $rs-red;
+  border-radius: $border-radius-sm;
+  transition: top $dur-base $ease-snappy;
+
+  &:focus {
+    top: 0.75rem;
+    text-decoration: none;
+    color: #ffffff;
+  }
+}
+
+// --- Motion: respect the user's reduced-motion preference -----------------
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

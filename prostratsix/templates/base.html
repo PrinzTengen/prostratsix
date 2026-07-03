@@ -12,15 +12,25 @@
       {% endblock title %}
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="R6 Esport League" />
+    <meta name="description"
+          content="ProStratSix — die kompetitive Rainbow Six Siege Liga: Live-Matches, Tabellen, Playoff-Brackets und Teams." />
     <meta name="author" content="Nölp Max" />
-    <meta name="theme-color" content="#0d1117" />
+    <meta name="theme-color" content="#0a0d13" />
+    <!-- Open Graph / social -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ProStratSix" />
+    <meta property="og:title" content="ProStratSix — R6 Esport League" />
+    <meta property="og:description"
+          content="Kompetitive Rainbow Six Siege Ligen & Turniere. Live-Matches, Tabellen und Playoff-Brackets." />
+    <meta property="og:image" content="{% static 'images/og-cover.png' %}" />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}" />
-    <!-- Display font for headings (graceful fallback to the system stack) -->
+    <!-- Body font (Geist). Headings use the self-hosted "Gochi Hand"
+         declared in base/_typography.scss. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&display=swap" />
+          href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" />
     {% block css %}
       <!-- Your stuff: Third-party CSS libraries go here -->
       <!-- project.css is generated from assets/scss by Gulp and bundles Bootstrap + the theme -->
@@ -43,6 +53,7 @@
   </head>
   <body class="layout {% block bodyclass %}{% endblock bodyclass %}">
     {% block body %}
+      <a href="#main" class="skip-link">{% translate "Zum Inhalt springen" %}</a>
       <header class="site-header">
         <nav class="navbar navbar-expand-md">
           <div class="container">
@@ -69,8 +80,19 @@
                 </li>
                 {% if request.user.is_authenticated %}
                   <li class="nav-item">
-                    <a class="nav-link"
-                       href="{% url 'users:detail' request.user.username %}">{% translate "My Profile" %}</a>
+                    <a class="nav-link" href="{% url 'users:list' %}">{% translate "Players" %}</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link position-relative"
+                       href="{% url 'notifications:list' %}">
+                      {% translate "Notifications" %}
+                      {% if unread_notifications_count %}
+                        <span class="badge text-bg-danger rounded-pill">{{ unread_notifications_count }}</span>
+                      {% endif %}
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'users:detail' request.user.uuid %}">{% translate "My Profile" %}</a>
                   </li>
                   <li class="nav-item">
                     {# URL provided by django-allauth/account/urls.py #}
@@ -93,7 +115,7 @@
           </div>
         </nav>
       </header>
-      <main class="layout__main">
+      <main id="main" tabindex="-1" class="layout__main">
         {% block hero %}
         {% endblock hero %}
         <div class="container py-4">

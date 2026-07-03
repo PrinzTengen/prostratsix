@@ -1,10 +1,30 @@
 {% extends "base.html" %}
 
+{% load i18n %}
+
 {% block title %}
   {% block head_title %}
   {% endblock head_title %}
+  — ProStratSix
 {% endblock title %}
 {% block main %}
-  {% block content %}
-  {% endblock content %}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+        {{ message }}
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+  <section class="manage">
+    <div class="form-panel">
+      <div class="form-panel__body">
+        {% block content %}
+        {% endblock content %}
+      </div>
+    </div>
+  </section>
 {% endblock main %}

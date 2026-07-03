@@ -3,264 +3,915 @@
 {% block title %}
   Styleguide — ProStratSix
 {% endblock title %}
+{# ============================================================= #}
+{# HERO — Landing hero component (broadcast splash)              #}
+{# ============================================================= #}
 {% block hero %}
-  <section class="hero">
-    <div class="container">
-      <span class="eyebrow">Design System</span>
-      <h1 class="hero__title mt-2">Theme Styleguide</h1>
+  <section class="hero hero--landing">
+    <div class="container position-relative z-1">
+      <span class="eyebrow"><span class="slash-divider"></span>Rainbow Six Siege · Liga &amp; Turniere</span>
+      <h1 class="hero__title mt-3">
+        WO <em>STRATS</em>
+        <br />
+        ENTSCHEIDEN
+      </h1>
       <p class="hero__lead lead mt-3">
-        A quick reference of the core building blocks: typography, buttons and the
-        league / match / team card components.
+        Kompetitive R6-Ligen, Wochen-Turniere und ein Ranking, das zählt.
+        Tritt an, klettere die Tabelle hoch und werde Champion.
       </p>
+      <div class="d-flex flex-wrap gap-2 mt-4">
+        <a href="#" class="btn btn-primary btn-lg btn-angular">Jetzt anmelden</a>
+        <a href="#" class="btn btn-outline-light btn-lg">Ligen ansehen</a>
+      </div>
+      <div class="hero__ticker mt-4">
+        <span><span class="live-dot me-1"></span><strong>LIVE</strong> · Conviction vs Luminosity</span>
+        <span><strong>NEXT</strong> · Blue Otter vs SuperNova — 20:00</span>
+        <span><strong>SPLIT 2</strong> · Woche 10 von 12</span>
+      </div>
     </div>
   </section>
 {% endblock hero %}
 {% block content %}
-  <!-- Typography -->
-  <section class="mb-5">
-    <span class="eyebrow">Typography</span>
+  <p class="text-muted">
+    Komponenten-Referenz für die ProStratSix-Oberfläche. Alle Bausteine, die auf
+    der Seite vorkommen — Heros, Buttons, Karten, Tabellen, Bracket und Profile.
+  </p>
+  {# ===================== TYPOGRAPHY ===================== #}
+  <section class="my-5">
+    <span class="eyebrow"><span class="slash-divider"></span>Typography</span>
     <hr />
     <h1>Heading 1</h1>
     <h2>Heading 2</h2>
     <h3>Heading 3</h3>
     <h4>Heading 4</h4>
+    <p class="display-4 mb-1">Display Heading · Gochi Hand</p>
+    <p class="font-display h2 mb-3">0 : 0 · 24 PTS <span class="text-muted fs-6">— Geist tabular</span></p>
     <p class="lead">Lead paragraph — sets the tone for a section.</p>
     <p>
-      Body copy on the dark surface. The <a href="#">accent link</a> uses the primary blue,
-      while <span class="text-accent">highlighted text</span> uses the cyan accent.
+      Body copy auf der dunklen Fläche. Der <a href="#">Akzent-Link</a> nutzt das Brand-Rot,
+      <span class="text-accent">gold-highlighted text</span> markiert Champions/Highlights und
+      <span class="text-red">rot</span> betont Live-/Action-Elemente.
     </p>
-    <p class="text-muted">Muted secondary text for captions and metadata.</p>
+    <p class="text-muted">Muted secondary text für Captions und Metadaten.</p>
   </section>
-  <!-- Buttons -->
-  <section class="mb-5">
-    <span class="eyebrow">Buttons</span>
+  {# ===================== BUTTONS ===================== #}
+  <section class="my-5">
+    <span class="eyebrow"><span class="slash-divider"></span>Buttons</span>
     <hr />
     <div class="d-flex flex-wrap gap-2 align-items-center">
       <button type="button" class="btn btn-primary">Primary</button>
-      <button type="button" class="btn btn-accent">Accent</button>
+      <button type="button" class="btn btn-accent">Accent (Gold)</button>
       <button type="button" class="btn btn-secondary">Secondary</button>
-      <button type="button" class="btn btn-white">White</button>
       <button type="button" class="btn btn-outline-light">Outline</button>
-      <button type="button" class="btn btn-danger">Danger</button>
+      <button type="button" class="btn btn-primary btn-angular">Angular CTA</button>
+      <button type="button" class="btn btn-discord">Discord</button>
+      <button type="button" class="btn btn-primary" disabled>Disabled</button>
+    </div>
+    <div class="d-flex flex-wrap gap-2 align-items-center mt-3">
       <button type="button" class="btn btn-primary btn-lg">Large</button>
+      <button type="button" class="btn btn-primary">Default</button>
       <button type="button" class="btn btn-primary btn-sm">Small</button>
     </div>
   </section>
-  <!-- Cards -->
-  <section class="mb-5">
-    <span class="eyebrow">Cards</span>
+  {# ===================== TAGS & BADGES ===================== #}
+  <section class="my-5">
+    <span class="eyebrow"><span class="slash-divider"></span>Tags &amp; Status</span>
+    <hr />
+    <div class="d-flex flex-wrap gap-2 align-items-center">
+      <span class="tag tag--live"><span class="live-dot"></span>Live</span>
+      <span class="tag tag--gold">Upcoming</span>
+      <span class="tag tag--muted">Final</span>
+      <span class="tag tag--red">Fragger</span>
+      <span class="tag tag--green">LFT</span>
+      <span class="tag tag--angular tag--red">Best of 5</span>
+      <span class="tag tag--champion">
+        <svg width="13"
+             height="13"
+             viewBox="0 0 24 24"
+             fill="currentColor"
+             aria-hidden="true">
+          <path d="M5 16 3 6l5.5 4L12 4l3.5 6L21 6l-2 10H5Zm0 2h14v2H5v-2Z" />
+        </svg>
+        Champion
+      </span>
+      <span class="seed">1</span>
+      <span class="seed">8</span>
+    </div>
+  </section>
+  {# ===================== STAT TILES ===================== #}
+  <section class="my-5">
+    <span class="eyebrow"><span class="slash-divider"></span>Stat Tiles</span>
+    <hr />
+    <div class="row g-3">
+      <div class="col-6 col-md-3">
+        <div class="stat-tile">
+          <div class="stat-tile__value">24</div>
+          <div class="stat-tile__label">Teams</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-tile stat-tile--red">
+          <div class="stat-tile__value">190</div>
+          <div class="stat-tile__label">Matches gespielt</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-tile">
+          <div class="stat-tile__value">72%</div>
+          <div class="stat-tile__label">Win Rate</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-tile stat-tile--gold">
+          <div class="stat-tile__value">€20K</div>
+          <div class="stat-tile__label">Prize Pool</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  {# ===================== MATCH CARDS ===================== #}
+  <section class="my-5">
+    <span class="eyebrow"><span class="slash-divider"></span>Match Cards</span>
     <hr />
     <div class="row g-4">
       <div class="col-md-6 col-lg-4">
         <div class="card match-card is-live h-100">
           <div class="card-header">
-            <span class="eyebrow"><span class="live-dot me-1"></span>Live</span>
+            <span class="match-card__meta">Upper Bracket · Bo3</span>
+            <span class="match-status is-live"><span class="live-dot me-1"></span>Live</span>
           </div>
           <div class="card-body">
             <div class="match-card__teams">
-              <span class="match-card__team">NAVI</span>
-              <span class="match-card__score">5 : 4</span>
-              <span class="match-card__team">G2</span>
+              <span class="match-card__team is-winner">NAVI</span>
+              <span class="match-card__score">2 : 1</span>
+              <span class="match-card__team is-loser">G2</span>
             </div>
           </div>
         </div>
       </div>
       <div class="col-md-6 col-lg-4">
-        <div class="card team-card card--hover h-100">
+        <div class="card match-card h-100">
+          <div class="card-header">
+            <span class="match-card__meta">Lower Bracket · Bo5</span>
+            <span class="match-status is-upcoming">20:00</span>
+          </div>
           <div class="card-body">
-            <div class="team-card__logo">PS6</div>
-            <div class="team-card__name">ProStratSix</div>
-            <p class="text-muted small mb-0 mt-1">Team card · hover to lift</p>
+            <div class="match-card__teams">
+              <span class="match-card__team">Blue Otter</span>
+              <span class="match-card__score">— : —</span>
+              <span class="match-card__team">SuperNova</span>
+            </div>
           </div>
         </div>
       </div>
       <div class="col-md-6 col-lg-4">
-        <div class="card card--accent card--accent-cyan h-100">
-          <div class="card-body">
-            <h5 class="card-title">League Card</h5>
-            <p class="card-text text-muted">A generic surface card with a cyan accent edge for categorisation.</p>
-            <a href="#" class="btn btn-accent btn-sm">Details</a>
+        <div class="card match-card is-final h-100">
+          <div class="card-header">
+            <span class="match-card__meta">Grand Final · Bo5</span>
+            <span class="match-status is-final">Final</span>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- Standings table -->
-  <section class="mb-5">
-    <span class="eyebrow">Standings Table</span>
-    <hr />
-    <!-- Header: only meaningful when columns align, so md and up only -->
-    <div class="mb-3 px-4 d-none d-md-block">
-      <div class="row">
-        <div class="col-md-2"><strong>Platz</strong></div>
-        <div class="col-md-7"><strong>Team</strong></div>
-        <div class="col-md-1"><strong>Spiele</strong></div>
-        <div class="col-md-1"><strong>W/L/D</strong></div>
-        <div class="col-md-1"><strong>Punkte</strong></div>
-      </div>
-    </div>
-    <div class="row">
-      <!--One Team Standing Card-->
-      <div class="col-12 mb-3">
-        <div class="card card--hover">
           <div class="card-body">
-            <div class="row gy-2 align-items-center">
-              <div class="col-6 col-md-2">
-                <span class="d-md-none text-muted">Platz</span><strong>1.</strong>
-              </div>
-              <div class="col-6 col-md-7"><strong>Bullige Bad Boys</strong></div>
-              <div class="col-4 col-md-1">
-                <span class="d-md-none text-muted d-block small">Spiele</span><strong>4</strong>
-              </div>
-              <div class="col-4 col-md-1">
-                <span class="d-md-none text-muted d-block small">W/L/D</span><strong>3/1/0</strong>
-              </div>
-              <div class="col-4 col-md-1">
-                <span class="d-md-none text-muted d-block small">Punkte</span><strong>13</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-12 mb-3">
-        <div class="card card--hover">
-          <div class="card-body">
-            <div class="row gy-2 align-items-center">
-              <div class="col-6 col-md-2">
-                <span class="d-md-none text-muted">Platz</span><strong>2.</strong>
-              </div>
-              <div class="col-6 col-md-7"><strong>Bullige Bad Boys</strong></div>
-              <div class="col-4 col-md-1">
-                <span class="d-md-none text-muted d-block small">Spiele</span><strong>4</strong>
-              </div>
-              <div class="col-4 col-md-1">
-                <span class="d-md-none text-muted d-block small">W/L/D</span><strong>3/1/0</strong>
-              </div>
-              <div class="col-4 col-md-1">
-                <span class="d-md-none text-muted d-block small">Punkte</span><strong>13</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-12 mb-3">
-        <div class="card card--hover">
-          <div class="card-body">
-            <div class="row gy-2 align-items-center">
-              <div class="col-6 col-md-2">
-                <span class="d-md-none text-muted">Platz</span><strong>3.</strong>
-              </div>
-              <div class="col-6 col-md-7"><strong>Bullige Bad Boys</strong></div>
-              <div class="col-4 col-md-1">
-                <span class="d-md-none text-muted d-block small">Spiele</span><strong>4</strong>
-              </div>
-              <div class="col-4 col-md-1">
-                <span class="d-md-none text-muted d-block small">W/L/D</span><strong>3/1/0</strong>
-              </div>
-              <div class="col-4 col-md-1">
-                <span class="d-md-none text-muted d-block small">Punkte</span><strong>13</strong>
-              </div>
+            <div class="match-card__teams">
+              <span class="match-card__team is-winner">Luminosity</span>
+              <span class="match-card__score">3 : 0</span>
+              <span class="match-card__team is-loser">Conviction</span>
             </div>
           </div>
         </div>
       </div>
     </div>
   </section>
-  <!-- Alerts -->
-  <section class="mb-5">
-    <span class="eyebrow">Alerts</span>
+  {# ===================== STANDINGS / LEADERBOARD ===================== #}
+  <section class="my-5">
+    <span class="eyebrow"><span class="slash-divider"></span>Standings / Leaderboard</span>
     <hr />
-    <div class="alert alert-primary" role="alert">Primary alert — informational message.</div>
-    <div class="alert alert-success" role="alert">Success alert — match result saved.</div>
-    <div class="alert alert-danger" role="alert">Danger alert — something went wrong.</div>
+    <div class="standings">
+      <div class="standings__head">
+        <span>#</span>
+        <span>Team</span>
+        <span>GP</span>
+        <span>W-L</span>
+        <span>GD</span>
+        <span>PTS</span>
+      </div>
+      {# Champion #}
+      <div class="standings__row is-champion">
+        <div class="standings__rank">1</div>
+        <div class="standings__team">
+          <span class="standings__logo">LG</span>
+          <span class="standings__name">Luminosity Gaming</span>
+        </div>
+        <div class="standings__stat"><span class="standings__label">GP</span>10</div>
+        <div class="standings__stat"><span class="standings__label">W-L</span>8-2</div>
+        <div class="standings__stat"><span class="standings__label">GD</span>+15</div>
+        <div class="standings__pts">24</div>
+      </div>
+      {# Qualified #}
+      <div class="standings__row is-qualified">
+        <div class="standings__rank">2</div>
+        <div class="standings__team">
+          <span class="standings__logo">CV</span>
+          <span class="standings__name">Conviction</span>
+        </div>
+        <div class="standings__stat"><span class="standings__label">GP</span>10</div>
+        <div class="standings__stat"><span class="standings__label">W-L</span>6-4</div>
+        <div class="standings__stat"><span class="standings__label">GD</span>+9</div>
+        <div class="standings__pts">20</div>
+      </div>
+      <div class="standings__row is-qualified">
+        <div class="standings__rank">3</div>
+        <div class="standings__team">
+          <span class="standings__logo">BO</span>
+          <span class="standings__name">Blue Otter</span>
+        </div>
+        <div class="standings__stat"><span class="standings__label">GP</span>10</div>
+        <div class="standings__stat"><span class="standings__label">W-L</span>6-4</div>
+        <div class="standings__stat"><span class="standings__label">GD</span>+2</div>
+        <div class="standings__pts">19</div>
+      </div>
+      <div class="standings__row">
+        <div class="standings__rank">4</div>
+        <div class="standings__team">
+          <span class="standings__logo">SN</span>
+          <span class="standings__name">SuperNova</span>
+        </div>
+        <div class="standings__stat"><span class="standings__label">GP</span>10</div>
+        <div class="standings__stat"><span class="standings__label">W-L</span>4-6</div>
+        <div class="standings__stat"><span class="standings__label">GD</span>-4</div>
+        <div class="standings__pts">14</div>
+      </div>
+      <div class="standings__row is-relegated">
+        <div class="standings__rank">5</div>
+        <div class="standings__team">
+          <span class="standings__logo">DZ</span>
+          <span class="standings__name">DarkZero</span>
+        </div>
+        <div class="standings__stat"><span class="standings__label">GP</span>10</div>
+        <div class="standings__stat"><span class="standings__label">W-L</span>1-9</div>
+        <div class="standings__stat"><span class="standings__label">GD</span>-22</div>
+        <div class="standings__pts">5</div>
+      </div>
+    </div>
   </section>
-  <!-- Player Cards  -->
-  <section>
-    <span class="eyebrow">Player Cards</span>
+  {# ===================== TOURNAMENT BRACKET ===================== #}
+  <section class="my-5">
+    <span class="eyebrow"><span class="slash-divider"></span>Tournament Bracket · Double Elimination</span>
     <hr />
-    <div class="row row-cols-1 row-cols-md-4 g-4">
+    <div class="bracket">
+      {# Round 1 — 4 matches in 2 pairs #}
+      <div class="bracket__round">
+        <div class="bracket__round-head">Upper · Runde 1</div>
+        <div class="bracket__pairs">
+          <div class="bracket__pair">
+            <div class="bracket__match">
+              <div class="bracket__seed is-winner">
+                <span class="bracket__logo">NV</span><span class="bracket__name">NAVI</span><span class="bracket__score">2</span>
+              </div>
+              <div class="bracket__seed">
+                <span class="bracket__logo">G2</span><span class="bracket__name">G2</span><span class="bracket__score">1</span>
+              </div>
+            </div>
+            <div class="bracket__match">
+              <div class="bracket__seed">
+                <span class="bracket__logo">CT</span><span class="bracket__name">Citadel</span><span class="bracket__score">0</span>
+              </div>
+              <div class="bracket__seed is-winner">
+                <span class="bracket__logo">CV</span><span class="bracket__name">Conviction</span><span class="bracket__score">2</span>
+              </div>
+            </div>
+          </div>
+          <div class="bracket__pair">
+            <div class="bracket__match">
+              <div class="bracket__seed is-winner">
+                <span class="bracket__logo">DO</span><span class="bracket__name">Dorado</span><span class="bracket__score">2</span>
+              </div>
+              <div class="bracket__seed">
+                <span class="bracket__logo">WU</span><span class="bracket__name">Winthrop</span><span class="bracket__score">0</span>
+              </div>
+            </div>
+            <div class="bracket__match">
+              <div class="bracket__seed is-winner">
+                <span class="bracket__logo">LG</span><span class="bracket__name">Luminosity</span><span class="bracket__score">2</span>
+              </div>
+              <div class="bracket__seed">
+                <span class="bracket__logo">BO</span><span class="bracket__name">Blue Otter</span><span class="bracket__score">1</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {# Round 2 — 2 matches in 1 pair #}
+      <div class="bracket__round">
+        <div class="bracket__round-head">Upper · Semis</div>
+        <div class="bracket__pairs">
+          <div class="bracket__pair">
+            <div class="bracket__match">
+              <div class="bracket__seed">
+                <span class="bracket__logo">NV</span><span class="bracket__name">NAVI</span><span class="bracket__score">1</span>
+              </div>
+              <div class="bracket__seed is-winner">
+                <span class="bracket__logo">CV</span><span class="bracket__name">Conviction</span><span class="bracket__score">2</span>
+              </div>
+            </div>
+            <div class="bracket__match">
+              <div class="bracket__seed">
+                <span class="bracket__logo">DO</span><span class="bracket__name">Dorado</span><span class="bracket__score">0</span>
+              </div>
+              <div class="bracket__seed is-winner">
+                <span class="bracket__logo">LG</span><span class="bracket__name">Luminosity</span><span class="bracket__score">2</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {# Round 3 — single final match #}
+      <div class="bracket__round">
+        <div class="bracket__round-head">Grand Final</div>
+        <div class="bracket__match is-final">
+          <div class="bracket__seed is-winner">
+            <span class="bracket__logo">LG</span><span class="bracket__name">Luminosity</span><span class="bracket__score">3</span>
+          </div>
+          <div class="bracket__seed">
+            <span class="bracket__logo">CV</span><span class="bracket__name">Conviction</span><span class="bracket__score">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="text-muted small mt-2">Bracket scrollt horizontal auf kleinen Screens.</p>
+  </section>
+  {# ===================== PLAYER CARDS ===================== #}
+  <section class="my-5">
+    <span class="eyebrow"><span class="slash-divider"></span>Player Cards</span>
+    <hr />
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
       <div class="col">
-        <div class="card player-card player-card-magenta">
+        <div class="card player-card">
           <div class="player-role badge">Fragger</div>
-          <img src="https://i.pravatar.cc/400/"
+          <img src="https://i.pravatar.cc/400?img=12"
                class="player-img mx-auto"
-               alt="Player" />
+               alt="Spielerporträt FROSTY" />
           <div class="card-body text-center">
             <h3 class="player-name">FROSTY</h3>
-            <p class="player-realname">Maximilian Bauer 🇩🇪</p>
-            <span class="badge player-badge mb-3">LFT</span>
+            <p class="player-realname">Maximilian Bauer <span class="tag tag--muted">GER</span></p>
+            <span class="tag tag--green mb-3">LFT</span>
             <div class="player-stats">
-              <div>
-                <small>Games played</small>
-                <strong>190</strong>
-              </div>
-              <div>
-                <small>Win Rate</small>
-                <strong>72%</strong>
-              </div>
-              <div>
-                <small>Role</small>
-                <strong>Fragger</strong>
-              </div>
+              <div><small>Games</small><strong>190</strong></div>
+              <div><small>Win Rate</small><strong>72%</strong></div>
+              <div><small>Role</small><strong>Entry</strong></div>
             </div>
           </div>
         </div>
       </div>
-      <!-- Duplicate for testing -->
+      <div class="col">
+        <div class="card player-card player-card-gold">
+          <div class="player-role badge">IGL · MVP</div>
+          <img src="https://i.pravatar.cc/400?img=33"
+               class="player-img mx-auto"
+               alt="Spielerporträt VIPER" />
+          <div class="card-body text-center">
+            <h3 class="player-name">VIPER</h3>
+            <p class="player-realname">Jonas Klein <span class="tag tag--muted">GER</span></p>
+            <span class="tag tag--champion mb-3">Champion</span>
+            <div class="player-stats">
+              <div><small>Games</small><strong>240</strong></div>
+              <div><small>Win Rate</small><strong>81%</strong></div>
+              <div><small>Role</small><strong>IGL</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="col">
         <div class="card player-card player-card-red">
-          <div class="player-role badge">Fragger</div>
-          <img src="https://i.pravatar.cc/200/"
+          <div class="player-role badge">Support</div>
+          <img src="https://i.pravatar.cc/400?img=51"
                class="player-img mx-auto"
-               alt="Player" />
+               alt="Spielerporträt ECHO" />
           <div class="card-body text-center">
-            <h3 class="player-name">FROSTY</h3>
-            <p class="player-realname">Maximilian Bauer 🇩🇪</p>
-            <span class="badge player-badge mb-3">LFT</span>
+            <h3 class="player-name">ECHO</h3>
+            <p class="player-realname">Lena Vogt <span class="tag tag--muted">AUT</span></p>
+            <span class="tag tag--red mb-3">Roster</span>
             <div class="player-stats">
-              <div>
-                <small>Games played</small>
-                <strong>190</strong>
-              </div>
-              <div>
-                <small>Win Rate</small>
-                <strong>72%</strong>
-              </div>
-              <div>
-                <small>Role</small>
-                <strong>Fragger</strong>
-              </div>
+              <div><small>Games</small><strong>165</strong></div>
+              <div><small>Win Rate</small><strong>68%</strong></div>
+              <div><small>Role</small><strong>Support</strong></div>
             </div>
           </div>
         </div>
       </div>
       <div class="col">
         <div class="card player-card player-card-darkred">
-          <div class="player-role badge">Fragger</div>
-          <img src="https://i.pravatar.cc/200/"
+          <div class="player-role badge">Flex</div>
+          <img src="https://i.pravatar.cc/400?img=68"
                class="player-img mx-auto"
-               alt="Player" />
+               alt="Spielerporträt NOVA" />
           <div class="card-body text-center">
-            <h3 class="player-name">FROSTY</h3>
-            <p class="player-realname">Maximilian Bauer 🇩🇪</p>
-            <span class="badge player-badge mb-3">LFT</span>
+            <h3 class="player-name">NOVA</h3>
+            <p class="player-realname">Tim Roth <span class="tag tag--muted">SUI</span></p>
+            <span class="tag tag--green mb-3">LFT</span>
             <div class="player-stats">
-              <div>
-                <small>Games played</small>
-                <strong>190</strong>
-              </div>
-              <div>
-                <small>Win Rate</small>
-                <strong>72%</strong>
-              </div>
-              <div>
-                <small>Role</small>
-                <strong>Fragger</strong>
-              </div>
+              <div><small>Games</small><strong>120</strong></div>
+              <div><small>Win Rate</small><strong>64%</strong></div>
+              <div><small>Role</small><strong>Flex</strong></div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  </section>
+  {# ===================== TEAM CARDS / TEAM LISTING ===================== #}
+  <section class="my-5">
+    <span class="eyebrow"><span class="slash-divider"></span>Team Cards · Listing</span>
+    <hr />
+    <div class="row g-4">
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="card team-card card--hover h-100">
+          <div class="card-body">
+            <div class="team-card__logo">PS6</div>
+            <div class="team-card__name">ProStratSix</div>
+            <p class="text-muted small mb-0 mt-1">5 Spieler · Division 1</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="card team-card card--hover h-100">
+          <div class="card-body">
+            <div class="team-card__logo">LG</div>
+            <div class="team-card__name">Luminosity</div>
+            <p class="text-muted small mb-0 mt-1">5 Spieler · Division 1</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="card team-card card--hover h-100">
+          <div class="card-body">
+            <div class="team-card__logo">CV</div>
+            <div class="team-card__name">Conviction</div>
+            <p class="text-muted small mb-0 mt-1">6 Spieler · Division 1</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="card card--hover card--accent card--accent-gold h-100">
+          <div class="card-body">
+            <h5 class="card-title">Freies Team</h5>
+            <p class="card-text text-muted small">Plätze offen — Bewirb dich für die nächste Season.</p>
+            <a href="#" class="btn btn-accent btn-sm">Beitreten</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  {# ===================== PROFILE HEADER ===================== #}
+  <section class="my-5">
+    <span class="eyebrow"><span class="slash-divider"></span>Profile Header</span>
+    <hr />
+    <div class="profile-header">
+      <img src="https://i.pravatar.cc/200?img=12"
+           class="profile-header__avatar"
+           alt="Avatar FROSTY" />
+      <div class="flex-grow-1">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+          <h2 class="profile-header__name mb-0">FROSTY</h2>
+          <span class="tag tag--green">LFT</span>
+        </div>
+        <div class="profile-header__meta mt-2">
+          <span>Maximilian Bauer</span>
+          <span>Rolle: Entry Fragger</span>
+          <span>R6: Frosty.PS6</span>
+        </div>
+        <div class="d-flex flex-wrap gap-2 mt-3">
+          <a href="#" class="btn btn-primary btn-sm">R6 Tracker</a>
+          <a href="#" class="btn btn-discord btn-sm">Discord</a>
+        </div>
+      </div>
+      <div class="row g-2 text-center stat-cluster">
+        <div class="col-4">
+          <div class="stat-tile stat-tile--sm p-2">
+            <div class="stat-tile__value">190</div>
+            <div class="stat-tile__label">Games</div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="stat-tile stat-tile--sm p-2">
+            <div class="stat-tile__value">72%</div>
+            <div class="stat-tile__label">WR</div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="stat-tile stat-tile--sm p-2">
+            <div class="stat-tile__value">1.18</div>
+            <div class="stat-tile__label">K/D</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  {# ===================== USER LISTING ===================== #}
+  <section class="my-5">
+    <span class="eyebrow"><span class="slash-divider"></span>User Listing</span>
+    <hr />
+    <div class="d-flex flex-column gap-2">
+      <div class="user-row">
+        <img src="https://i.pravatar.cc/80?img=12" class="user-row__avatar" alt="" />
+        <div class="flex-grow-1">
+          <div class="user-row__name">FROSTY</div>
+          <div class="user-row__gamertag">Frosty.PS6 · Entry</div>
+        </div>
+        <span class="tag tag--green">LFT</span>
+        <a href="#" class="btn btn-outline-light btn-sm">Profil</a>
+      </div>
+      <div class="user-row">
+        <img src="https://i.pravatar.cc/80?img=33" class="user-row__avatar" alt="" />
+        <div class="flex-grow-1">
+          <div class="user-row__name">VIPER</div>
+          <div class="user-row__gamertag">Viper.PS6 · IGL</div>
+        </div>
+        <span class="tag tag--gold">Captain</span>
+        <a href="#" class="btn btn-outline-light btn-sm">Profil</a>
+      </div>
+      <div class="user-row">
+        <img src="https://i.pravatar.cc/80?img=51" class="user-row__avatar" alt="" />
+        <div class="flex-grow-1">
+          <div class="user-row__name">ECHO</div>
+          <div class="user-row__gamertag">Echo.PS6 · Support</div>
+        </div>
+        <a href="#" class="btn btn-outline-light btn-sm">Profil</a>
+      </div>
+    </div>
+  </section>
+  {# ===================== INPUTS & CONTROLS ===================== #}
+  <section class="my-5">
+    <span class="eyebrow"><span class="slash-divider"></span>Inputs &amp; Controls</span>
+    <hr />
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4">
+        <label for="f-text" class="form-label">Text</label>
+        <input type="text"
+               class="form-control"
+               id="f-text"
+               placeholder="z. B. ProStratSix" />
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <label for="f-email" class="form-label">E-Mail</label>
+        <input type="email"
+               class="form-control"
+               id="f-email"
+               placeholder="name@team.gg"
+               autocomplete="email" />
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <label for="f-pw" class="form-label">Passwort</label>
+        <div class="input-group">
+          <input type="password"
+                 class="form-control"
+                 id="f-pw"
+                 value="supersecret"
+                 autocomplete="current-password" />
+          <button class="btn btn-outline-light"
+                  type="button"
+                  aria-label="Passwort anzeigen">
+            <svg width="18"
+                 height="18"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 aria-hidden="true">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <label for="f-num" class="form-label">Nummer</label>
+        <input type="number"
+               class="form-control"
+               id="f-num"
+               value="5"
+               min="1"
+               max="10" />
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <label for="f-search" class="form-label">Suche</label>
+        <div class="input-group">
+          <span class="input-group-text">
+            <svg width="16"
+                 height="16"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 aria-hidden="true">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+          </span>
+          <input type="search"
+                 class="form-control"
+                 id="f-search"
+                 placeholder="Team suchen…" />
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <label for="f-date" class="form-label">Datum</label>
+        <input type="date" class="form-control" id="f-date" />
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <label for="f-select" class="form-label">Select</label>
+        <select class="form-select" id="f-select">
+          <option>Division 1</option>
+          <option>Division 2</option>
+          <option>Open Qualifier</option>
+        </select>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <label for="f-multi" class="form-label">Multi-Select</label>
+        <select class="form-select" id="f-multi" multiple size="3">
+          <option selected>Entry</option>
+          <option>Support</option>
+          <option selected>Flex</option>
+          <option>IGL</option>
+        </select>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <label for="f-tag" class="form-label">Input-Group</label>
+        <div class="input-group">
+          <span class="input-group-text">UBI</span>
+          <input type="text" class="form-control" id="f-tag" placeholder="Frosty.PS6" />
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <label for="f-area" class="form-label">Textarea</label>
+        <textarea class="form-control" id="f-area" placeholder="Kurze Team-Bio…"></textarea>
+      </div>
+      <div class="col-lg-4">
+        <label for="f-file" class="form-label">File · Team-Logo</label>
+        <input type="file" class="form-control" id="f-file" accept="image/*" />
+      </div>
+      <div class="col-md-6">
+        <label for="f-range" class="form-label">Range · Roster-Größe</label>
+        <input type="range"
+               class="form-range"
+               id="f-range"
+               min="5"
+               max="10"
+               value="6" />
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Größen</label>
+        <div class="d-flex flex-column gap-2">
+          <input type="text" class="form-control form-control-sm" placeholder="Small" />
+          <input type="text" class="form-control" placeholder="Default" />
+          <input type="text" class="form-control form-control-lg" placeholder="Large" />
+        </div>
+      </div>
+    </div>
+    <div class="row g-4 mt-1">
+      <div class="col-md-4">
+        <span class="form-label d-block">Checkbox</span>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="c1" checked />
+          <label class="form-check-label" for="c1">Regeln akzeptiert</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="c2" />
+          <label class="form-check-label" for="c2">Newsletter</label>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <span class="form-label d-block">Radio</span>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="reg" id="r1" checked />
+          <label class="form-check-label" for="r1">EU</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="reg" id="r2" />
+          <label class="form-check-label" for="r2">NA</label>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <span class="form-label d-block">Switch</span>
+        <div class="form-check form-switch">
+          <input class="form-check-input"
+                 type="checkbox"
+                 role="switch"
+                 id="sw1"
+                 checked />
+          <label class="form-check-label" for="sw1">Match-Benachrichtigungen</label>
+        </div>
+      </div>
+    </div>
+    <div class="row g-4 mt-1">
+      <div class="col-md-3">
+        <label for="s-valid" class="form-label">Valid</label>
+        <input type="text"
+               class="form-control is-valid"
+               id="s-valid"
+               value="ProStratSix" />
+        <div class="valid-feedback">Verfügbar.</div>
+      </div>
+      <div class="col-md-3">
+        <label for="s-invalid" class="form-label">Invalid</label>
+        <input type="text"
+               class="form-control is-invalid"
+               id="s-invalid"
+               value="Frosty PS6" />
+        <div class="invalid-feedback">Kein Tracker gefunden.</div>
+      </div>
+      <div class="col-md-3">
+        <label for="s-disabled" class="form-label">Disabled</label>
+        <input type="text"
+               class="form-control"
+               id="s-disabled"
+               value="Gesperrt"
+               disabled />
+      </div>
+      <div class="col-md-3">
+        <label for="s-readonly" class="form-label">Read-only</label>
+        <input type="text"
+               class="form-control"
+               id="s-readonly"
+               value="PS6-2025-001"
+               readonly />
+      </div>
+    </div>
+    <div class="row g-4 mt-1">
+      <div class="col-md-6">
+        <div class="form-floating">
+          <input type="text" class="form-control" id="fl1" placeholder="Teamname" />
+          <label for="fl1">Floating Label — Teamname</label>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-floating">
+          <select class="form-select" id="fl2">
+            <option>Division 1</option>
+            <option>Division 2</option>
+          </select>
+          <label for="fl2">Floating Label — Division</label>
+        </div>
+      </div>
+    </div>
+  </section>
+  {# ===================== EXAMPLE FORM ===================== #}
+  <section class="my-5">
+    <span class="eyebrow"><span class="slash-divider"></span>Example Form</span>
+    <hr />
+    <form class="form-panel mw-narrow" novalidate>
+      <div class="form-panel__head">
+        <div>
+          <span class="eyebrow">Season 3</span>
+          <h3 class="form-panel__title">Team-Anmeldung</h3>
+        </div>
+        <span class="tag tag--gold">Schritt 1 / 2</span>
+      </div>
+      <div class="form-panel__body">
+        <p class="form-legend">Team</p>
+        <div class="row g-4">
+          <div class="col-md-8">
+            <label for="t-name" class="form-label">Teamname <span class="req">*</span></label>
+            <input type="text"
+                   class="form-control"
+                   id="t-name"
+                   placeholder="z. B. ProStratSix"
+                   required />
+            <div class="form-text">Öffentlich sichtbar in Tabelle &amp; Bracket.</div>
+          </div>
+          <div class="col-md-4">
+            <label for="t-tag" class="form-label">Kürzel <span class="req">*</span></label>
+            <input type="text"
+                   class="form-control"
+                   id="t-tag"
+                   placeholder="PS6"
+                   maxlength="4"
+                   required />
+          </div>
+          <div class="col-md-6">
+            <label for="t-div" class="form-label">Division</label>
+            <select class="form-select" id="t-div">
+              <option>Division 1</option>
+              <option>Division 2</option>
+              <option>Open Qualifier</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <span class="form-label d-block">Region</span>
+            <div class="d-flex flex-wrap gap-3 pt-1">
+              <div class="form-check">
+                <input class="form-check-input"
+                       type="radio"
+                       name="t-region"
+                       id="t-eu"
+                       checked />
+                <label class="form-check-label" for="t-eu">EU</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="t-region" id="t-na" />
+                <label class="form-check-label" for="t-na">NA</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="t-region" id="t-apac" />
+                <label class="form-check-label" for="t-apac">APAC</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="form-legend mt-4">Captain</p>
+        <div class="row g-4">
+          <div class="col-md-6">
+            <label for="t-r6" class="form-label">R6 Gamertag <span class="req">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text">UBI</span>
+              <input type="text"
+                     class="form-control"
+                     id="t-r6"
+                     placeholder="Frosty.PS6"
+                     required />
+            </div>
+            <div class="form-text">Wird automatisch mit dem R6 Tracker verknüpft.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="t-discord" class="form-label">Discord</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <svg width="16"
+                     height="16"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2"
+                     aria-hidden="true">
+                  <path d="M7 8a18 18 0 0 1 10 0M7 16a18 18 0 0 0 10 0" />
+                  <path d="M8.5 17.5 7 20s-4-1.5-5-4c0-5 2-9 2-9a14 14 0 0 1 4-1l1 2M15.5 17.5 17 20s4-1.5 5-4c0-5-2-9-2-9a14 14 0 0 0-4-1l-1 2" />
+                </svg>
+              </span>
+              <input type="text"
+                     class="form-control"
+                     id="t-discord"
+                     placeholder="username" />
+            </div>
+          </div>
+          <div class="col-12">
+            <label for="t-roster" class="form-label">Roster-Größe</label>
+            <input type="range"
+                   class="form-range"
+                   id="t-roster"
+                   min="5"
+                   max="10"
+                   value="6" />
+          </div>
+          <div class="col-md-6">
+            <label for="t-logo" class="form-label">Team-Logo</label>
+            <input type="file" class="form-control" id="t-logo" accept="image/*" />
+          </div>
+          <div class="col-md-6">
+            <label for="t-bio" class="form-label">Team-Bio</label>
+            <textarea class="form-control"
+                      id="t-bio"
+                      rows="3"
+                      placeholder="Kurz vorstellen…"></textarea>
+          </div>
+        </div>
+        <div class="mt-4 d-flex flex-column gap-2">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="t-rules" required />
+            <label class="form-check-label" for="t-rules">Ich akzeptiere das Liga-Reglement <span class="req">*</span></label>
+          </div>
+          <div class="form-check form-switch">
+            <input class="form-check-input"
+                   type="checkbox"
+                   role="switch"
+                   id="t-notify"
+                   checked />
+            <label class="form-check-label" for="t-notify">Match-Benachrichtigungen erhalten</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-panel__foot">
+        <button type="submit" class="btn btn-primary btn-angular">Team anmelden</button>
+        <button type="button" class="btn btn-outline-light">Abbrechen</button>
+        <span class="text-muted small ms-md-auto">Als Nächstes: Roster hinzufügen</span>
+      </div>
+    </form>
+  </section>
+  {# ===================== ALERTS ===================== #}
+  <section class="my-5">
+    <span class="eyebrow"><span class="slash-divider"></span>Alerts</span>
+    <hr />
+    <div class="alert alert-primary" role="alert">Primary — informational message.</div>
+    <div class="alert alert-success" role="alert">Success — Match-Ergebnis gespeichert.</div>
+    <div class="alert alert-warning" role="alert">Warning — Anmeldung schließt in 1 Stunde.</div>
+    <div class="alert alert-danger" role="alert">Danger — etwas ist schiefgelaufen.</div>
+  </section>
+  {# ===================== CTA BAND ===================== #}
+  <section class="my-5">
+    <div class="cta-band d-flex flex-wrap align-items-center justify-content-between gap-3">
+      <div>
+        <span class="eyebrow">Season 3 · Anmeldung offen</span>
+        <h3 class="cta-band__title mt-2 mb-0">Bereit für die Liga?</h3>
+      </div>
+      <a href="#" class="btn btn-primary btn-lg btn-angular">Team anmelden</a>
     </div>
   </section>
 {% endblock content %}

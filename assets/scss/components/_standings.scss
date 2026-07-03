@@ -1,0 +1,176 @@
+// ==========================================================================
+// Standings / leaderboard — broadcast-style ranked rows.
+// Grid columns: rank | team | GP | W-L | GD | PTS
+// ==========================================================================
+
+$standings-cols: 3.5rem minmax(0, 1fr) 3rem 4.5rem 3.5rem 4rem;
+
+.standings {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+// Column header — hidden on small screens where rows stack.
+.standings__head {
+  display: none;
+  padding: 0 1rem;
+  font-family: $headings-font-family;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: $rs-muted;
+
+  @include media-breakpoint-up(md) {
+    display: grid;
+    grid-template-columns: $standings-cols;
+    gap: 1rem;
+    align-items: center;
+  }
+}
+
+.standings__row {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 0.25rem 1rem;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: $rs-surface;
+  border: 1px solid $rs-border;
+  border-radius: $border-radius;
+  transition:
+    transform $dur-base $ease-snappy,
+    border-color $dur-base $ease-snappy,
+    box-shadow $dur-base $ease-snappy;
+
+  @include media-breakpoint-up(md) {
+    grid-template-columns: $standings-cols;
+  }
+
+  &:hover {
+    transform: translateX(4px);
+    border-color: rgba($rs-red, 0.45);
+    box-shadow: 0 12px 28px -18px rgba(0, 0, 0, 0.85);
+  }
+
+  &:hover .standings__rank { transform: scale(1.12); color: #ffffff; }
+
+  &:hover .standings__logo {
+    transform: scale(1.08);
+    border-color: rgba($rs-red, 0.6);
+    box-shadow: 0 0 14px rgba($rs-red, 0.35);
+  }
+
+  &:hover .standings__pts { transform: scale(1.08); }
+
+  // Qualification accents — a soft horizontal tint, no left border.
+  &.is-champion {
+    background: linear-gradient(90deg, rgba($rs-gold, 0.12), transparent 60%);
+    border-color: rgba($rs-gold, 0.4);
+  }
+
+  &.is-qualified {
+    background: linear-gradient(90deg, rgba($rs-red, 0.08), transparent 55%);
+  }
+}
+
+.standings__rank {
+  font-family: $font-family-display;
+  font-size: 1.25rem;
+  color: $rs-text;
+  text-align: center;
+  transition: transform $dur-base $ease-overshoot, color $dur-base $ease-snappy;
+
+  .is-champion &  { color: $rs-gold; }
+  .is-qualified & { color: $rs-red; }
+}
+
+.standings__team {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+
+  .standings__logo {
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: $rs-surface-2;
+    border: 1px solid $rs-border;
+    font-family: $font-family-display;
+    font-size: 0.7rem;
+    color: $rs-text;
+    transition:
+      transform $dur-base $ease-overshoot,
+      border-color $dur-base $ease-snappy,
+      box-shadow $dur-base $ease-snappy;
+  }
+
+  .standings__name {
+    font-family: $headings-font-family;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+// Stat cells. On mobile each carries an inline label.
+.standings__stat {
+  font-variant-numeric: tabular-nums;
+  color: $rs-text;
+
+  @include media-breakpoint-down(md) {
+    grid-column: 2;
+    display: inline-flex;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: $rs-muted;
+
+    strong { color: $rs-text; }
+  }
+
+  // The label span only shows on the stacked mobile layout.
+  .standings__label {
+    @include media-breakpoint-up(md) { display: none; }
+    font-family: $headings-font-family;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+}
+
+.standings__pts {
+  font-family: $font-family-display;
+  font-size: 1.1rem;
+  color: #ffffff;
+  transition: transform $dur-base $ease-overshoot;
+
+  @include media-breakpoint-down(md) {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    align-self: start;
+  }
+}
+
+// --- Staggered entrance (skipped entirely for reduced-motion) -------------
+@media (prefers-reduced-motion: no-preference) {
+  .standings__row {
+    animation: standings-in 0.45s $ease-snappy both;
+  }
+
+  @for $i from 1 through 10 {
+    .standings__row:nth-child(#{$i + 1}) { animation-delay: #{$i * 0.05}s; }
+  }
+}
+
+@keyframes standings-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
