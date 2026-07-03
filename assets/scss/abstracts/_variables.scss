@@ -5,32 +5,35 @@
 // value here wins over Bootstrap's `!default` declarations.
 // ==========================================================================
 
-// --- Brand palette --------------------------------------------------------
-$rs-blue:   #2f81f7; // primary — competitive R6 / esport blue
-$rs-cyan:   #22d3ee; // accent highlight
-$rs-yellow: #facc15; // warning / highlight
-$rs-red:    #f7506b; // danger / live indicator
-$rs-green:  #3fb950; // success / win
+// --- Brand palette — Tactical Red + Gold ---------------------------------
+$rs-red:        #ff2e43; // PRIMARY brand / live / action red
+$rs-red-deep:   #c81428; // hover / active / pressed red
+$rs-red-glow:   #ff5061; // light tint for glows & focus rings
+$rs-gold:       #f5b942; // highlight / champion / eyebrow accent
+$rs-gold-deep:  #c8902a; // gold hover / active
+$rs-cyan:       #34d6e8; // info / secondary data accent (used sparingly)
+$rs-green:      #3fb950; // success / win
+$rs-yellow:     #facc15; // warning
 
-// --- Dark surfaces --------------------------------------------------------
-$rs-bg:        #0d1117; // page background (near black)
-$rs-surface:   #161b22; // cards / raised surfaces
-$rs-surface-2: #1c2330; // hover / nested surfaces
-$rs-border:    #2a3343; // hairline borders
-$rs-muted:     #8b949e; // muted text
-$rs-text:      #e6edf3; // primary text
+// --- Dark surfaces (broadcast graphite) ----------------------------------
+$rs-bg:        #0a0d13; // page background (near black, slight blue-graphite)
+$rs-surface:   #12161f; // cards / raised surfaces
+$rs-surface-2: #1a2030; // hover / nested surfaces
+$rs-border:    #2a3142; // hairline borders
+$rs-muted:     #8b94a3; // muted text
+$rs-text:      #e7edf5; // primary text
 
 // --- Bootstrap theme colors ----------------------------------------------
-$primary:   #FF0606;
-$secondary: #59656f;
+$primary:   $rs-red;
+$secondary: #3b4250;
 $success:   $rs-green;
 $info:      $rs-cyan;
-$warning:   $rs-yellow;
+$warning:   $rs-gold;
 $danger:    $rs-red;
 $light:     #c9d1d9;
-$dark:      #1E0101;
-$white:     #FFFAFA;
-$accent:    #660000; // custom color for highlights (e.g. .text-accent)
+$dark:      #0a0d13;
+$white:     #ffffff;
+$accent:    $rs-gold; // custom color for highlights / gold CTA (.btn-accent, .text-accent)
 
 // --- Global look & feel ---------------------------------------------------
 $body-bg:    $rs-bg;
@@ -62,7 +65,7 @@ $card-border-radius: $border-radius-lg;
 // --- Navbar ---------------------------------------------------------------
 $navbar-dark-color:        rgba($rs-text, 0.75);
 $navbar-dark-hover-color:  $rs-text;
-$navbar-dark-active-color: $rs-cyan;
+$navbar-dark-active-color: $rs-red;
 
 // --- Buttons --------------------------------------------------------------
 // Global knobs for ALL buttons. Must be set before Bootstrap compiles.
@@ -106,15 +109,26 @@ $btn-active-border-shade-amount: 25%;
 $btn-active-border-tint-amount:  10%;
 
 // --- Typography -----------------------------------------------------------
-$font-family-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-// "Gochi Hand" is self-hosted via @font-face in base/_typography.scss.
-$headings-font-family:   "Gochi Hand", "Chakra Petch", #{$font-family-sans-serif};
+// Two faces only: Gochi Hand (headings, self-hosted) + Geist (everything
+// else, loaded from Google Fonts). The "display" alias is Geist with tabular
+// figures, used for numeric broadcast data (scores, ranks, seeds, stats).
+$font-family-sans-serif: "Geist", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$headings-font-family:   "Gochi Hand", #{$font-family-sans-serif};
+$font-family-display:    #{$font-family-sans-serif};
 $headings-font-weight:   700;
 $headings-color:         #ffffff;
 $font-weight-base:       400;
 $line-height-base:       1.6;
 
+// --- Motion tokens — one shared rhythm across the theme -------------------
+$ease-snappy:    cubic-bezier(0.2, 0.8, 0.2, 1);   // default UI easing
+$ease-overshoot: cubic-bezier(0.34, 1.45, 0.5, 1); // subtle spring for lifts
+$dur-fast:       0.14s;
+$dur-base:       0.22s;
+
  $custom-colors: (
-    "white": $white,
+    "white":  $white,
     "accent": $accent,
+    "gold":   $rs-gold,
+    "red":    $rs-red,
   );

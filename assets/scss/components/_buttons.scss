@@ -2,6 +2,21 @@
 // Buttons
 // ==========================================================================
 
+// Primary / accent CTAs get a subtle broadcast glow on hover.
+.btn-primary,
+.btn-danger {
+  &:hover { box-shadow: 0 6px 22px -8px rgba($rs-red, 0.8); }
+}
+
+.btn-accent {
+  &:hover { box-shadow: 0 6px 22px -8px rgba($rs-gold, 0.8); }
+}
+
+// Angular "knife-cut" CTA — the signature tactical button.
+.btn-angular {
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+}
+
 // Discord brand button for social sign-in.
 .btn-discord {
   --bs-btn-color: #ffffff;

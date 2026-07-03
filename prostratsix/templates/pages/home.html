@@ -3,58 +3,304 @@
 {% block title %}
   ProStratSix — R6 Esport League
 {% endblock title %}
+{# ============================================================= #}
+{# HERO                                                          #}
+{# ============================================================= #}
 {% block hero %}
-  <section class="hero">
-    <div class="container">
-      <span class="eyebrow">Rainbow Six · Competitive League</span>
-      <h1 class="hero__title mt-2">
-        Where the <span class="text-accent">best squads</span> clash.
+  <section class="hero hero--landing" aria-label="Intro">
+    {# Graded splash — decorative. Replace seed src with commissioned art. #}
+    <div class="hero__media img-grade" aria-hidden="true">
+      <img src="https://picsum.photos/seed/ps6arena/900/1100"
+           alt=""
+           loading="eager"
+           width="900"
+           height="1100" />
+    </div>
+    <div class="container position-relative z-1">
+      <span class="eyebrow"><span class="slash-divider"></span>Rainbow Six Siege · Liga &amp; Turniere</span>
+      <h1 class="hero__title mt-3">
+        WO <em>STRATS</em>
+        <br />
+        GEWINNEN
       </h1>
       <p class="hero__lead lead mt-3">
-        Follow live matches, climb the standings and track every team across the ProStratSix
-        season — built for players, casters and fans.
+        Kompetitive R6-Ligen, Wochen-Turniere und ein Ranking, das zählt.
+        Tritt an, klettere die Tabelle hoch und werde Champion.
       </p>
-      <div class="d-flex flex-wrap gap-2 mt-4">
-        <a href="{% url 'styleguide' %}" class="btn btn-primary btn-lg">View matches</a>
-        <a href="{% url 'about' %}" class="btn btn-outline-light btn-lg">Learn more</a>
+      <div class="d-flex flex-column flex-sm-row gap-2 mt-4">
+        <a href="{% url 'account_signup' %}"
+           class="btn btn-primary btn-lg btn-angular">Team anmelden</a>
+        <a href="#standings" class="btn btn-outline-light btn-lg">Tabelle ansehen</a>
+      </div>
+      <div class="hero__ticker mt-4">
+        <span><span class="live-dot me-1"></span><strong>LIVE</strong> · Conviction vs Luminosity</span>
+        <span><strong>NEXT</strong> · Blue Otter vs SuperNova — 20:00</span>
+        <span><strong>SPLIT 2</strong> · Woche 10 / 12</span>
       </div>
     </div>
   </section>
 {% endblock hero %}
 {% block content %}
-  <div class="row g-4">
-    <div class="col-md-6 col-lg-4">
-      <div class="card match-card is-live h-100">
-        <div class="card-body">
-          <span class="eyebrow"><span class="live-dot me-1"></span>Live now</span>
-          <div class="match-card__teams mt-3">
-            <span class="match-card__team">NAVI</span>
-            <span class="match-card__score">5 : 4</span>
-            <span class="match-card__team">G2</span>
+  {# =================== MATCHDAY =================== #}
+  <section class="section" aria-labelledby="matchday-h">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow"><span class="slash-divider"></span>Matchday · Split 2</span>
+        <h2 id="matchday-h" class="section-head__title">Jetzt &amp; als Nächstes</h2>
+      </div>
+      <a href="#" class="section-head__link">Alle Matches →</a>
+    </div>
+    <div class="row g-4">
+      {# Featured live match — the clear primary of this section #}
+      <div class="col-lg-5">
+        <article class="card match-card is-live h-100">
+          <div class="card-header">
+            <span class="match-card__meta">Upper Bracket · Bo5</span>
+            <span class="match-status is-live"><span class="live-dot me-1"></span>Live</span>
+          </div>
+          <div class="card-body d-flex flex-column justify-content-center h-100">
+            <div class="match-card__teams">
+              <span class="match-card__team is-winner"><span class="mono">CV</span>Conviction</span>
+              <span class="match-card__score">2 : 1</span>
+              <span class="match-card__team is-loser">Luminosity<span class="mono">LG</span></span>
+            </div>
+          </div>
+        </article>
+      </div>
+      {# Upcoming — peek-scroll rail on mobile, 2-up grid on desktop #}
+      <div class="col-lg-7">
+        <div class="h-rail h-rail--2">
+          <article class="card match-card">
+            <div class="card-header">
+              <span class="match-card__meta">Lower · Bo3</span>
+              <span class="match-status is-upcoming">20:00</span>
+            </div>
+            <div class="card-body">
+              <div class="match-card__teams">
+                <span class="match-card__team"><span class="mono">BO</span>Blue Otter</span>
+                <span class="match-card__score">—</span>
+                <span class="match-card__team">SuperNova<span class="mono">SN</span></span>
+              </div>
+            </div>
+          </article>
+          <article class="card match-card">
+            <div class="card-header">
+              <span class="match-card__meta">Upper · Bo5</span>
+              <span class="match-status is-upcoming">21:30</span>
+            </div>
+            <div class="card-body">
+              <div class="match-card__teams">
+                <span class="match-card__team"><span class="mono">NV</span>NAVI</span>
+                <span class="match-card__score">—</span>
+                <span class="match-card__team">Dorado<span class="mono">DO</span></span>
+              </div>
+            </div>
+          </article>
+          <article class="card match-card">
+            <div class="card-header">
+              <span class="match-card__meta">Lower · Bo3</span>
+              <span class="match-status is-upcoming">Morgen</span>
+            </div>
+            <div class="card-body">
+              <div class="match-card__teams">
+                <span class="match-card__team"><span class="mono">CT</span>Citadel</span>
+                <span class="match-card__score">—</span>
+                <span class="match-card__team">Winthrop<span class="mono">WU</span></span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+  {# =================== STANDINGS + TEAM OF THE WEEK =================== #}
+  <section class="section" id="standings" aria-labelledby="standings-h">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow"><span class="slash-divider"></span>Tabelle</span>
+        <h2 id="standings-h" class="section-head__title">Race to Playoffs</h2>
+      </div>
+      <a href="#" class="section-head__link">Volle Tabelle →</a>
+    </div>
+    <div class="row g-4 align-items-stretch">
+      <div class="col-lg-7">
+        <div class="standings">
+          <div class="standings__head">
+            <span>#</span><span>Team</span><span>GP</span><span>W-L</span><span>GD</span><span>PTS</span>
+          </div>
+          <div class="standings__row is-champion">
+            <div class="standings__rank">1</div>
+            <div class="standings__team"><span class="standings__logo">LG</span><span class="standings__name">Luminosity</span></div>
+            <div class="standings__stat"><span class="standings__label">GP</span>10</div>
+            <div class="standings__stat"><span class="standings__label">W-L</span>8-2</div>
+            <div class="standings__stat"><span class="standings__label">GD</span>+15</div>
+            <div class="standings__pts">24</div>
+          </div>
+          <div class="standings__row is-qualified">
+            <div class="standings__rank">2</div>
+            <div class="standings__team"><span class="standings__logo">CV</span><span class="standings__name">Conviction</span></div>
+            <div class="standings__stat"><span class="standings__label">GP</span>10</div>
+            <div class="standings__stat"><span class="standings__label">W-L</span>6-4</div>
+            <div class="standings__stat"><span class="standings__label">GD</span>+9</div>
+            <div class="standings__pts">20</div>
+          </div>
+          <div class="standings__row is-qualified">
+            <div class="standings__rank">3</div>
+            <div class="standings__team"><span class="standings__logo">BO</span><span class="standings__name">Blue Otter</span></div>
+            <div class="standings__stat"><span class="standings__label">GP</span>10</div>
+            <div class="standings__stat"><span class="standings__label">W-L</span>6-4</div>
+            <div class="standings__stat"><span class="standings__label">GD</span>+2</div>
+            <div class="standings__pts">19</div>
+          </div>
+          <div class="standings__row">
+            <div class="standings__rank">4</div>
+            <div class="standings__team"><span class="standings__logo">SN</span><span class="standings__name">SuperNova</span></div>
+            <div class="standings__stat"><span class="standings__label">GP</span>10</div>
+            <div class="standings__stat"><span class="standings__label">W-L</span>4-6</div>
+            <div class="standings__stat"><span class="standings__label">GD</span>-4</div>
+            <div class="standings__pts">14</div>
+          </div>
+          <div class="standings__row">
+            <div class="standings__rank">5</div>
+            <div class="standings__team"><span class="standings__logo">DZ</span><span class="standings__name">DarkZero</span></div>
+            <div class="standings__stat"><span class="standings__label">GP</span>10</div>
+            <div class="standings__stat"><span class="standings__label">W-L</span>3-7</div>
+            <div class="standings__stat"><span class="standings__label">GD</span>-9</div>
+            <div class="standings__pts">11</div>
+          </div>
+        </div>
+      </div>
+      {# Editorial counterpoint: a graded photo block #}
+      <div class="col-lg-5">
+        <div class="img-grade img-grade--4x5 h-100 rounded-3">
+          <img src="https://picsum.photos/seed/ps6tow/800/1000"
+               alt="Team of the Week: Luminosity"
+               loading="lazy"
+               width="800"
+               height="1000" />
+          <div class="img-overlay">
+            <span class="img-overlay__meta">Team of the Week</span>
+            <p class="img-overlay__title">Luminosity</p>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-6 col-lg-4">
-      <div class="card match-card card--accent h-100">
-        <div class="card-body">
-          <span class="eyebrow">Upcoming · 20:00</span>
-          <div class="match-card__teams mt-3">
-            <span class="match-card__team">FaZe</span>
-            <span class="match-card__score">vs</span>
-            <span class="match-card__team">BDS</span>
+  </section>
+  {# =================== ROSTER DER WOCHE =================== #}
+  <section class="section" aria-labelledby="roster-h">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow"><span class="slash-divider"></span>Spotlight</span>
+        <h2 id="roster-h" class="section-head__title">Roster der Woche</h2>
+      </div>
+      <a href="#" class="section-head__link">Alle Spieler →</a>
+    </div>
+    <div class="h-rail h-rail--4">
+      <article class="card player-card player-card-gold">
+        <div class="player-role badge">IGL · MVP</div>
+        <img src="https://i.pravatar.cc/400?img=33"
+             class="player-img mx-auto"
+             alt="VIPER"
+             loading="lazy" />
+        <div class="card-body text-center">
+          <h3 class="player-name">VIPER</h3>
+          <p class="player-realname">Jonas Klein <span class="tag tag--muted">GER</span></p>
+          <span class="tag tag--champion mb-3">Champion</span>
+          <div class="player-stats">
+            <div><small>Games</small><strong>240</strong></div>
+            <div><small>WR</small><strong>81%</strong></div>
+            <div><small>Role</small><strong>IGL</strong></div>
           </div>
         </div>
-      </div>
+      </article>
+      <article class="card player-card">
+        <div class="player-role badge">Entry</div>
+        <img src="https://i.pravatar.cc/400?img=12"
+             class="player-img mx-auto"
+             alt="FROSTY"
+             loading="lazy" />
+        <div class="card-body text-center">
+          <h3 class="player-name">FROSTY</h3>
+          <p class="player-realname">Max Bauer <span class="tag tag--muted">GER</span></p>
+          <span class="tag tag--green mb-3">LFT</span>
+          <div class="player-stats">
+            <div><small>Games</small><strong>190</strong></div>
+            <div><small>WR</small><strong>72%</strong></div>
+            <div><small>Role</small><strong>Entry</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card player-card player-card-red">
+        <div class="player-role badge">Support</div>
+        <img src="https://i.pravatar.cc/400?img=51"
+             class="player-img mx-auto"
+             alt="ECHO"
+             loading="lazy" />
+        <div class="card-body text-center">
+          <h3 class="player-name">ECHO</h3>
+          <p class="player-realname">Lena Vogt <span class="tag tag--muted">AUT</span></p>
+          <span class="tag tag--red mb-3">Roster</span>
+          <div class="player-stats">
+            <div><small>Games</small><strong>165</strong></div>
+            <div><small>WR</small><strong>68%</strong></div>
+            <div><small>Role</small><strong>Sup</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card player-card player-card-darkred">
+        <div class="player-role badge">Flex</div>
+        <img src="https://i.pravatar.cc/400?img=68"
+             class="player-img mx-auto"
+             alt="NOVA"
+             loading="lazy" />
+        <div class="card-body text-center">
+          <h3 class="player-name">NOVA</h3>
+          <p class="player-realname">Tim Roth <span class="tag tag--muted">SUI</span></p>
+          <span class="tag tag--green mb-3">LFT</span>
+          <div class="player-stats">
+            <div><small>Games</small><strong>120</strong></div>
+            <div><small>WR</small><strong>64%</strong></div>
+            <div><small>Role</small><strong>Flex</strong></div>
+          </div>
+        </div>
+      </article>
     </div>
-    <div class="col-md-6 col-lg-4">
-      <div class="card team-card card--hover h-100">
-        <div class="card-body">
-          <div class="team-card__logo">PS6</div>
-          <div class="team-card__name">ProStratSix</div>
-          <p class="text-muted small mb-0 mt-1">Featured roster of the week</p>
+  </section>
+  {# =================== LEAGUE AT A GLANCE + CTA =================== #}
+  <section class="section" aria-labelledby="join-h">
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="stat-tile">
+          <div class="stat-tile__value">24</div>
+          <div class="stat-tile__label">Teams</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-tile stat-tile--red">
+          <div class="stat-tile__value">132</div>
+          <div class="stat-tile__label">Matches</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-tile">
+          <div class="stat-tile__value">2</div>
+          <div class="stat-tile__label">Divisionen</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-tile stat-tile--gold">
+          <div class="stat-tile__value">€20K</div>
+          <div class="stat-tile__label">Prize Pool</div>
         </div>
       </div>
     </div>
-  </div>
+    <div class="cta-band d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+      <div>
+        <span class="eyebrow">Season 3 · Anmeldung offen</span>
+        <h2 id="join-h" class="cta-band__title mt-2 mb-0">Bereit für die Liga?</h2>
+      </div>
+      <a href="{% url 'account_signup' %}"
+         class="btn btn-primary btn-lg btn-angular align-self-start align-self-md-center">Team anmelden</a>
+    </div>
+  </section>
 {% endblock content %}

@@ -15,7 +15,7 @@
     color: #ffffff;
 
     .navbar-brand__accent {
-      color: $rs-cyan;
+      color: $rs-red;
     }
   }
 
@@ -41,7 +41,8 @@
       right: 0.5rem;
       bottom: 0.1rem;
       height: 2px;
-      background-color: $rs-cyan;
+      background-color: $rs-red;
+      box-shadow: 0 0 8px rgba($rs-red, 0.7);
     }
   }
 }

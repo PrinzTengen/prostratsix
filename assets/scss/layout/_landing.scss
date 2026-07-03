@@ -1,0 +1,154 @@
+// ==========================================================================
+// Landing page — section rhythm, image grade treatment, mobile snap rails.
+// ==========================================================================
+
+// --- Section rhythm -------------------------------------------------------
+// Deliberate vertical tiers so the page breathes (point 04).
+.section {
+  padding-block: clamp(3rem, 7vw, 5.5rem);
+
+  & + .section { border-top: 1px solid rgba($rs-border, 0.6); }
+}
+
+// Section header: eyebrow + Gochi title on the left, a "view all" on the right.
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+
+  .section-head__title {
+    font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+    line-height: 1;
+    margin: 0.35rem 0 0;
+  }
+
+  .section-head__link {
+    flex: 0 0 auto;
+    font-family: $headings-font-family;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: $rs-muted;
+    white-space: nowrap;
+    transition: color $dur-base $ease-snappy, transform $dur-base $ease-snappy;
+
+    &:hover { color: $rs-red; transform: translateX(3px); text-decoration: none; }
+  }
+}
+
+// --- Image grade — makes any photo feel commissioned (point 05) -----------
+// Greyscale base + red duotone wash + film grain + legibility gradient.
+.img-grade {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: $rs-surface;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.08) brightness(0.82);
+  }
+
+  // Red duotone tint.
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba($rs-red, 0.0) 35%, rgba($rs-bg, 0.85)),
+      rgba($rs-red, 0.55);
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  // Film grain — subtle, keeps it from looking flat/AI.
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0.10;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+.img-grade--16x9 { aspect-ratio: 16 / 9; }
+.img-grade--4x5  { aspect-ratio: 4 / 5; }
+.img-grade--square { aspect-ratio: 1 / 1; }
+
+// Caption overlaid on a graded image (team/player name in Gochi).
+.img-overlay {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 2;
+  padding: clamp(1rem, 3vw, 1.75rem);
+
+  .img-overlay__title {
+    font-family: $headings-font-family;
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    line-height: 1;
+    color: #ffffff;
+    margin: 0;
+  }
+
+  .img-overlay__meta {
+    font-family: $headings-font-family;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.75);
+  }
+}
+
+// --- Mobile snap rail — peek-scroll on phones, grid on desktop (point 07) --
+.h-rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 82%;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--bs-gutter-x, 1rem);
+  margin-inline: calc(-1 * var(--bs-gutter-x, 0.75rem));
+  padding-inline: var(--bs-gutter-x, 0.75rem);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar { display: none; }
+
+  > * { scroll-snap-align: start; }
+
+  @include media-breakpoint-up(sm) { grid-auto-columns: 46%; }
+
+  &.h-rail--2 { --rail-cols: 2; }
+  &.h-rail--4 { --rail-cols: 4; }
+
+  // Becomes a calm grid from md up — no horizontal scroll on desktop.
+  @include media-breakpoint-up(md) {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(var(--rail-cols, 3), 1fr);
+    grid-auto-columns: auto;
+    overflow: visible;
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+}
+
+// --- Hero splash media (graded), hidden on small screens ------------------
+.hero__media {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 42%;
+  z-index: 0;
+  clip-path: polygon(18% 0, 100% 0, 100% 100%, 0 100%);
+  opacity: 0.85;
+  mask-image: linear-gradient(90deg, transparent, #000 35%);
+
+  @include media-breakpoint-down(lg) { display: none; }
+}

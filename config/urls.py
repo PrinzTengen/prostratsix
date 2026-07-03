@@ -25,6 +25,10 @@ urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
     path("users/", include("prostratsix.users.urls", namespace="users")),
+    path(
+        "notifications/",
+        include("prostratsix.notifications.urls", namespace="notifications"),
+    ),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
     # ...

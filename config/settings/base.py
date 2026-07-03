@@ -77,6 +77,7 @@ THIRD_PARTY_APPS = [
     "allauth.account",
     "allauth.mfa",
     "allauth.socialaccount",
+    "allauth.socialaccount.providers.discord",
     "django_celery_beat",
     "rest_framework",
     "rest_framework.authtoken",
@@ -86,6 +87,7 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "prostratsix.users",
+    "prostratsix.notifications",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -145,6 +147,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    "prostratsix.users.middleware.ProfileCompletionMiddleware",
 ]
 
 # STATIC
@@ -191,6 +194,7 @@ TEMPLATES = [
                 "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
                 "prostratsix.users.context_processors.allauth_settings",
+                "prostratsix.notifications.context_processors.unread_notifications",
             ],
         },
     },
@@ -232,12 +236,20 @@ EMAIL_TIMEOUT = 5
 # Django Admin URL.
 ADMIN_URL = "admin/"
 # https://docs.djangoproject.com/en/dev/ref/settings/#admins
-ADMINS = ['"Nölp Max" <prostratsix@support.de>']
+ADMINS = [
+    "noelpmax@gmail.com",
+]
 # https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS
 # https://cookiecutter-django.readthedocs.io/en/latest/settings.html#other-environment-settings
 # Force the `admin` sign in process to go through the `django-allauth` workflow
 DJANGO_ADMIN_FORCE_ALLAUTH = env.bool("DJANGO_ADMIN_FORCE_ALLAUTH", default=False)
+
+DEFAULT_FROM_EMAIL = env(
+    "DJANGO_DEFAULT_FROM_EMAIL",
+    default="ProStratSix <noreply@prostratsix.com>",
+)
+SERVER_EMAIL = "support@prostratsix.com"
 
 # LOGGING
 # ------------------------------------------------------------------------------
@@ -309,9 +321,11 @@ CELERY_WORKER_HIJACK_ROOT_LOGGER = False
 # ------------------------------------------------------------------------------
 ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
 # https://docs.allauth.org/en/latest/account/configuration.html
-ACCOUNT_LOGIN_METHODS = {"username"}
+ACCOUNT_LOGIN_METHODS = {"email"}
 # https://docs.allauth.org/en/latest/account/configuration.html
-ACCOUNT_SIGNUP_FIELDS = ["email*", "username*", "password1*", "password2*"]
+# Username is intentionally omitted: allauth auto-generates a temporary username
+# from the email, the user sets a real one during the first-login profile setup.
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 # https://docs.allauth.org/en/latest/account/configuration.html
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 # https://docs.allauth.org/en/latest/account/configuration.html
@@ -322,6 +336,12 @@ ACCOUNT_FORMS = {"signup": "prostratsix.users.forms.UserSignupForm"}
 SOCIALACCOUNT_ADAPTER = "prostratsix.users.adapters.SocialAccountAdapter"
 # https://docs.allauth.org/en/latest/socialaccount/configuration.html
 SOCIALACCOUNT_FORMS = {"signup": "prostratsix.users.forms.UserSocialSignupForm"}
+# https://docs.allauth.org/en/latest/socialaccount/providers/discord.html
+SOCIALACCOUNT_PROVIDERS = {
+    "discord": {
+        "SCOPE": ["identify", "email"],
+    },
+}
 # django-compressor
 # ------------------------------------------------------------------------------
 # https://django-compressor.readthedocs.io/en/latest/quickstart/#installation

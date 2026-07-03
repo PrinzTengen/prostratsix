@@ -1,0 +1,56 @@
+{% extends "account/email/base_message.html" %}
+
+{% load i18n account %}
+
+{# djlint:off #}
+{% block preheader %}
+  {% trans "Bestätige deine E-Mail-Adresse für ProStratSix." %}
+{% endblock %}
+{% block content %}
+  {% user_display user as user_display %}
+  <h1 style="margin:0 0 14px 0;
+             font-size:24px;
+             line-height:1.1;
+             color:#ffffff;
+             text-transform:uppercase">{% trans "Bestätige deine E-Mail" %}</h1>
+  <p style="margin:0 0 14px 0;
+            font-size:15px;
+            line-height:1.6;
+            color:#c9d1d9">
+    {% blocktrans %}Hi {{ user_display }}, mit dieser Adresse wurde ein ProStratSix-Account erstellt.
+    Bestätige, dass das korrekt ist, um loszulegen.{% endblocktrans %}
+  </p>
+  <!-- bulletproof CTA -->
+  <table role="presentation"
+         cellpadding="0"
+         cellspacing="0"
+         border="0"
+         style="margin:22px 0">
+    <tr>
+      <td align="center" bgcolor="#ff2e43" style="border-radius:6px;">
+        <a href="{{ activate_url }}"
+           style="display:inline-block;
+                  padding:13px 28px;
+                  font-size:14px;
+                  font-weight:bold;
+                  letter-spacing:0.04em;
+                  text-transform:uppercase;
+                  color:#ffffff;
+                  text-decoration:none;
+                  border-radius:6px">{% trans "E-Mail bestätigen" %}</a>
+      </td>
+    </tr>
+  </table>
+  <p style="margin:0 0 6px 0;
+            font-size:12px;
+            line-height:1.6;
+            color:#8b94a3">
+    {% trans "Falls der Button nicht funktioniert, kopiere diesen Link:" %}
+    <br />
+    <a href="{{ activate_url }}" style="color:#f5b942; word-break:break-all">{{ activate_url }}</a>
+  </p>
+  <p style="margin:14px 0 0 0;
+            font-size:12px;
+            line-height:1.6;
+            color:#8b94a3">{% trans "Du hast keinen Account angelegt? Dann ignoriere diese E-Mail einfach." %}</p>
+{% endblock content %}

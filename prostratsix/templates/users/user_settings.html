@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% load i18n crispy_forms_tags %}
+
+{% block title %}
+  {% trans "Settings" %} — ProStratSix
+{% endblock title %}
+{% block content %}
+  <header class="mb-4">
+    <span class="eyebrow"><span class="slash-divider"></span>{% trans "Account" %}</span>
+    <h1 class="page-title mt-2 mb-0">{% trans "Einstellungen" %}</h1>
+  </header>
+  <div class="row g-4">
+    <div class="col-lg-3">
+      <nav class="settings-nav" aria-label="{% trans 'Einstellungen' %}">
+        <a href="#profile" class="settings-nav__item active" aria-current="page">{% trans "Profil" %}</a>
+        <a href="{% url 'account_email' %}" class="settings-nav__item">{% trans "Account & E-Mail" %}</a>
+        <a href="{% url 'account_change_password' %}" class="settings-nav__item">{% trans "Passwort" %}</a>
+        <a href="{% url 'mfa_index' %}" class="settings-nav__item">{% trans "Sicherheit / 2FA" %}</a>
+        <a href="{% url 'notifications:preferences' %}"
+           class="settings-nav__item">{% trans "Benachrichtigungen" %}</a>
+      </nav>
+    </div>
+    <div class="col-lg-9">
+      <form method="post"
+            action="{% url 'users:settings' %}"
+            enctype="multipart/form-data"
+            class="form-panel"
+            id="profile">
+        <div class="form-panel__head">
+          <h2 class="form-panel__title">{% trans "Profil" %}</h2>
+        </div>
+        <div class="form-panel__body">
+          {% csrf_token %}
+          {{ form|crispy }}
+        </div>
+        <div class="form-panel__foot">
+          <button type="submit" class="btn btn-primary btn-angular">{% trans "Änderungen speichern" %}</button>
+          <a href="{% url 'users:detail' request.user.uuid %}"
+             class="btn btn-outline-light">{% trans "Abbrechen" %}</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock content %}

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% load static i18n %}
+
+{% block title %}
+  {% trans "Spieler" %} — ProStratSix
+{% endblock title %}
+{% block content %}
+  <header class="section-head">
+    <div>
+      <span class="eyebrow"><span class="slash-divider"></span>{% trans "Community" %}</span>
+      <h1 class="section-head__title">{% trans "Spieler" %}</h1>
+    </div>
+    <span class="tag tag--muted">{{ paginator.count }} {% trans "Spieler" %}</span>
+  </header>
+  <form method="get" class="row g-2 align-items-center mb-4" role="search">
+    <div class="col-12 col-sm">
+      <label for="q" class="visually-hidden">{% trans "Suche" %}</label>
+      <div class="input-group">
+        <span class="input-group-text">
+          <svg width="16"
+               height="16"
+               viewBox="0 0 24 24"
+               fill="none"
+               stroke="currentColor"
+               stroke-width="2"
+               aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+        </span>
+        <input type="search"
+               name="q"
+               id="q"
+               value="{{ q }}"
+               class="form-control"
+               placeholder="{% trans 'Spieler oder Gamertag suchen…' %}" />
+      </div>
+    </div>
+    <div class="col-auto">
+      <div class="form-check form-switch">
+        <input class="form-check-input"
+               type="checkbox"
+               role="switch"
+               id="lft"
+               name="lft"
+               value="1"
+               {% if lft %}checked{% endif %}
+               onchange="this.form.submit()" />
+        <label class="form-check-label" for="lft">{% trans "Nur LFT" %}</label>
+      </div>
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary">{% trans "Suchen" %}</button>
+    </div>
+  </form>
+  {% if users %}
+    <div class="row g-3">
+      {% for u in users %}
+        <div class="col-12 col-md-6">
+          <div class="user-row h-100">
+            {% if u.profile.avatar %}
+              <img src="{{ u.profile.avatar.url }}"
+                   class="user-row__avatar"
+                   alt=""
+                   width="40"
+                   height="40"
+                   loading="lazy" />
+            {% else %}
+              <span class="user-row__avatar d-grid text-white">{{ u.username|slice:":2"|upper }}</span>
+            {% endif %}
+            <div class="flex-grow-1 min-w-0">
+              <div class="user-row__name">{{ u.username }}</div>
+              <div class="user-row__gamertag text-truncate">
+                {% if u.profile.r6_gamertag %}
+                  {{ u.profile.r6_gamertag }}
+                {% else %}
+                  {{ u.name|default:"—" }}
+                {% endif %}
+                {% if u.profile.position %}· {{ u.profile.position }}{% endif %}
+              </div>
+            </div>
+            {% if u.profile.is_lft %}
+              <span class="tag tag--green">{% trans "LFT" %}</span>
+            {% endif %}
+            <a href="{% url 'users:detail' u.uuid %}"
+               class="btn btn-outline-light btn-sm">{% trans "Profil" %}</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    {% if is_paginated %}
+      <nav class="mt-4" aria-label="{% trans 'Seiten' %}">
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link"
+                 href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if lft %}&lft=1{% endif %}">‹</a>
+            </li>
+          {% endif %}
+          <li class="page-item disabled">
+            <span class="page-link">{{ page_obj.number }} / {{ paginator.num_pages }}</span>
+          </li>
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link"
+                 href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if lft %}&lft=1{% endif %}">›</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+  {% else %}
+    <div class="card">
+      <div class="card-body text-center p-5">
+        <p class="font-display fs-4 text-white mb-1">{% trans "Keine Spieler gefunden" %}</p>
+        <p class="text-muted mb-3">{% trans "Passe deine Suche an oder entferne den LFT-Filter." %}</p>
+        <a href="{% url 'users:list' %}" class="btn btn-outline-light btn-sm">{% trans "Filter zurücksetzen" %}</a>
+      </div>
+    </div>
+  {% endif %}
+{% endblock content %}

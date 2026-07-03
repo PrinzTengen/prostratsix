@@ -1,0 +1,165 @@
+// ==========================================================================
+// Badges, tags & pills — roles, status flags, seeds.
+//
+// Signature treatment: subtle vertical gradient + inset top highlight
+// (catches the light like brushed metal) + a skewed leading accent that
+// echoes the hero / eyebrow slash. Status colours add a soft glow.
+// ==========================================================================
+
+.tag {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.32rem 0.6rem;
+  font-family: $headings-font-family;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: $rs-text;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0)),
+    $rs-surface-2;
+  border: 1px solid $rs-border;
+  border-radius: $border-radius-sm;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition:
+    transform $dur-fast $ease-snappy,
+    border-color $dur-base $ease-snappy,
+    box-shadow $dur-base $ease-snappy;
+
+  // Skewed leading accent — the brand "slash". Coloured by each modifier.
+  &::before {
+    content: "";
+    width: 3px;
+    height: 0.72em;
+    border-radius: 1px;
+    background: $rs-muted;
+    transform: skewX(-12deg);
+    transition: box-shadow $dur-base $ease-snappy;
+  }
+
+  // Barely-there lift; the slash catches a touch more glow.
+  &:hover {
+    transform: translateY(-1px);
+    border-color: rgba($rs-text, 0.25);
+  }
+}
+
+// --- Colour modifiers -----------------------------------------------------
+@mixin tag-color($c) {
+  color: $c;
+  border-color: rgba($c, 0.42);
+  background:
+    linear-gradient(180deg, rgba($c, 0.22), rgba($c, 0.08)),
+    $rs-surface-2;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  &::before {
+    background: $c;
+    box-shadow: 0 0 7px rgba($c, 0.7);
+  }
+
+  &:hover::before { box-shadow: 0 0 11px rgba($c, 0.9); }
+}
+
+.tag--red   { @include tag-color($rs-red); }
+.tag--gold  { @include tag-color($rs-gold); }
+.tag--green { @include tag-color($rs-green); }
+.tag--cyan  { @include tag-color($rs-cyan); }
+
+// Muted chip (e.g. country codes) — clean, no leading slash.
+.tag--muted {
+  color: $rs-muted;
+  font-size: 0.66rem;
+  padding: 0.28rem 0.5rem;
+
+  &::before { content: none; }
+}
+
+// Angular "knife-cut" variant — notched corners, no border.
+.tag--angular {
+  border: none;
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  box-shadow: none;
+}
+
+// --- Live flag (pulsing dot replaces the slash) ---------------------------
+.tag--live {
+  color: $rs-red;
+  border-color: rgba($rs-red, 0.45);
+  background:
+    linear-gradient(180deg, rgba($rs-red, 0.22), rgba($rs-red, 0.08)),
+    $rs-surface-2;
+  box-shadow: 0 0 14px -3px rgba($rs-red, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  &::before { content: none; }
+}
+
+// --- Champion / MVP — solid gold, brushed highlight + soft sheen ----------
+.tag--champion {
+  position: relative;
+  overflow: hidden;
+  color: #1a1205;
+  border-color: rgba(lighten($rs-gold, 6%), 0.9);
+  background: linear-gradient(180deg, lighten($rs-gold, 10%), $rs-gold-deep);
+  box-shadow:
+    0 3px 12px -3px rgba($rs-gold, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+
+  &::before { content: none; }
+
+  // Slow diagonal sheen passing across — premium, restrained.
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.45) 50%, transparent 60%);
+    transform: translateX(-130%);
+    animation: rs-tag-sheen 4s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  svg { position: relative; z-index: 1; }
+}
+
+@keyframes rs-tag-sheen {
+  0%        { transform: translateX(-130%); }
+  55%, 100% { transform: translateX(130%); }
+}
+
+// --- Team monogram chip (small circular logo stand-in) --------------------
+.mono {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, lighten($rs-surface-2, 5%), $rs-surface-2);
+  border: 1px solid $rs-border;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  font-family: $font-family-display;
+  font-size: 0.68rem;
+  color: $rs-text;
+}
+
+.mono--lg { width: 40px; height: 40px; font-size: 0.85rem; }
+
+// --- Numbered seed chip (bracket / standings) -----------------------------
+.seed {
+  display: inline-grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  font-family: $font-family-display;
+  font-size: 0.8rem;
+  color: $rs-text;
+  background: linear-gradient(180deg, lighten($rs-surface-2, 5%), $rs-surface-2);
+  border: 1px solid $rs-border;
+  border-radius: $border-radius-sm;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+}
