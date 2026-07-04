@@ -1,0 +1,48 @@
+# .github/workflows/pr-template.yml
+name: Auto PR Template
+
+on:
+  pull_request:
+    types: [opened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  set-template:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select and set template
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const branch = context.payload.pull_request.head.ref;
+            const currentBody = context.payload.pull_request.body || '';
+
+            // Nur setzen, wenn Body leer/whitespace ist
+            if (currentBody.trim().length > 0) {
+              console.log('PR hat schon einen Body, überspringe.');
+              return;
+            }
+
+            let templateFile;
+            if (branch.startsWith('fix/') || branch.startsWith('bugfix/')) {
+              templateFile = '.github/PULL_REQUEST_TEMPLATE/bugfix.md';
+            } else if (branch.startsWith('feature/') || branch.startsWith('feat/')) {
+              templateFile = '.github/PULL_REQUEST_TEMPLATE/feature.md';
+            } else {
+              console.log('Kein passendes Muster gefunden, überspringe.');
+              return;
+            }
+
+            const templateContent = fs.readFileSync(templateFile, 'utf8');
+
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              body: templateContent,
+            });
