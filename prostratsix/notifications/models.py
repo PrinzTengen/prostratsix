@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 class NotificationCategory(models.TextChoices):
     SECURITY = "security", _("Security")
     GENERAL = "general", _("General")
+    TEAM = "team", _("Team")
 
 
 class NotificationLevel(models.TextChoices):
@@ -68,6 +69,10 @@ class NotificationPreference(models.Model):
         default=True,
         verbose_name=_("E-mail me about general announcements"),
     )
+    email_team = models.BooleanField(
+        default=True,
+        verbose_name=_("E-mail me about team events"),
+    )
 
     def __str__(self):
         return f"{self.user}'s notification preferences"
@@ -75,4 +80,6 @@ class NotificationPreference(models.Model):
     def allows_email(self, category: str) -> bool:
         if category == NotificationCategory.SECURITY:
             return self.email_security
+        if category == NotificationCategory.TEAM:
+            return self.email_team
         return self.email_general
