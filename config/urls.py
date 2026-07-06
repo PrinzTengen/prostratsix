@@ -29,6 +29,7 @@ urlpatterns = [
         "notifications/",
         include("prostratsix.notifications.urls", namespace="notifications"),
     ),
+    path("teams/", include("prostratsix.teams.urls", namespace="teams")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
     # ...

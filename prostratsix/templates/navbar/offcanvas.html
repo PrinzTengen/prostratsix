@@ -23,6 +23,9 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'styleguide' %}">Styleguide</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'teams:list' %}">{% translate "Teams" %}</a>
+        </li>
         {% if request.user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'users:list' %}">{% translate "Players" %}</a>

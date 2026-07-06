@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% load i18n crispy_forms_tags %}
+
+{% block title %}
+  {% if team %}
+    {% trans "Edit team" %}
+  {% else %}
+    {% trans "Create team" %}
+  {% endif %}
+  — ProStratSix
+{% endblock title %}
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+      <form method="post" enctype="multipart/form-data" class="form-panel">
+        <div class="form-panel__head">
+          <div>
+            <span class="eyebrow">{% trans "Team" %}</span>
+            <h1 class="form-panel__title">
+              {% if team %}
+                {% trans "Team bearbeiten" %}
+              {% else %}
+                {% trans "Team erstellen" %}
+              {% endif %}
+            </h1>
+          </div>
+        </div>
+        <div class="form-panel__body">
+          {% csrf_token %}
+          {{ form|crispy }}
+        </div>
+        <div class="form-panel__foot">
+          <button type="submit" class="btn btn-primary btn-angular">{% trans "Speichern" %}</button>
+          {% if team %}
+            <a href="{{ team.get_absolute_url }}"
+               class="btn btn-outline-light btn-sm ms-md-auto">{% trans "Abbrechen" %}</a>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock content %}
