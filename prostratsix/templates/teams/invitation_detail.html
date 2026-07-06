@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}
+  {% trans "Team invitation" %} — ProStratSix
+{% endblock title %}
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-body p-4 text-center">
+          <span class="eyebrow">{% trans "Einladung" %}</span>
+          <h1 class="h4 my-3">
+            {% blocktrans with team=invitation.team.name %}You've been invited to {{ team }}{% endblocktrans %}
+          </h1>
+          {% if invitation.invited_by %}
+            <p class="text-muted">
+              {% blocktrans with inviter=invitation.invited_by %}Invited by {{ inviter }}.{% endblocktrans %}
+            </p>
+          {% endif %}
+          {% if invitation.status == "pending" and not invitation.is_expired %}
+            <div class="d-flex justify-content-center gap-2 mt-4">
+              <form method="post"
+                    action="{% url 'teams:invitation_accept' invitation.token %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary btn-angular">{% trans "Annehmen" %}</button>
+              </form>
+              <form method="post"
+                    action="{% url 'teams:invitation_decline' invitation.token %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-light">{% trans "Ablehnen" %}</button>
+              </form>
+            </div>
+          {% else %}
+            <p class="alert alert-secondary mt-4 mb-0">{% trans "Diese Einladung ist nicht mehr gültig." %}</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
