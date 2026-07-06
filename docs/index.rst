@@ -12,6 +12,7 @@ Welcome to ProStratSix's documentation!
 
    howto
    users
+   teams
 
 
 
