@@ -23,6 +23,7 @@ from prostratsix.leagues.models import LeagueRosterEntry
 from prostratsix.leagues.models import LeagueStatus
 from prostratsix.leagues.models import RegistrationStatus
 from prostratsix.leagues.tests.factories import LeagueFactory
+from prostratsix.leagues.tests.factories import PlayerFactory
 from prostratsix.leagues.tests.factories import team_with_players
 from prostratsix.notifications.models import Notification
 from prostratsix.notifications.models import NotificationCategory
@@ -30,7 +31,6 @@ from prostratsix.notifications.models import NotificationLevel
 from prostratsix.notifications.models import NotificationPreference
 from prostratsix.teams.models import TeamMembership
 from prostratsix.teams.models import TeamRole
-from prostratsix.users.tests.factories import UserFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -152,7 +152,7 @@ class TestRegisterTeam:
             services.register_team(league, player, team)
 
         with pytest.raises(services.LeaguePermissionError):
-            services.register_team(league, UserFactory(), team)
+            services.register_team(league, PlayerFactory(), team)
 
         assert not LeagueRegistration.objects.exists()
 
@@ -168,7 +168,7 @@ class TestRegisterTeam:
         first = team_with_players(ROSTER_SIZE)
         services.register_team(full_league, first.owner, first)
         closed_league = LeagueFactory(status=LeagueStatus.REGISTRATION_CLOSED)
-        outsider = UserFactory()
+        outsider = PlayerFactory()
 
         with pytest.raises(services.LeaguePermissionError):
             services.register_team(full_league, outsider, team)
@@ -587,7 +587,7 @@ class TestGetRegistration:
         assert services.get_team_registration(league, team) is None
 
     def test_a_user_without_a_team_has_no_registration(self, league):
-        assert services.get_user_registration(league, UserFactory()) is None
+        assert services.get_user_registration(league, PlayerFactory()) is None
 
 
 @only_postgres
