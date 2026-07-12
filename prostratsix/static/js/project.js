@@ -14,11 +14,13 @@ offcanvas.addEventListener("hidden.bs.offcanvas", () => {
 // token comes from the hidden input that {% csrf_token %} renders right after
 // <body> in base.html. The header must be spelled X-CSRFToken: that is what
 // Django's default CSRF_HEADER_NAME maps to, and a wrong name fails silently
-// with a 403.
+// with a 403. Only set the header when the token is actually there — assigning
+// an undefined value would send the literal string "undefined" instead.
 document.body.addEventListener("htmx:configRequest", (event) => {
-    event.detail.headers["X-CSRFToken"] = document.querySelector(
-        "[name=csrfmiddlewaretoken]",
-    )?.value;
+    const token = document.querySelector("[name=csrfmiddlewaretoken]")?.value;
+    if (token) {
+        event.detail.headers["X-CSRFToken"] = token;
+    }
 });
 
 // Bootstrap keeps its component instances in a plain Map keyed by DOM node (see

@@ -121,6 +121,16 @@ class TestNotificationBell:
         assert "visibilitychange" in content
         assert "notifications:refresh from:body" in content
 
+    def test_response_has_no_surrounding_whitespace(self, client, recipient):
+        """htmx inserts every node of the response, text nodes included.
+
+        Leading or trailing whitespace in the markup is left behind in the
+        navbar on every swap and piles up over a long session.
+        """
+        content = client.get(reverse("notifications:bell")).content.decode()
+
+        assert content == content.strip()
+
     def test_hides_notifications_of_other_users(self, client, recipient):
         make_notification(UserFactory(), "Not yours")
 

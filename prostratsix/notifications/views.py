@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
-from django.shortcuts import render
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import ListView
-from django.views.generic import TemplateView
 from django.views.generic import UpdateView
 from django.views.generic import View
 
@@ -17,6 +17,18 @@ from .models import Notification
 from .models import NotificationPreference
 
 BELL_TEMPLATE = "notifications/partials/bell.html"
+
+
+def render_bell(request) -> HttpResponse:
+    """Render the navbar bell partial.
+
+    The markup is stripped of surrounding whitespace on purpose: htmx swaps
+    this response with ``outerHTML`` and inserts every node of it, text nodes
+    included, while removing only the old element. A leading and a trailing
+    newline would therefore be left behind in the navbar on every swap — about
+    a thousand stray whitespace nodes over an eight-hour session.
+    """
+    return HttpResponse(render_to_string(BELL_TEMPLATE, request=request).strip())
 
 
 class NotificationListView(LoginRequiredMixin, ListView):
@@ -28,7 +40,7 @@ class NotificationListView(LoginRequiredMixin, ListView):
         return Notification.objects.for_user(self.request.user)
 
 
-class NotificationBellView(LoginRequiredMixin, TemplateView):
+class NotificationBellView(LoginRequiredMixin, View):
     """Render just the navbar bell (badge + latest notifications).
 
     htmx polls this every 30 seconds and swaps the response over the current
@@ -37,24 +49,31 @@ class NotificationBellView(LoginRequiredMixin, TemplateView):
     runs on this render like on any other.
     """
 
-    template_name = BELL_TEMPLATE
+    def get(self, request):
+        return render_bell(request)
 
 
 class BellResponseMixin:
-    """Answer htmx requests with the refreshed bell instead of a redirect.
+    """Tell an htmx request apart from a plain one.
 
-    A redirect would make htmx follow it and swap a whole page into the navbar;
-    the bell partial is what the caller actually asked to update.
+    The mark-read views answer htmx with the refreshed bell instead of a
+    redirect — htmx would follow the redirect and swap a whole page into the
+    navbar, while the bell partial is what the caller asked to update.
     """
-
-    def render_bell(self, request):
-        return render(request, BELL_TEMPLATE)
 
     def is_htmx(self, request) -> bool:
         return request.headers.get("HX-Request") == "true"
 
 
 class MarkReadView(BellResponseMixin, LoginRequiredMixin, View):
+    """Mark a single notification of the current user as read.
+
+    Answers an htmx request with the refreshed bell partial, so the badge drops
+    without a page load. A plain request keeps redirecting to the notification's
+    target, or to the list if it has none — that is the path the buttons on the
+    notification list page take.
+    """
+
     def post(self, request, pk):
         notification = get_object_or_404(
             Notification,
@@ -64,17 +83,23 @@ class MarkReadView(BellResponseMixin, LoginRequiredMixin, View):
         notification.is_read = True
         notification.save(update_fields=["is_read"])
         if self.is_htmx(request):
-            return self.render_bell(request)
+            return render_bell(request)
         if notification.url:
             return redirect(notification.url)
         return redirect("notifications:list")
 
 
 class MarkAllReadView(BellResponseMixin, LoginRequiredMixin, View):
+    """Mark every unread notification of the current user as read.
+
+    Answers an htmx request with the refreshed bell partial, a plain request
+    with a redirect to the notification list.
+    """
+
     def post(self, request):
         Notification.objects.for_user(request.user).unread().update(is_read=True)
         if self.is_htmx(request):
-            return self.render_bell(request)
+            return render_bell(request)
         return redirect("notifications:list")
 
 
