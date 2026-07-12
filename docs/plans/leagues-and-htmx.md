@@ -571,6 +571,60 @@ bekommt Fehlermeldung, erfolgreicher Redirect.
 `docs/leagues.rst` nach dem Vorbild von `docs/teams.rst`
 (`automodule:: prostratsix.leagues.services`) + Eintrag in `docs/index.rst`.
 
+## 2.10 Gate-1-Entscheidungen Phase 2 (verbindlich, nach dem Research-Brief)
+
+Der Brief `docs/plans/research/phase-2-leagues.md` gilt bei Konflikten vor diesem
+Plan. Diese fünf Punkte sind verbindlich:
+
+1. **`select_for_update()` bleibt** — Counter-Feld, `CheckConstraint` und
+   Advisory-Locks wurden geprüft und begründet verworfen (Brief §1).
+   **Aber:** Auf SQLite ist die Sperre ein **stiller No-Op**, kein Fehler. Der
+   Race-Test läuft lokal also falsch-grün. Er wird per
+   `pytest.mark.skipif(connection.vendor != "postgresql", ...)` übersprungen und
+   läuft nur in der CI (die laut `.github/workflows/ci.yml` echtes Postgres über
+   `docker-compose.local.yml` hochfährt). Der Skip-Grund muss im `reason=`-Text
+   stehen, sonst hält ihn später jemand für überflüssig und entfernt ihn.
+
+2. **`notify_many()` läuft NICHT im gesperrten Block.** Mein Plan-Snippet in 2.4
+   war falsch. Der Aufruf gehört hinter `transaction.on_commit(...)`, und
+   `notify_many()` selbst benutzt `send_notification_email.delay_on_commit(...)`
+   statt `.delay()`. Sonst hält die League-Zeile die Sperre über alle
+   Notification-Inserts und Celery-Enqueues hinweg, **und** ein Worker kann die
+   Task abarbeiten, bevor die Transaktion committet ist — die E-Mail geht dann
+   lautlos verloren (`Notification.DoesNotExist`, vom Task stillschweigend
+   geschluckt). `delay_on_commit` ist ohne Konfigurationsaufwand da: Celerys
+   Django-Fixup ist aktiv, jeder `@shared_task` im Projekt ist bereits ein
+   `DjangoTask`.
+
+3. **Konsequenz für die Tests — das ist die Falle:** `transaction.on_commit()`
+   feuert unter `pytest.mark.django_db` **nie**, weil der Test in einer
+   Transaktion läuft, die zurückgerollt wird. Ein Test, der „alle 5 Spieler
+   bekommen eine Notification" prüft, schlägt damit fehl — und die naheliegende
+   „Lösung" wäre, das `on_commit` wieder rauszunehmen. Falsch. Richtig ist die
+   pytest-django-Fixture:
+   ```python
+   def test_registration_notifies_all_players(django_capture_on_commit_callbacks, ...):
+       with django_capture_on_commit_callbacks(execute=True):
+           services.register_team(league, owner, team)
+       assert Notification.objects.filter(category=LEAGUE).count() == 5
+   ```
+
+4. **Periodische Tasks per Data-Migration** (`PeriodicTask.objects.get_or_create`),
+   **nicht** über `CELERY_BEAT_SCHEDULE` in den Settings. Der `DatabaseScheduler`
+   ruft bei jedem Beat-Neustart `update_or_create` auf die Settings-Werte auf und
+   würde damit jede Admin-Änderung (z. B. Task pausiert) lautlos zurücksetzen.
+
+5. **Idempotenz gehört in den Service, nicht in den Task.** `start_league()`
+   sperrt selbst die Zeile und prüft den Status **nach** dem Lock erneut. Der
+   5-Minuten-Task filtert nur grob vor. Sonst starten zwei überlappende Läufe die
+   Liga zweimal und alle Spieler bekommen doppelte Notifications.
+
+**Bekannter Altlast-Fund, NICHT Teil von Phase 2:** Das bestehende `notify()`
+benutzt `.delay()` und wird aus den `@transaction.atomic`-Funktionen der
+`teams`-App aufgerufen (`invite_member`, `transfer_ownership`, …) — dasselbe
+Verlorene-E-Mail-Risiko besteht dort **heute schon**. Eigenes Ticket. In Phase 2
+wird es nur nicht neu eingeführt.
+
 ## Reihenfolge der Commits
 
 Spiegelt bewusst deine Team-System-Commits:
