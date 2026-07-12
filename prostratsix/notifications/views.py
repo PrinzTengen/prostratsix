@@ -17,21 +17,6 @@ from .models import Notification
 from .models import NotificationPreference
 
 BELL_TEMPLATE = "notifications/partials/bell.html"
-BELL_ITEM_LIMIT = 5
-
-
-def bell_context(user) -> dict:
-    """Badge count and the newest notifications of ``user`` for the navbar bell.
-
-    Deliberately computed here instead of read from the
-    ``unread_notifications`` context processor, so the partial renders the same
-    way whether it is polled on its own or embedded in a full page.
-    """
-    qs = Notification.objects.for_user(user)
-    return {
-        "unread_notifications_count": qs.unread().count(),
-        "recent_notifications": list(qs[:BELL_ITEM_LIMIT]),
-    }
 
 
 class NotificationListView(LoginRequiredMixin, ListView):
@@ -47,13 +32,12 @@ class NotificationBellView(LoginRequiredMixin, TemplateView):
     """Render just the navbar bell (badge + latest notifications).
 
     htmx polls this every 30 seconds and swaps the response over the current
-    bell, so the badge stays current without a page reload.
+    bell, so the badge stays current without a page reload. The badge count and
+    the items come from the ``unread_notifications`` context processor, which
+    runs on this render like on any other.
     """
 
     template_name = BELL_TEMPLATE
-
-    def get_context_data(self, **kwargs):
-        return super().get_context_data(**bell_context(self.request.user), **kwargs)
 
 
 class BellResponseMixin:
@@ -64,7 +48,7 @@ class BellResponseMixin:
     """
 
     def render_bell(self, request):
-        return render(request, BELL_TEMPLATE, bell_context(request.user))
+        return render(request, BELL_TEMPLATE)
 
     def is_htmx(self, request) -> bool:
         return request.headers.get("HX-Request") == "true"

@@ -5,11 +5,11 @@ from allauth.account.signals import password_changed
 from django.core import mail
 from django.urls import reverse
 
+from prostratsix.notifications.context_processors import BELL_ITEM_LIMIT
 from prostratsix.notifications.models import Notification
 from prostratsix.notifications.models import NotificationCategory
 from prostratsix.notifications.models import NotificationPreference
 from prostratsix.notifications.services import notify
-from prostratsix.notifications.views import BELL_ITEM_LIMIT
 from prostratsix.users.tests.factories import UserFactory
 
 pytestmark = pytest.mark.django_db
