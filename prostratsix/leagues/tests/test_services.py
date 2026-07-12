@@ -10,9 +10,12 @@ from django.db import IntegrityError
 from django.db import connection
 from django.db import connections
 from django.db import transaction
+from django.db.models import Count
+from django.db.models import Q
 from django.utils import timezone
 
 from prostratsix.leagues import services
+from prostratsix.leagues.models import SLOTS_TAKEN_ANNOTATION
 from prostratsix.leagues.models import League
 from prostratsix.leagues.models import LeagueRegistration
 from prostratsix.leagues.models import LeagueRosterEntry
@@ -406,6 +409,48 @@ class TestStartLeague:
 
         with pytest.raises(services.LeagueError):
             services.start_league(league)
+
+
+class TestSlotsAnnotation:
+    def test_an_annotated_queryset_costs_no_count_per_league(
+        self,
+        league,
+        team,
+        django_assert_num_queries,
+    ):
+        """slots_taken, is_full and is_registration_open ride on the annotation.
+
+        Without this, a league list that shows "3 / 8" and a register button costs
+        a COUNT per row, and the annotation the admin already adds would be dead
+        weight. One query for the whole page, including the properties.
+        """
+        services.register_team(league, team.owner, team)
+        annotated = League.objects.annotate(
+            **{
+                SLOTS_TAKEN_ANNOTATION: Count(
+                    "registrations",
+                    filter=Q(registrations__status=RegistrationStatus.CONFIRMED),
+                ),
+            },
+        )
+
+        with django_assert_num_queries(1):
+            leagues = list(annotated)
+            assert [entry.slots_taken for entry in leagues] == [1]
+            assert leagues[0].slots_free == leagues[0].max_teams - 1
+            assert not leagues[0].is_full
+            assert leagues[0].is_registration_open
+
+    def test_without_the_annotation_the_league_counts_for_itself(self, league, team):
+        """The fallback still has to work — the services rely on it.
+
+        register_team() re-reads the league with select_for_update().get(), which
+        yields an unannotated row on purpose: the capacity check after the lock has
+        to count for real, not reuse a number from before the lock.
+        """
+        services.register_team(league, team.owner, team)
+
+        assert League.objects.get(pk=league.pk).slots_taken == 1
 
 
 class TestRegistrationWindow:

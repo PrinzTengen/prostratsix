@@ -12,6 +12,12 @@ from prostratsix.teams.models import TeamRole
 
 DEFAULT_MIN_ROSTER_SIZE = 5
 
+# Annotate a League queryset with this name to feed League.slots_taken (and with
+# it slots_free / is_full / is_registration_open) instead of letting every league
+# count its registrations itself. See LeagueAdmin.get_queryset() for the shape of
+# the annotation.
+SLOTS_TAKEN_ANNOTATION = "confirmed_count"
+
 
 def league_image_upload_path(instance, filename):
     return f"leagues/league_{instance.uuid}/{filename}"
@@ -102,6 +108,21 @@ class League(models.Model):
 
     @property
     def slots_taken(self) -> int:
+        """Confirmed registrations, from the annotation if the queryset has one.
+
+        ``slots_free``, ``is_full`` and ``is_registration_open`` all go through
+        here, so a list view that annotates ``confirmed_count`` (see
+        SLOTS_TAKEN_ANNOTATION) pays one query for the page instead of one COUNT
+        per league.
+
+        The services never see the annotation: they re-read the league through
+        ``select_for_update().get()``, which returns a plain, unannotated row — so
+        the capacity check after the lock always counts for real and can never act
+        on a number that was computed before the lock was taken.
+        """
+        annotated = getattr(self, SLOTS_TAKEN_ANNOTATION, None)
+        if annotated is not None:
+            return annotated
         return self.confirmed_registrations.count()
 
     @property

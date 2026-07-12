@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
 from . import services
+from .models import SLOTS_TAKEN_ANNOTATION
 from .models import League
 from .models import LeagueRegistration
 from .models import LeagueRosterEntry
@@ -66,21 +67,24 @@ class LeagueAdmin(admin.ModelAdmin):
     actions = ["open_registration", "close_registration", "start_league"]
 
     def get_queryset(self, request):
-        # slots_taken is a property and would run one COUNT per row otherwise.
+        # League.slots_taken picks this annotation up, so the changelist costs one
+        # query instead of one COUNT per row.
         return (
             super()
             .get_queryset(request)
             .annotate(
-                confirmed_count=Count(
-                    "registrations",
-                    filter=Q(registrations__status=RegistrationStatus.CONFIRMED),
-                ),
+                **{
+                    SLOTS_TAKEN_ANNOTATION: Count(
+                        "registrations",
+                        filter=Q(registrations__status=RegistrationStatus.CONFIRMED),
+                    ),
+                },
             )
         )
 
-    @admin.display(description=_("Slots"), ordering="confirmed_count")
+    @admin.display(description=_("Slots"), ordering=SLOTS_TAKEN_ANNOTATION)
     def slots_display(self, obj) -> str:
-        return f"{obj.confirmed_count} / {obj.max_teams}"
+        return f"{obj.slots_taken} / {obj.max_teams}"
 
     @admin.action(description=_("Open registration for the selected leagues"))
     def open_registration(self, request, queryset):
