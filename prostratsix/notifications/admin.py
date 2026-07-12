@@ -19,5 +19,11 @@ class NotificationAdmin(admin.ModelAdmin):
 
 @admin.register(NotificationPreference)
 class NotificationPreferenceAdmin(admin.ModelAdmin):
-    list_display = ["user", "email_security", "email_general", "email_team"]
+    list_display = [
+        "user",
+        "email_security",
+        "email_general",
+        "email_team",
+        "email_league",
+    ]
     search_fields = ["user__username", "user__email"]
