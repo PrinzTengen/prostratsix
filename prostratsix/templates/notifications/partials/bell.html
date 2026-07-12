@@ -1,14 +1,16 @@
 {% load i18n %}
 
 {% url 'notifications:list' as notifications_url %}
-{# Swaps itself (outerHTML), so every response carries the hx-trigger below
-   again and the polling chain never breaks. Do not drop these attributes.
+{% comment %}
+  Swaps itself (outerHTML), so every response carries the hx-trigger below
+  again and the polling chain never breaks. Do not drop these attributes.
 
-   Both the poll and the visibilitychange trigger skip the swap while the
-   dropdown is open — replacing the <li> would close the menu under the cursor
-   of a user who is reading it. `notifications:refresh` is deliberately NOT
-   guarded: it fires right after an action of this very user (a league sign-up,
-   say), so the menu cannot be open, and an explicit refresh must win. #}
+  Both the poll and the visibilitychange trigger skip the swap while the
+  dropdown is open — replacing the <li> would close the menu under the cursor
+  of a user who is reading it. notifications:refresh is deliberately NOT
+  guarded: it fires right after an action of this very user (a league sign-up,
+  say), so the menu cannot be open, and an explicit refresh must win.
+{% endcomment %}
 <li class="nav-item dropdown"
     id="notification-bell"
     hx-get="{% url 'notifications:bell' %}"
@@ -34,8 +36,10 @@
         <a class="dropdown-item {% if not notification.is_read %}fw-bold{% endif %}"
            href="{% firstof notification.url notifications_url %}">{{ notification.title }}</a>
         {% if not notification.is_read %}
-          {# Marks the notification read and swaps the whole bell back in, so
-             the badge drops without leaving the page. #}
+          {% comment %}
+            Marks the notification read and swaps the whole bell back in, so
+            the badge drops without leaving the page.
+          {% endcomment %}
           <button type="button"
                   class="btn btn-link btn-sm text-decoration-none px-2"
                   hx-post="{% url 'notifications:mark_read' notification.pk %}"
