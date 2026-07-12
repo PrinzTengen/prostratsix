@@ -102,6 +102,25 @@ class TestNotificationBell:
         # Newest first — the two oldest ones fall off the end.
         assert "Notification 0" not in response.content.decode()
 
+    def test_response_carries_the_polling_attributes(self, client, recipient):
+        """Guards the polling chain, which fails silently when it breaks.
+
+        The bell replaces itself (outerHTML), so every single response has to
+        bring the htmx attributes along again. Render the trigger only on the
+        first load — or wrap the <li> in an {% if %} — and polling stops dead
+        after the first swap, with nothing in the console and every other test
+        in this file still green.
+        """
+        response = client.get(reverse("notifications:bell"))
+
+        content = response.content.decode()
+        assert f'hx-get="{reverse("notifications:bell")}"' in content
+        assert 'hx-swap="outerHTML"' in content
+        assert "hx-trigger=" in content
+        assert "every 30s" in content
+        assert "visibilitychange" in content
+        assert "notifications:refresh from:body" in content
+
     def test_hides_notifications_of_other_users(self, client, recipient):
         make_notification(UserFactory(), "Not yours")
 
