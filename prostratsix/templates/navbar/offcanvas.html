@@ -30,15 +30,7 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'users:list' %}">{% translate "Players" %}</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link position-relative"
-               href="{% url 'notifications:list' %}">
-              {% translate "Notifications" %}
-              {% if unread_notifications_count %}
-                <span class="badge text-bg-danger rounded-pill">{{ unread_notifications_count }}</span>
-              {% endif %}
-            </a>
-          </li>
+          {% include "notifications/partials/bell.html" %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'users:detail' request.user.uuid %}">{% translate "My Profile" %}</a>
           </li>

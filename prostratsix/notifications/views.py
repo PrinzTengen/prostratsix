@@ -7,12 +7,30 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import ListView
+from django.views.generic import TemplateView
 from django.views.generic import UpdateView
 from django.views.generic import View
 
 from .forms import NotificationPreferenceForm
 from .models import Notification
 from .models import NotificationPreference
+
+BELL_TEMPLATE = "notifications/partials/bell.html"
+BELL_ITEM_LIMIT = 5
+
+
+def bell_context(user) -> dict:
+    """Badge count and the newest notifications of ``user`` for the navbar bell.
+
+    Deliberately computed here instead of read from the
+    ``unread_notifications`` context processor, so the partial renders the same
+    way whether it is polled on its own or embedded in a full page.
+    """
+    qs = Notification.objects.for_user(user)
+    return {
+        "unread_notifications_count": qs.unread().count(),
+        "recent_notifications": list(qs[:BELL_ITEM_LIMIT]),
+    }
 
 
 class NotificationListView(LoginRequiredMixin, ListView):
@@ -22,6 +40,19 @@ class NotificationListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Notification.objects.for_user(self.request.user)
+
+
+class NotificationBellView(LoginRequiredMixin, TemplateView):
+    """Render just the navbar bell (badge + latest notifications).
+
+    htmx polls this every 30 seconds and swaps the response over the current
+    bell, so the badge stays current without a page reload.
+    """
+
+    template_name = BELL_TEMPLATE
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(**bell_context(self.request.user), **kwargs)
 
 
 class MarkReadView(LoginRequiredMixin, View):

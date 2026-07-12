@@ -1,0 +1,63 @@
+{% load i18n %}
+
+{% url 'notifications:list' as notifications_url %}
+{# Swaps itself (outerHTML), so every response carries the hx-trigger below
+   again and the polling chain never breaks. Do not drop these attributes. #}
+<li class="nav-item dropdown"
+    id="notification-bell"
+    hx-get="{% url 'notifications:bell' %}"
+    hx-trigger="every 30s [document.visibilityState === 'visible' && !document.querySelector('#notification-bell .dropdown-menu.show')], visibilitychange[document.visibilityState === 'visible'] from:document, notifications:refresh from:body"
+    hx-swap="outerHTML">
+  <a class="nav-link position-relative dropdown-toggle"
+     href="{{ notifications_url }}"
+     data-bs-toggle="dropdown"
+     aria-expanded="false">
+    {% translate "Notifications" %}
+    {% if unread_notifications_count %}
+      <span class="badge text-bg-danger rounded-pill">
+        {{ unread_notifications_count }}
+        <span class="visually-hidden">
+          {% blocktranslate count counter=unread_notifications_count %}unread notification{% plural %}unread notifications{% endblocktranslate %}
+        </span>
+      </span>
+    {% endif %}
+  </a>
+  <ul class="dropdown-menu dropdown-menu-end">
+    {% for notification in recent_notifications %}
+      <li class="d-flex align-items-center">
+        <a class="dropdown-item {% if not notification.is_read %}fw-bold{% endif %}"
+           href="{% firstof notification.url notifications_url %}">{{ notification.title }}</a>
+        {% if not notification.is_read %}
+          {# Marks the notification read and swaps the whole bell back in, so
+             the badge drops without leaving the page. #}
+          <button type="button"
+                  class="btn btn-link btn-sm text-decoration-none px-2"
+                  hx-post="{% url 'notifications:mark_read' notification.pk %}"
+                  hx-target="#notification-bell"
+                  hx-swap="outerHTML"
+                  title="{% translate 'Mark as read' %}"
+                  aria-label="{% translate 'Mark as read' %}">✓</button>
+        {% endif %}
+      </li>
+    {% empty %}
+      <li>
+        <span class="dropdown-item-text text-muted">{% translate "No notifications" %}</span>
+      </li>
+    {% endfor %}
+    <li>
+      <hr class="dropdown-divider" />
+    </li>
+    {% if unread_notifications_count %}
+      <li>
+        <button type="button"
+                class="dropdown-item"
+                hx-post="{% url 'notifications:mark_all_read' %}"
+                hx-target="#notification-bell"
+                hx-swap="outerHTML">{% translate "Mark all as read" %}</button>
+      </li>
+    {% endif %}
+    <li>
+      <a class="dropdown-item" href="{{ notifications_url }}">{% translate "Show all" %}</a>
+    </li>
+  </ul>
+</li>
