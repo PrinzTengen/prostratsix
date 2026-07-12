@@ -47,10 +47,11 @@ with **Gulp + dart-sass** (no Ruby/Sass server required).
 - SCSS sources live in `assets/scss/` (`main.scss` + `abstracts/`, `base/`,
   `components/`, `layout/`). Bootstrap's own SCSS is pulled from `node_modules`.
 - The compiled bundle `prostratsix/static/css/project.css` and the self-hosted
-  `prostratsix/static/js/vendors.js` (Bootstrap bundle) are **generated, not
-  committed**. Run a build before serving.
+  `prostratsix/static/js/vendors.js` (Bootstrap bundle) and
+  `prostratsix/static/js/htmx.js` (htmx) are **generated, not committed**. Run a
+  build before serving.
 
-First-time setup (downloads Bootstrap and the build tooling):
+First-time setup (downloads Bootstrap, htmx and the build tooling):
 
     npm install
 
