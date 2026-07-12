@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import ListView
@@ -55,7 +56,21 @@ class NotificationBellView(LoginRequiredMixin, TemplateView):
         return super().get_context_data(**bell_context(self.request.user), **kwargs)
 
 
-class MarkReadView(LoginRequiredMixin, View):
+class BellResponseMixin:
+    """Answer htmx requests with the refreshed bell instead of a redirect.
+
+    A redirect would make htmx follow it and swap a whole page into the navbar;
+    the bell partial is what the caller actually asked to update.
+    """
+
+    def render_bell(self, request):
+        return render(request, BELL_TEMPLATE, bell_context(request.user))
+
+    def is_htmx(self, request) -> bool:
+        return request.headers.get("HX-Request") == "true"
+
+
+class MarkReadView(BellResponseMixin, LoginRequiredMixin, View):
     def post(self, request, pk):
         notification = get_object_or_404(
             Notification,
@@ -64,14 +79,18 @@ class MarkReadView(LoginRequiredMixin, View):
         )
         notification.is_read = True
         notification.save(update_fields=["is_read"])
+        if self.is_htmx(request):
+            return self.render_bell(request)
         if notification.url:
             return redirect(notification.url)
         return redirect("notifications:list")
 
 
-class MarkAllReadView(LoginRequiredMixin, View):
+class MarkAllReadView(BellResponseMixin, LoginRequiredMixin, View):
     def post(self, request):
         Notification.objects.for_user(request.user).unread().update(is_read=True)
+        if self.is_htmx(request):
+            return self.render_bell(request)
         return redirect("notifications:list")
 
 
