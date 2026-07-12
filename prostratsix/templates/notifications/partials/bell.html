@@ -2,11 +2,17 @@
 
 {% url 'notifications:list' as notifications_url %}
 {# Swaps itself (outerHTML), so every response carries the hx-trigger below
-   again and the polling chain never breaks. Do not drop these attributes. #}
+   again and the polling chain never breaks. Do not drop these attributes.
+
+   Both the poll and the visibilitychange trigger skip the swap while the
+   dropdown is open — replacing the <li> would close the menu under the cursor
+   of a user who is reading it. `notifications:refresh` is deliberately NOT
+   guarded: it fires right after an action of this very user (a league sign-up,
+   say), so the menu cannot be open, and an explicit refresh must win. #}
 <li class="nav-item dropdown"
     id="notification-bell"
     hx-get="{% url 'notifications:bell' %}"
-    hx-trigger="every 30s [document.visibilityState === 'visible' && !document.querySelector('#notification-bell .dropdown-menu.show')], visibilitychange[document.visibilityState === 'visible'] from:document, notifications:refresh from:body"
+    hx-trigger="every 30s [document.visibilityState === 'visible' && !document.querySelector('#notification-bell .dropdown-menu.show')], visibilitychange[document.visibilityState === 'visible' && !document.querySelector('#notification-bell .dropdown-menu.show')] from:document, notifications:refresh from:body"
     hx-swap="outerHTML">
   <a class="nav-link position-relative dropdown-toggle"
      href="{{ notifications_url }}"
