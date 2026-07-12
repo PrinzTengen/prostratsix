@@ -81,6 +81,17 @@ function vendorScripts() {
     .pipe(dest(paths.js));
 }
 
+// htmx ships as a single UMD file (like the Bootstrap bundle above); copy it as
+// its own static file so it stays self-hosted and independently cacheable and
+// upgradable from the Bootstrap bundle.
+function htmxScript() {
+  return src(`${paths.nodeModules}/htmx.org/dist/htmx.min.js`, {
+    encoding: false,
+  })
+    .pipe(rename('htmx.js'))
+    .pipe(dest(paths.js));
+}
+
 // Live-reload dev server. Proxies the running Django app.
 function serve() {
   browserSync.init({
@@ -94,11 +105,12 @@ function serve() {
   watch(`${paths.templates}/**/*.html`).on('change', browserSync.reload);
 }
 
-const build = series(parallel(styles, vendorScripts));
+const build = series(parallel(styles, vendorScripts, htmxScript));
 const dev = series(build, serve);
 
 exports.styles = styles;
 exports.vendorScripts = vendorScripts;
+exports.htmxScript = htmxScript;
 exports.build = build;
 exports.serve = serve;
 exports.default = dev;

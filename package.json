@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
-    "bootstrap": "^5.3.3"
+    "bootstrap": "^5.3.3",
+    "htmx.org": "^2.0.10"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.19",

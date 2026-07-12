@@ -44,6 +44,10 @@
     {% block javascript %}
       <!-- Bootstrap bundle (Popper included), self-hosted via Gulp -->
       <script defer src="{% static 'js/vendors.js' %}"></script>
+      <!-- htmx, self-hosted via Gulp (see the htmxScript task in gulpfile.js).
+           Deferred like the other scripts, so it runs before project.js, which
+           registers the htmx event handlers. -->
+      <script defer src="{% static 'js/htmx.js' %}"></script>
       <!-- Your stuff: Third-party javascript libraries go here -->
       <!-- place project specific Javascript in this file -->
       {% compress js %}
@@ -52,6 +56,9 @@
     {% endblock javascript %}
   </head>
   <body class="layout {% block bodyclass %}{% endblock bodyclass %}">
+    {# The token htmx sends as X-CSRFToken (see project.js). CSRF_COOKIE_HTTPONLY
+       is on, so JavaScript cannot read the cookie — it needs this hidden input. #}
+    {% csrf_token %}
     {% block navbar %}
       {% include 'navbar/main_navbar.html' %}
       {% include "navbar/offcanvas.html" %}

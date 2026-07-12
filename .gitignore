@@ -57,6 +57,7 @@ staticfiles/
 prostratsix/static/css/project.css
 prostratsix/static/css/project.css.map
 prostratsix/static/js/vendors.js
+prostratsix/static/js/htmx.js
 
 # Sphinx documentation
 docs/_build/
