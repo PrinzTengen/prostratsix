@@ -35,6 +35,13 @@ def notify(  # noqa: PLR0913
             # Imported here to avoid importing Celery at app-load time.
             from .tasks import send_notification_email  # noqa: PLC0415
 
+            # Known debt, not an oversight: this should be delay_on_commit() too,
+            # exactly as in notify_many() below, which spells out the argument.
+            # notify() is called from teams' @transaction.atomic services, so the
+            # same lost-e-mail risk exists here today. Switching it means moving
+            # every existing caller's tests onto django_capture_on_commit_callbacks
+            # — own ticket, deliberately deferred. What this is NOT is a licence to
+            # "unify" notify_many() back onto delay().
             send_notification_email.delay(notification.id)
 
     return notification
@@ -79,7 +86,9 @@ def notify_many(  # noqa: PLR0913
     callers run inside ``transaction.atomic()``, and a Celery worker picking the
     task up before that transaction commits would not see the notification row
     yet. ``send_notification_email`` swallows the resulting ``DoesNotExist``, so
-    the e-mail would go missing without a trace.
+    the e-mail would go missing without a trace. :func:`notify` above still uses
+    ``delay()`` and carries the same latent risk — that is known debt on its own
+    ticket, not a sign that this one here is wrong.
     """
     users = list(users)
     if not users:
