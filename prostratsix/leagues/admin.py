@@ -12,16 +12,40 @@ from .models import RegistrationStatus
 
 
 class LeagueRegistrationInline(admin.TabularInline):
+    """Shows the registrations of a league. Read-only, and that is the point.
+
+    An editable inline is a way around the whole service layer: it can create a
+    registration with no roster snapshot, no capacity check and no notification,
+    or flip a status without telling anybody. Such a registration still counts
+    towards ``slots_taken``, but ``start_league()`` walks the roster snapshots —
+    so not one player of that team would ever hear that the league started.
+
+    Registrations are made and withdrawn through the services (the frontend and
+    the league actions), never by hand here.
+    """
+
     model = LeagueRegistration
     extra = 0
-    autocomplete_fields = ["team", "registered_by"]
-    readonly_fields = ["created_at"]
+    can_delete = False
+    show_change_link = True
+    fields = ["team", "status", "registered_by", "created_at"]
+    readonly_fields = fields
+
+    def has_add_permission(self, request, obj) -> bool:
+        return False
 
 
 class LeagueRosterEntryInline(admin.TabularInline):
+    """The frozen roster of a registration — history, not an editing surface."""
+
     model = LeagueRosterEntry
     extra = 0
-    autocomplete_fields = ["user"]
+    can_delete = False
+    fields = ["user", "role"]
+    readonly_fields = fields
+
+    def has_add_permission(self, request, obj) -> bool:
+        return False
 
 
 @admin.register(League)
@@ -121,8 +145,20 @@ class LeagueAdmin(admin.ModelAdmin):
 
 @admin.register(LeagueRegistration)
 class LeagueRegistrationAdmin(admin.ModelAdmin):
+    """Browse registrations and their rosters — same read-only rule as the inline.
+
+    Adding or editing one here would bypass the services just as the inline would,
+    only from a different page. Deleting stays possible: that is a real cleanup
+    operation and it takes the roster snapshot with it, rather than leaving a
+    registration behind that nobody is notified about.
+    """
+
     list_display = ["team", "league", "status", "registered_by", "created_at"]
     list_filter = ["status", "league"]
     search_fields = ["team__name", "team__tag", "league__name"]
-    autocomplete_fields = ["team", "league", "registered_by"]
+    fields = ["league", "team", "status", "registered_by", "created_at"]
+    readonly_fields = fields
     inlines = [LeagueRosterEntryInline]
+
+    def has_add_permission(self, request) -> bool:
+        return False
