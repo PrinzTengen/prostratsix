@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import threading
+import time
 from datetime import timedelta
 
 import pytest
@@ -12,6 +13,7 @@ from django.db import transaction
 from django.utils import timezone
 
 from prostratsix.leagues import services
+from prostratsix.leagues.models import League
 from prostratsix.leagues.models import LeagueRegistration
 from prostratsix.leagues.models import LeagueRosterEntry
 from prostratsix.leagues.models import LeagueStatus
@@ -28,6 +30,13 @@ from prostratsix.users.tests.factories import UserFactory
 pytestmark = pytest.mark.django_db
 
 ROSTER_SIZE = 5
+
+# Nothing in the race waits on wall-clock time except the handover: the window the
+# loser gets to reach the row lock while the winner is frozen. Generous, because it
+# only ever costs this one test half a second, and too short would mean the loser
+# does its capacity check after the winner committed — a green test with no lock.
+RACE_HANDOVER_SECONDS = 0.5
+RACE_TIMEOUT_SECONDS = 10
 
 # select_for_update() does not raise on SQLite — it is compiled away into a plain
 # SELECT (has_select_for_update = False, see the Django SQL compiler). A race test
@@ -448,7 +457,7 @@ class TestGetRegistration:
 
 
 @only_postgres
-def test_two_teams_racing_for_the_last_slot(transactional_db):
+def test_two_teams_racing_for_the_last_slot(transactional_db, monkeypatch):
     """Exactly one of two simultaneous registrations may win the last slot.
 
     Without the select_for_update() lock in register_team() both threads read
@@ -456,24 +465,66 @@ def test_two_teams_racing_for_the_last_slot(transactional_db):
     overbooked. A UniqueConstraint cannot catch that: this is about a count, not a
     duplicate row.
 
+    The race is choreographed, not hoped for. Starting both threads at a barrier
+    and letting them run is a *probabilistic* detector: the critical section is
+    about a millisecond long, and a thread that happens to lag two statements
+    behind reads slots_taken == 1, raises LeagueFullError and turns the test green
+    even though the lock is gone. So instead the winner is frozen with a monkeypatch
+    *after* it has counted the slots and *before* it inserts:
+
+    * with the lock, the loser is still stuck on ``SELECT ... FOR UPDATE`` at that
+      point, and once the winner commits it counts 1 and is rejected;
+    * without the lock, the loser sails past its own count (which is still 0,
+      nothing is committed yet), inserts, and the league ends up with two teams in
+      one slot — the assertions below fail.
+
+    The freeze has to sit after the count, not directly after the ``FOR UPDATE``:
+    freeze it earlier and an unlocked winner would do its counting *after* the loser
+    committed, see 1, and raise LeagueFullError itself — green again, for the wrong
+    reason.
+
     transactional_db, not django_db: the plain db fixture wraps the test in a
-    transaction that is never committed, so the second thread would block forever
-    on a lock the first one never releases. Threads also each need their own
-    connection — Django's are thread-local, and they have to be closed again or the
-    flush at the end of the test hangs on them.
+    transaction that is never committed, so the second thread would block forever on
+    a lock the first one never releases. Threads also each need their own connection
+    — Django's are thread-local. It is opened before the choreography starts (the
+    TCP handshake must not be part of the race) and closed again afterwards, or the
+    flush at the end of the test hangs on it.
+
+    NOT YET RUN AGAINST POSTGRESQL. Neither Docker nor a local PostgreSQL was
+    available on the development machine, and on SQLite the test is skipped for the
+    reason above. Its choreography was verified against SQLite, which behaves
+    exactly like the missing lock (see the commit message), where it fails as it
+    should. The first CI run is what confirms it passes with the lock in place —
+    treat a failure there as a real finding about this test, not about the service.
     """
     league = LeagueFactory(max_teams=1)
     team_a = team_with_players(ROSTER_SIZE)
     team_b = team_with_players(ROSTER_SIZE)
-    barrier = threading.Barrier(2)
-    results = {}
+
+    counted = threading.Event()
+    resume = threading.Event()
+    frozen: list[bool] = []
+    original_is_full = League.is_full.fget
+
+    def is_full_then_freeze(self) -> bool:
+        # Runs inside register_team(), under the row lock: the COUNT has happened,
+        # the INSERT has not. Only the first caller is frozen — the second one has
+        # to be free to run into the lock.
+        full = original_is_full(self)
+        if not frozen:
+            frozen.append(True)
+            counted.set()
+            resume.wait(timeout=RACE_TIMEOUT_SECONDS)
+        return full
+
+    monkeypatch.setattr(League, "is_full", property(is_full_then_freeze))
+
+    results: dict[str, str] = {}
 
     def register(team, key):
+        # Connect before the race, not during it.
+        connections["default"].ensure_connection()
         try:
-            # Both threads enter register_team() as simultaneously as the OS
-            # allows — a sleep would just be a guess that is too short on a slow
-            # CI runner.
-            barrier.wait()
             services.register_team(league, team.owner, team)
         except services.LeagueError as error:
             results[key] = type(error).__name__
@@ -482,21 +533,28 @@ def test_two_teams_racing_for_the_last_slot(transactional_db):
         finally:
             connections.close_all()
 
-    threads = [
-        threading.Thread(target=register, args=(team_a, "a")),
-        threading.Thread(target=register, args=(team_b, "b")),
-    ]
-    for thread in threads:
-        thread.start()
-    for thread in threads:
-        thread.join(timeout=30)
+    winner = threading.Thread(target=register, args=(team_a, "a"))
+    winner.start()
+    assert counted.wait(timeout=RACE_TIMEOUT_SECONDS), (
+        "the first thread never reached the capacity check"
+    )
 
-    outcomes = sorted(results.values())
-    assert outcomes == ["LeagueFullError", "registered"]
-    assert league.slots_taken == 1
+    loser = threading.Thread(target=register, args=(team_b, "b"))
+    loser.start()
+    # Long enough for the loser to reach its own SELECT ... FOR UPDATE and block
+    # there. Without the lock it gets all the way past its capacity check in this
+    # window, which is exactly the overbooking this test is here to catch.
+    time.sleep(RACE_HANDOVER_SECONDS)
+    resume.set()
+
+    for thread in (winner, loser):
+        thread.join(timeout=RACE_TIMEOUT_SECONDS)
+
+    assert sorted(results.values()) == ["LeagueFullError", "registered"]
     assert (
         LeagueRegistration.objects.filter(
             status=RegistrationStatus.CONFIRMED,
         ).count()
         == 1
     )
+    assert league.slots_taken == 1
