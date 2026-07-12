@@ -12,6 +12,7 @@ from django.db import connections
 from django.db import transaction
 from django.db.models import Count
 from django.db.models import Q
+from django.test.utils import CaptureQueriesContext
 from django.utils import timezone
 
 from prostratsix.leagues import services
@@ -27,6 +28,7 @@ from prostratsix.notifications.models import Notification
 from prostratsix.notifications.models import NotificationCategory
 from prostratsix.notifications.models import NotificationLevel
 from prostratsix.notifications.models import NotificationPreference
+from prostratsix.teams.models import TeamMembership
 from prostratsix.teams.models import TeamRole
 from prostratsix.users.tests.factories import UserFactory
 
@@ -307,6 +309,28 @@ class TestWithdrawTeam:
 
         assert league.slots_taken == 1
 
+    @pytest.mark.parametrize(
+        "status",
+        [LeagueStatus.FINISHED, LeagueStatus.CANCELLED],
+    )
+    def test_cannot_withdraw_from_a_league_that_is_over(self, league, team, status):
+        """The docstring of withdraw_team() promises this, so it gets a test.
+
+        Running was covered, finished and cancelled were not — the branch could be
+        deleted and every other test stayed green, leaving a team free to erase
+        itself from a season that is already in the books.
+        """
+        services.register_team(league, team.owner, team)
+        league.status = status
+        league.save(update_fields=["status"])
+
+        with pytest.raises(services.LeagueError) as error:
+            services.withdraw_team(league, team.owner, team)
+
+        # Not a NotRegisteredError that happens to be a LeagueError as well.
+        assert type(error.value) is services.LeagueError
+        assert services.get_team_registration(league, team) is not None
+
 
 class TestEmailPreferences:
     def test_the_league_opt_out_silences_the_mail_not_the_notification(
@@ -403,6 +427,40 @@ class TestStartLeague:
 
         assert league_notifications().count() == ROSTER_SIZE
 
+    def test_a_player_on_two_rosters_is_notified_once(
+        self,
+        league,
+        django_capture_on_commit_callbacks,
+    ):
+        """A player who changed teams mid-season sits on two snapshots.
+
+        The snapshots are frozen, so leaving a team does not take the player off
+        its roster. Both his old and his new team are in the league, and he must
+        still be told exactly once that it started.
+        """
+        old_team = team_with_players(ROSTER_SIZE)
+        services.register_team(league, old_team.owner, old_team)
+        new_team = team_with_players(ROSTER_SIZE)
+
+        switcher = old_team.memberships.filter(role=TeamRole.PLAYER).first().user
+        switcher.team_membership.delete()
+        TeamMembership.objects.create(
+            team=new_team,
+            user=switcher,
+            role=TeamRole.PLAYER,
+        )
+        services.register_team(league, new_team.owner, new_team)
+        Notification.objects.all().delete()
+
+        with django_capture_on_commit_callbacks(execute=True):
+            services.start_league(league)
+
+        # Proves the setup really produced the double entry, i.e. the test is not
+        # vacuous: 5 on the old roster + 6 on the new one, the switcher on both.
+        assert LeagueRosterEntry.objects.filter(user=switcher).count() == 2
+        assert league_notifications(recipient=switcher).count() == 1
+        assert league_notifications().count() == 2 * ROSTER_SIZE
+
     def test_a_finished_league_cannot_be_started(self, league):
         league.status = LeagueStatus.FINISHED
         league.save(update_fields=["status"])
@@ -470,16 +528,47 @@ class TestRegistrationWindow:
         assert league.status == LeagueStatus.REGISTRATION_CLOSED
         assert not league.is_registration_open
 
-    def test_reopening_an_already_open_league_is_a_no_op(self, league):
-        assert services.open_registration(league).status == (
-            LeagueStatus.REGISTRATION_OPEN
-        )
+    def test_reopening_an_already_open_league_writes_nothing(self, league):
+        """Idempotency, and this time the test can actually see it.
+
+        The previous version only asserted the status that came back — which is
+        REGISTRATION_OPEN whether the early return is there or not, so it stayed
+        green with the idempotency deleted. What has to hold is that a no-op does
+        not touch the row.
+        """
+        with CaptureQueriesContext(connection) as captured:
+            result = services.open_registration(league)
+
+        assert result.status == LeagueStatus.REGISTRATION_OPEN
+        updates = [
+            query["sql"]
+            for query in captured.captured_queries
+            if query["sql"].lstrip().upper().startswith("UPDATE")
+        ]
+        assert updates == []
 
     def test_a_running_league_cannot_reopen_its_registration(self, league):
         services.start_league(league)
 
         with pytest.raises(services.LeagueError):
             services.open_registration(league)
+
+    @pytest.mark.parametrize(
+        "status",
+        [LeagueStatus.FINISHED, LeagueStatus.CANCELLED],
+    )
+    def test_a_league_that_is_over_cannot_change_its_registration(self, league, status):
+        """Same untested branch as in withdraw_team(), in _transition() this time."""
+        league.status = status
+        league.save(update_fields=["status"])
+
+        with pytest.raises(services.LeagueError):
+            services.open_registration(league)
+        with pytest.raises(services.LeagueError):
+            services.close_registration(league)
+
+        league.refresh_from_db()
+        assert league.status == status
 
 
 class TestGetRegistration:
