@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from unittest import mock
+
 import pytest
 from allauth.account.signals import password_changed
 from django.core import mail
@@ -20,9 +22,9 @@ pytestmark = pytest.mark.django_db
 
 BELL_TEMPLATE = "notifications/partials/bell.html"
 
-# bulk_create of the notifications, one SELECT for the existing preferences,
-# one bulk_create for the missing ones — and that is it, for any user count.
-MAX_NOTIFY_MANY_QUERIES = 3
+# One bulk_create for the notifications, one SELECT for the preferences — and
+# that is it, for any user count. notify_many() never writes preference rows.
+MAX_NOTIFY_MANY_QUERIES = 2
 
 
 @pytest.fixture(autouse=True)
@@ -112,11 +114,15 @@ class TestNotifyMany:
     def test_query_count_does_not_grow_with_the_number_of_users(self):
         """The whole point of the function: a flat query count.
 
-        notify() costs two queries per user, so a league start with a hundred
+        notify() costs several queries per user, so a league start with a hundred
         players would be a few hundred queries. Notifying twenty users has to
         cost exactly as much as notifying one — if a stray per-user query ever
         creeps back in (a lazy recipient.email lookup, a get_or_create in a
         loop), it degrades silently and only shows up under load.
+
+        Neither group has a NotificationPreference row here, which is the more
+        expensive path; the count is the same either way, see
+        test_users_with_an_existing_preference_cost_no_extra_query.
         """
         one_user = UserFactory.create_batch(1)
         twenty_users = UserFactory.create_batch(20)
@@ -128,6 +134,80 @@ class TestNotifyMany:
 
         assert len(for_twenty) == len(for_one)
         assert len(for_twenty) <= MAX_NOTIFY_MANY_QUERIES
+
+    def test_users_with_an_existing_preference_cost_no_extra_query(self):
+        """The everyday path: users who have been through the settings page.
+
+        Exercised separately because every other test hits the "no row yet" path,
+        and a regression that only shows up once the row exists would go unseen.
+        """
+        users = UserFactory.create_batch(5)
+        for user in users:
+            NotificationPreference.objects.create(user=user)
+
+        with CaptureQueriesContext(connection) as queries:
+            notify_many(users, "Hi", category=NotificationCategory.LEAGUE)
+
+        assert len(queries) <= MAX_NOTIFY_MANY_QUERIES
+        assert Notification.objects.filter(recipient__in=users).count() == 5
+
+    def test_does_not_write_preference_rows(
+        self,
+        django_capture_on_commit_callbacks,
+    ):
+        """notify_many() reads preferences, it never creates them.
+
+        Creating the missing rows in a bulk_create used to race against
+        NotificationPreferenceView.get_object()'s get_or_create() — user is a
+        OneToOneField, so one player opening the settings page during a league
+        start was enough for an IntegrityError. Since notify_many() runs from
+        transaction.on_commit(), the league was already committed at that point:
+        the exception killed the e-mail loop, nobody got a mail, and the retry
+        found the league started and returned. Hence: read-only, defaults apply.
+        """
+        user = UserFactory()
+        mail.outbox.clear()
+
+        with django_capture_on_commit_callbacks(execute=True):
+            notify_many([user], "League started", category=NotificationCategory.LEAGUE)
+
+        assert not NotificationPreference.objects.filter(user=user).exists()
+        # The default is opted in, so the mail goes out regardless.
+        assert len(mail.outbox) == 1
+
+    def test_survives_a_preference_created_while_it_runs(
+        self,
+        django_capture_on_commit_callbacks,
+    ):
+        """The race from above, deterministically: a row appears mid-call.
+
+        The preferences page can insert the row at any moment. Nothing
+        notify_many() does afterwards may collide with it.
+        """
+        users = UserFactory.create_batch(2)
+        original_filter = NotificationPreference.objects.filter
+
+        def filter_then_insert(*args, **kwargs):
+            queryset = list(original_filter(*args, **kwargs))
+            # Simulates the user hitting the settings page right now.
+            NotificationPreference.objects.get_or_create(user=users[0])
+            return queryset
+
+        mail.outbox.clear()
+        with (
+            mock.patch.object(
+                NotificationPreference.objects,
+                "filter",
+                side_effect=filter_then_insert,
+            ),
+            django_capture_on_commit_callbacks(execute=True),
+        ):
+            notify_many(users, "League started", category=NotificationCategory.LEAGUE)
+
+        # Proves the injected row really landed, i.e. the test is not vacuous.
+        assert NotificationPreference.objects.filter(user=users[0]).exists()
+        assert Notification.objects.filter(recipient__in=users).count() == 2
+        assert len(mail.outbox) == 2
 
     def test_returns_notifications_with_primary_keys_and_created_at(self):
         """bulk_create() fills in the PKs and auto_now_add — verified, not assumed.

@@ -53,10 +53,15 @@ def notify_many(  # noqa: PLR0913
     """
     Create the same notification for many users in a bounded number of queries.
 
-    Calling :func:`notify` in a loop costs two queries per user (the insert plus
-    a ``get_or_create`` on the preferences); notifying every player of every team
-    in a league is a three-digit number of users. This function stays at a
-    handful of queries no matter how many users it is given.
+    Calling :func:`notify` in a loop costs several queries per user (the insert
+    plus a ``get_or_create`` on the preferences); notifying every player of every
+    team in a league is a three-digit number of users. This function stays at two
+    queries no matter how many users it is given.
+
+    Unlike :func:`notify` it reads the preferences without ever writing them: a
+    user who has no ``NotificationPreference`` row yet is treated with the model
+    defaults. Creating the missing rows here would race against the preferences
+    page — see the comment below.
 
     The price is ``bulk_create``: it bypasses ``Model.save()`` and any
     ``post_save`` signal on :class:`~prostratsix.notifications.models.Notification`.
@@ -97,25 +102,29 @@ def notify_many(  # noqa: PLR0913
     if not send_email:
         return notifications
 
-    # One query for the existing preferences, one to create the missing ones.
+    # One query, read-only. Users without a row fall back to an unsaved instance
+    # carrying the very same defaults — writing the missing rows here would race
+    # against NotificationPreferenceView.get_object()'s get_or_create(): user is a
+    # OneToOneField, so a single player opening the settings page mid-league-start
+    # would break the bulk_create with an IntegrityError, and because we run from
+    # transaction.on_commit() the league is already committed by then — nobody
+    # would get an e-mail and the retry would find the league started and bail.
+    # The row gets created on its own the first time that page is opened.
     preferences = {
         preference.user_id: preference
         for preference in NotificationPreference.objects.filter(user__in=users)
     }
-    missing = [
-        NotificationPreference(user=user)
-        for user in users
-        if user.pk not in preferences
-    ]
-    for preference in NotificationPreference.objects.bulk_create(missing):
-        preferences[preference.user_id] = preference
+    defaults = NotificationPreference()
 
     # Imported here to avoid importing Celery at app-load time.
     from .tasks import send_notification_email  # noqa: PLC0415
 
-    for notification in notifications:
-        preference = preferences[notification.recipient_id]
-        if notification.recipient.email and preference.allows_email(category):
+    # Walk both lists instead of following notification.recipient: it makes it
+    # obvious that no foreign key is resolved here. strict=True holds bulk_create
+    # to returning the objects in the order it was given them.
+    for user, notification in zip(users, notifications, strict=True):
+        preference = preferences.get(user.pk, defaults)
+        if user.email and preference.allows_email(category):
             send_notification_email.delay_on_commit(notification.id)
 
     return notifications
