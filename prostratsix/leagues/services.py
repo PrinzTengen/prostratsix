@@ -127,8 +127,17 @@ def register_team(league: League, actor, team: Team) -> LeagueRegistration:
         # lock two teams clicking on the last free slot at the same time both
         # pass the is_full check and overbook the league; a UniqueConstraint
         # cannot catch that, because this is about a count, not a duplicate.
-        # The lock is held until this block commits, so nothing slow (e-mail,
-        # HTTP, Celery enqueue) may run inside it — hence the on_commit below.
+        #
+        # How long the lock is actually held depends on the caller, and that is
+        # worth knowing: the project sets ATOMIC_REQUESTS = True
+        # (config/settings/base.py), so inside a request this atomic() block is
+        # only a savepoint, and PostgreSQL releases row locks when the OUTERMOST
+        # transaction commits — at the end of the request, template rendering
+        # included, not at the end of this block. Called outside a request (Celery
+        # task, management command, shell) this block is the outermost transaction
+        # and the lock ends with it. Either way nothing slow (e-mail, HTTP, Celery
+        # enqueue) belongs in here, which is what the on_commit below is for.
+        #
         # On SQLite select_for_update() is a silent no-op, see
         # docs/plans/research/phase-2-leagues.md §2.1.
         league = League.objects.select_for_update().get(pk=league.pk)

@@ -91,6 +91,12 @@ class LeagueAdmin(admin.ModelAdmin):
         Deliberately not a ``queryset.update()``: the status transitions carry
         the row lock, the idempotency check and the notifications to the players
         — an update() would flip the column and tell nobody.
+
+        Note that ATOMIC_REQUESTS = True wraps the whole admin request in one
+        transaction, so the row locks the services take pile up: an action on
+        twenty leagues holds twenty league rows until the response is rendered.
+        Fine for an admin action on a handful of rows, worth knowing before this
+        is pointed at a few hundred.
         """
         changed = 0
         for league in queryset:
