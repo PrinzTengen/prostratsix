@@ -70,6 +70,11 @@ def notify_many(  # noqa: PLR0913
     defaults. Creating the missing rows here would race against the preferences
     page — see the comment below.
 
+    ``users`` has to be fully loaded ``User`` instances. Trimming the queryset
+    with ``.only()`` or ``.defer()`` — the tempting "optimisation" for a league
+    start with a hundred players — leaves ``email`` deferred, and reading it then
+    fires one query per user: exactly the N+1 this function exists to avoid.
+
     The price is ``bulk_create``: it bypasses ``Model.save()`` and any
     ``post_save`` signal on :class:`~prostratsix.notifications.models.Notification`.
     There is no such signal today (``notifications/signals.py`` only listens to
