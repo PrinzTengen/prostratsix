@@ -619,6 +619,31 @@ Plan. Diese fünf Punkte sind verbindlich:
    5-Minuten-Task filtert nur grob vor. Sonst starten zwei überlappende Läufe die
    Liga zweimal und alle Spieler bekommen doppelte Notifications.
 
+## 2.11 Gate-Entscheidung für Lauf 2c: `ATOMIC_REQUESTS`
+
+Aufgedeckt im Review von Lauf 2b, stand in keinem Planungsdokument:
+`config/settings/base.py:50` setzt projektweit **`ATOMIC_REQUESTS = True`**.
+
+Konsequenz: Unter einem Request ist das `transaction.atomic()` in
+`register_team()` nur ein **Savepoint**. Postgres gibt Row-Locks aber erst beim
+Commit der **äußersten** Transaktion frei — also am Request-Ende, nach dem
+Template-Rendering. Die `League`-Zeile bliebe damit für die gesamte
+Request-Dauer gesperrt, nicht nur für die ~1 ms des kritischen Abschnitts.
+
+Bei einer Anmelde-Deadline („alle klicken um 20:00") serialisieren dann **alle**
+Anmeldungen einer Liga auf die volle Request-Dauer statt auf den Service-Aufruf.
+Genau der Lastfall, für den der Lock gebaut wurde, wird dadurch am teuersten.
+
+**Entscheidung für 2c:** Die Register- und Withdraw-Views bekommen
+`@transaction.non_atomic_requests`. Dann ist das `atomic()` im Service eine
+**echte** Transaktion, der Lock wird am Ende von `register_team()` freigegeben,
+und `on_commit` feuert dort statt am Request-Ende. Die Services verwalten ihre
+Atomarität ohnehin selbst — die Request-weite Transaktion bringt ihnen nichts.
+
+Der Race-Test ruft den Service direkt auf und bildet diesen Unterschied **nicht**
+ab. Er kann die Regression also nicht fangen, wenn jemand `non_atomic_requests`
+später entfernt. Ein Kommentar an den Views muss das erklären.
+
 **Bekannter Altlast-Fund, NICHT Teil von Phase 2:** Das bestehende `notify()`
 benutzt `.delay()` und wird aus den `@transaction.atomic`-Funktionen der
 `teams`-App aufgerufen (`invite_member`, `transfer_ownership`, …) — dasselbe
