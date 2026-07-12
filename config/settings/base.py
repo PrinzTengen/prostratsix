@@ -89,6 +89,7 @@ LOCAL_APPS = [
     "prostratsix.users",
     "prostratsix.notifications",
     "prostratsix.teams",
+    "prostratsix.leagues",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
