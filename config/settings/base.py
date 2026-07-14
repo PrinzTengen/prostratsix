@@ -71,6 +71,7 @@ DJANGO_APPS = [
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
+    "jazzmin",
     "crispy_forms",
     "crispy_bootstrap5",
     "allauth",
