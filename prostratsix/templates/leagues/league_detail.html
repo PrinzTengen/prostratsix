@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}
+  {{ league.name }} — ProStratSix
+{% endblock title %}
+{% block content %}
+  <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+    <div>
+      <h1 class="h3 mb-1">{{ league.name }}</h1>
+      <p class="small text-muted mb-0">
+        {{ league.get_status_display }}
+        {% if league.region %}· {{ league.region }}{% endif %}
+      </p>
+    </div>
+    <span class="tag tag--gold">{{ league.slots_taken }} / {{ league.max_teams }}</span>
+  </div>
+  {% if league.banner %}
+    <img src="{{ league.banner.url }}"
+         alt="{{ league.name }}"
+         class="img-fluid rounded mb-4" />
+  {% endif %}
+  {% if league.description %}
+    <p class="mb-4">{{ league.description|linebreaksbr }}</p>
+  {% endif %}
+  <dl class="row mb-4">
+    <dt class="col-sm-3">{% translate "Anmeldung" %}</dt>
+    <dd class="col-sm-9">
+      {{ league.registration_opens_at|date:"SHORT_DATETIME_FORMAT" }} – {{ league.registration_closes_at|date:"SHORT_DATETIME_FORMAT" }}
+    </dd>
+    {% if league.starts_at %}
+      <dt class="col-sm-3">{% translate "Start" %}</dt>
+      <dd class="col-sm-9">
+        {{ league.starts_at|date:"SHORT_DATETIME_FORMAT" }}
+      </dd>
+    {% endif %}
+    <dt class="col-sm-3">{% translate "Mindestkader" %}</dt>
+    <dd class="col-sm-9">
+      {% blocktranslate count counter=league.min_roster_size %}{{ counter }} Spieler{% plural %}{{ counter }} Spieler{% endblocktranslate %}
+    </dd>
+  </dl>
+  {% include "leagues/partials/registration_panel.html" %}
+  <h2 class="h5 mb-3">{% translate "Teilnehmer" %}</h2>
+  <ul class="list-group">
+    {% for registration in registrations %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <a href="{{ registration.team.get_absolute_url }}"
+           class="text-decoration-none">
+          {{ registration.team.name }}
+          {% if registration.team.tag %}<span class="tag tag--gold">{{ registration.team.tag }}</span>{% endif %}
+        </a>
+        <span class="small text-muted">{{ registration.created_at|date:"SHORT_DATE_FORMAT" }}</span>
+      </li>
+    {% empty %}
+      <li class="list-group-item text-muted">{% translate "Noch keine Teams angemeldet." %}</li>
+    {% endfor %}
+  </ul>
+{% endblock content %}

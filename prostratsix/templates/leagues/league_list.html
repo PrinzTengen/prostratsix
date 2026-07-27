@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}
+  {% translate "Ligen" %} — ProStratSix
+{% endblock title %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">{% translate "Ligen" %}</h1>
+  </div>
+  <div class="row g-3">
+    {% for league in leagues %}
+      <div class="col-sm-6 col-lg-4">
+        <a href="{{ league.get_absolute_url }}"
+           class="card h-100 text-decoration-none">
+          {% if league.banner %}
+            <img src="{{ league.banner.url }}"
+                 class="card-img-top"
+                 alt="{{ league.name }}" />
+          {% endif %}
+          <div class="card-body">
+            <h2 class="h5 mb-1">{{ league.name }}</h2>
+            <p class="small text-muted mb-2">
+              {{ league.get_status_display }}
+              {% if league.region %}· {{ league.region }}{% endif %}
+            </p>
+            <p class="mb-1">
+              {% blocktranslate with taken=league.slots_taken total=league.max_teams %}{{ taken }} von {{ total }} Plätzen belegt{% endblocktranslate %}
+            </p>
+            {% if league.is_registration_open %}
+              <p class="small mb-0">
+                {% blocktranslate with closes=league.registration_closes_at|date:"SHORT_DATETIME_FORMAT" %}Anmeldung bis {{ closes }}{% endblocktranslate %}
+              </p>
+            {% elif league.is_full %}
+              <p class="small text-muted mb-0">{% translate "Die Liga ist voll." %}</p>
+            {% endif %}
+          </div>
+        </a>
+      </div>
+    {% empty %}
+      <p class="text-muted">{% translate "Noch keine Ligen." %}</p>
+    {% endfor %}
+  </div>
+  {% if is_paginated %}
+    <nav class="mt-4">
+      <ul class="pagination">
+        {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">{% translate "Zurück" %}</a>
+          </li>
+        {% endif %}
+        <li class="page-item disabled">
+          <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+        </li>
+        {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">{% translate "Weiter" %}</a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
+{% endblock content %}

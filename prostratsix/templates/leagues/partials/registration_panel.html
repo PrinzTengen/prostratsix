@@ -1,0 +1,59 @@
+{% load i18n %}
+
+{% comment %}
+  The register/withdraw button, rendered on the league page and swapped in on
+  its own after a POST (hx-target="#registration-panel", hx-swap="outerHTML").
+
+  Progressive enhancement: this is a real <form> with a method and an action, so
+  it works without JavaScript — the POST then ends in a redirect back to the
+  league page. hx-post only spares that reload. A bare <button hx-post> would do
+  nothing at all without htmx.
+
+  On success the view answers with "HX-Trigger: notifications:refresh", which the
+  navbar bell listens for on <body> — the notification the registration just
+  created appears immediately instead of at the next 30-second poll.
+
+  blocking_reason (see views.panel_state) says *why* there is no button: an
+  explanation beats a greyed-out button nobody can explain.
+{% endcomment %}
+<div id="registration-panel" class="card mb-4">
+  <div class="card-body">
+    <h2 class="h5 mb-3">{% translate "Team-Anmeldung" %}</h2>
+    {% if feedback %}<div class="alert alert-{{ feedback.level }} mb-3">{{ feedback.text }}</div>{% endif %}
+    <p class="mb-3">
+      {% blocktranslate with free=league.slots_free %}Noch {{ free }} freie Plätze{% endblocktranslate %}
+    </p>
+    {% if registration %}
+      <p class="mb-3">
+        {% blocktranslate with team=user_team.name %}{{ team }} ist für diese Liga angemeldet.{% endblocktranslate %}
+      </p>
+      {% if can_withdraw %}
+        <form method="post"
+              action="{% url 'leagues:withdraw' league.slug %}"
+              hx-post="{% url 'leagues:withdraw' league.slug %}"
+              hx-target="#registration-panel"
+              hx-swap="outerHTML">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline-danger">{% translate "Anmeldung zurückziehen" %}</button>
+        </form>
+      {% else %}
+        <p class="small text-muted mb-0">{{ blocking_reason }}</p>
+      {% endif %}
+    {% elif can_register %}
+      <form method="post"
+            action="{% url 'leagues:register' league.slug %}"
+            hx-post="{% url 'leagues:register' league.slug %}"
+            hx-target="#registration-panel"
+            hx-swap="outerHTML">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">{% translate "Team anmelden" %}</button>
+      </form>
+    {% else %}
+      <p class="small text-muted mb-0">{{ blocking_reason }}</p>
+      {% if not request.user.is_authenticated %}
+        <a class="btn btn-outline-light btn-sm mt-3"
+           href="{% url 'account_login' %}">{% translate "Einloggen" %}</a>
+      {% endif %}
+    {% endif %}
+  </div>
+</div>

@@ -30,6 +30,7 @@ urlpatterns = [
         include("prostratsix.notifications.urls", namespace="notifications"),
     ),
     path("teams/", include("prostratsix.teams.urls", namespace="teams")),
+    path("leagues/", include("prostratsix.leagues.urls", namespace="leagues")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
     # ...

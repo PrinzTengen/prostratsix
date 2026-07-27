@@ -37,6 +37,10 @@ class PlayerFactory(UserFactory):
     """
 
     username = Sequence(lambda n: f"league-player-{n}")
+    # ProfileCompletionMiddleware sends an authenticated user with an unfinished
+    # profile to the setup form from every page there is. Without this the view
+    # tests would assert against a redirect and never reach a league view.
+    profile_completed = True
 
 
 class LeagueFactory(DjangoModelFactory[League]):

@@ -14,8 +14,9 @@ DEFAULT_MIN_ROSTER_SIZE = 5
 
 # Annotate a League queryset with this name to feed League.slots_taken (and with
 # it slots_free / is_full / is_registration_open) instead of letting every league
-# count its registrations itself. See LeagueAdmin.get_queryset() for the shape of
-# the annotation.
+# count its registrations itself. LeagueQuerySet.with_slots_taken() adds it — do
+# not spell the annotation out a second time somewhere else, the two copies would
+# drift apart.
 SLOTS_TAKEN_ANNOTATION = "confirmed_count"
 
 
@@ -36,6 +37,28 @@ class RegistrationStatus(models.TextChoices):
     CONFIRMED = "confirmed", _("Confirmed")
     WITHDRAWN = "withdrawn", _("Withdrawn")
     DISQUALIFIED = "disqualified", _("Disqualified")
+
+
+class LeagueQuerySet(models.QuerySet):
+    def with_slots_taken(self):
+        """Annotate the confirmed registrations of every league in one query.
+
+        ``League.slots_taken`` picks the annotation up, and ``slots_free``,
+        ``is_full`` and ``is_registration_open`` all go through it — so a page
+        that lists leagues with "3 / 8" and a register button costs one query
+        instead of a COUNT per league. Any view that renders more than one
+        league wants this.
+        """
+        return self.annotate(
+            **{
+                SLOTS_TAKEN_ANNOTATION: models.Count(
+                    "registrations",
+                    filter=models.Q(
+                        registrations__status=RegistrationStatus.CONFIRMED,
+                    ),
+                ),
+            },
+        )
 
 
 class League(models.Model):
@@ -75,6 +98,8 @@ class League(models.Model):
     starts_at = models.DateTimeField(_("Starts at"), null=True, blank=True)
     ends_at = models.DateTimeField(_("Ends at"), null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    objects = LeagueQuerySet.as_manager()
 
     class Meta:
         ordering = ["-registration_opens_at", "name"]

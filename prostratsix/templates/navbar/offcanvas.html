@@ -26,6 +26,9 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'teams:list' %}">{% translate "Teams" %}</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'leagues:list' %}">{% translate "Ligen" %}</a>
+        </li>
         {% if request.user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'users:list' %}">{% translate "Players" %}</a>
