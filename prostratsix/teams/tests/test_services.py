@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import pytest
+from django.urls import reverse
 
 from prostratsix.notifications.models import Notification
 from prostratsix.notifications.models import NotificationCategory
@@ -50,6 +51,21 @@ class TestInviteMember:
             recipient=target,
             category=NotificationCategory.TEAM,
         ).exists()
+
+    def test_invite_notification_carries_accept_decline_actions(self, team):
+        target = UserFactory()
+        invitation = services.invite_member(team, team.owner, target)
+
+        notification = Notification.objects.get(recipient=target)
+        actions = {action["label"]: action["url"] for action in notification.actions}
+        assert actions["Accept"] == reverse(
+            "teams:invitation_accept",
+            kwargs={"token": invitation.token},
+        )
+        assert actions["Decline"] == reverse(
+            "teams:invitation_decline",
+            kwargs={"token": invitation.token},
+        )
 
     def test_non_manager_cannot_invite(self, team):
         outsider = UserFactory()

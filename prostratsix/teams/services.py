@@ -3,6 +3,7 @@ from __future__ import annotations
 from django.contrib.sites.models import Site
 from django.db import transaction
 from django.urls import NoReverseMatch
+from django.urls import reverse
 
 from prostratsix.notifications.models import NotificationCategory
 from prostratsix.notifications.models import NotificationLevel
@@ -104,6 +105,22 @@ def invite_member(team: Team, actor, target_user) -> TeamInvitation:
         level=NotificationLevel.INFO,
         category=NotificationCategory.TEAM,
         url=_absolute_url(invitation.get_absolute_url),
+        actions=[
+            {
+                "label": "Accept",
+                "url": reverse(
+                    "teams:invitation_accept",
+                    kwargs={"token": invitation.token},
+                ),
+            },
+            {
+                "label": "Decline",
+                "url": reverse(
+                    "teams:invitation_decline",
+                    kwargs={"token": invitation.token},
+                ),
+            },
+        ],
     )
     return invitation
 
