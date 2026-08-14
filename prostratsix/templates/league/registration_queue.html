@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}
+  {% trans "Anmeldungen" %} — ProStratSix
+{% endblock title %}
+{% block content %}
+  {% include "components/callsign.html" with prefix="OPS" label="ORGANIZER" %}
+  <h1 class="page-title mt-1 mb-4">{% trans "Offene Anmeldungen" %}</h1>
+  <ul class="list-group">
+    {% for registration in registrations %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span>
+          <strong>{{ registration.team.name }}</strong> → {{ registration.season.name }}
+          <span class="small text-muted d-block">
+            {% blocktrans with user=registration.requested_by %}Angefragt von {{ user }}{% endblocktrans %}
+          </span>
+        </span>
+        <span class="d-flex gap-2">
+          <form method="post"
+                action="{% url 'league:registration_approve' registration.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-success btn-sm">{% trans "Annehmen" %}</button>
+          </form>
+          <form method="post" action="{% url 'league:registration_reject' registration.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger btn-sm">{% trans "Ablehnen" %}</button>
+          </form>
+        </span>
+      </li>
+    {% empty %}
+      <li class="list-group-item text-muted">{% trans "Keine offenen Anmeldungen." %}</li>
+    {% endfor %}
+  </ul>
+{% endblock content %}

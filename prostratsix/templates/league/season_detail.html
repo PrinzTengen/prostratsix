@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}
+  {{ season.name }} — ProStratSix
+{% endblock title %}
+{% block content %}
+  {% include "components/callsign.html" with prefix="OPS" label="SAISON" %}
+  <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4 mt-1">
+    <div>
+      <h1 class="h3 mb-1">
+        {{ season.name }}
+        <span class="badge bg-secondary">{{ season.get_status_display }}</span>
+      </h1>
+      <p class="small text-muted mb-0">
+        {% blocktrans with start=season.starts_at|date:"d.m.Y" %}Start: {{ start }}{% endblocktrans %}
+        ·
+        {% blocktrans count counter=approved_teams|length %}{{ counter }} Team{% plural %}{{ counter }} Teams{% endblocktrans %}
+        / {{ season.max_teams }}
+      </p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{% url 'league:season_schedule' season.slug %}"
+         class="btn btn-outline-light btn-sm">{% trans "Spielplan" %}</a>
+      <a href="{% url 'league:season_standings' season.slug %}"
+         class="btn btn-outline-light btn-sm">{% trans "Tabelle" %}</a>
+    </div>
+  </div>
+  {% if can_register %}
+    <form method="post" action="{% url 'league:season_register' season.slug %}" class="mb-4">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary btn-angular">
+        {% blocktrans with team=user_team.name %}{{ team }} anmelden{% endblocktrans %}
+      </button>
+    </form>
+  {% elif user_registration %}
+    <div class="hud-panel mb-4">
+      <p class="mb-0">
+        {% blocktrans with team=user_registration.team.name status=user_registration.get_status_display %}Anmeldung von {{ team }}: {{ status }}{% endblocktrans %}
+      </p>
+      {% if user_registration.status == "pending" or user_registration.status == "approved" %}
+        <form method="post"
+              action="{% url 'league:registration_withdraw' user_registration.pk %}"
+              class="mt-2">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline-danger btn-sm">{% trans "Zurückziehen" %}</button>
+        </form>
+      {% endif %}
+    </div>
+  {% endif %}
+  {% if is_staff %}
+    <div class="hud-panel mb-4">
+      <h2 class="h6 mb-2">{% trans "Organizer" %}</h2>
+      <div class="d-flex flex-wrap gap-2">
+        <a href="{% url 'league:registration_queue' %}"
+           class="btn btn-outline-light btn-sm">{% trans "Anmeldungen prüfen" %}</a>
+        <form method="post" action="{% url 'league:season_generate_schedule' season.slug %}">
+          {% csrf_token %}
+          <button type="submit"
+                  class="btn btn-outline-light btn-sm"
+                  onclick="return confirm('{% trans "Spielplan wirklich (neu) generieren?" %}');">
+            {% trans "Spielplan generieren" %}
+          </button>
+        </form>
+      </div>
+      {% if pending_registrations %}
+        <h3 class="h6 mt-3">{% trans "Offene Anmeldungen für diese Saison" %}</h3>
+        <ul class="list-group">
+          {% for registration in pending_registrations %}
+            <li class="list-group-item">{{ registration.team.name }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+  {% endif %}
+  <h2 class="h5 mb-3">{% trans "Teams" %}</h2>
+  <ul class="list-group">
+    {% for team in approved_teams %}
+      <li class="list-group-item">
+        <a href="{{ team.get_absolute_url }}" class="text-decoration-none">{{ team.name }}</a>
+      </li>
+    {% empty %}
+      <li class="list-group-item text-muted">{% trans "Noch keine bestätigten Teams." %}</li>
+    {% endfor %}
+  </ul>
+{% endblock content %}

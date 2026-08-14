@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}
+  {% blocktrans with name=season.name %}Tabelle {{ name }}{% endblocktrans %} — ProStratSix
+{% endblock title %}
+{% block content %}
+  {% include "components/callsign.html" with prefix="OPS" label="TABELLE" %}
+  <h1 class="page-title mt-1 mb-4">{{ season.name }}</h1>
+  <div class="table-responsive">
+    <table class="table table-dark table-hover align-middle">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>{% trans "Team" %}</th>
+          <th class="text-center">{% trans "Sp" %}</th>
+          <th class="text-center">{% trans "S" %}</th>
+          <th class="text-center">{% trans "U" %}</th>
+          <th class="text-center">{% trans "N" %}</th>
+          <th class="text-center">{% trans "Diff" %}</th>
+          <th class="text-center">{% trans "Pkt" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in standings %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>
+              <a href="{{ row.team.get_absolute_url }}" class="text-decoration-none">{{ row.team.name }}</a>
+            </td>
+            <td class="text-center">{{ row.played }}</td>
+            <td class="text-center">{{ row.wins }}</td>
+            <td class="text-center">{{ row.draws }}</td>
+            <td class="text-center">{{ row.losses }}</td>
+            <td class="text-center">{{ row.score_diff }}</td>
+            <td class="text-center fw-bold">{{ row.points }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="8" class="text-muted">{% trans "Noch keine Ergebnisse." %}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock content %}

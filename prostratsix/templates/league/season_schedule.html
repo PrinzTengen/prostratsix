@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}
+  {% blocktrans with name=season.name %}Spielplan {{ name }}{% endblocktrans %} — ProStratSix
+{% endblock title %}
+{% block content %}
+  {% include "components/callsign.html" with prefix="OPS" label="SPIELPLAN" %}
+  <h1 class="page-title mt-1 mb-4">{{ season.name }}</h1>
+  {% for round in rounds %}
+    <h2 class="h6 text-muted mt-4 mb-2">
+      {% blocktrans with number=round.round_number %}Runde {{ number }}{% endblocktrans %}
+    </h2>
+    <div class="list-group mb-2">
+      {% for match in round.matches %}
+        <a href="{{ match.get_absolute_url }}"
+           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+          <span>{{ match.home_team.name }} vs {{ match.away_team.name }}</span>
+          <span class="d-flex align-items-center gap-2">
+            {% if match.status == "confirmed" %}
+              <strong>{{ match.score_home }}:{{ match.score_away }}</strong>
+            {% endif %}
+            <span class="badge bg-secondary">{{ match.get_status_display }}</span>
+          </span>
+        </a>
+      {% endfor %}
+    </div>
+  {% empty %}
+    <p class="text-muted">{% trans "Noch kein Spielplan." %}</p>
+  {% endfor %}
+{% endblock content %}

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% load i18n crispy_forms_tags %}
+
+{% block title %}
+  {{ match.home_team.name }} vs {{ match.away_team.name }} — ProStratSix
+{% endblock title %}
+{% block content %}
+  {% include "components/callsign.html" with prefix="OPS" label="MATCH" %}
+  <h1 class="h3 mt-1 mb-1">{{ match.home_team.name }} vs {{ match.away_team.name }}</h1>
+  <p class="small text-muted">
+    {{ match.season.name }} ·
+    {% blocktrans with number=match.round_number %}Runde {{ number }}{% endblocktrans %}
+    ·
+    <span class="badge bg-secondary">{{ match.get_status_display }}</span>
+  </p>
+  {% if match.status == "confirmed" or match.status == "forfeited" %}
+    <p class="display-6 mb-4">{{ match.score_home }} : {{ match.score_away }}</p>
+  {% endif %}
+  {% if match.status == "disputed" and match.dispute_reason %}
+    <div class="alert alert-warning">{{ match.dispute_reason }}</div>
+  {% endif %}
+  {% if can_report %}
+    <div class="hud-panel mb-4">
+      <h2 class="h6 mb-3">{% trans "Ergebnis melden" %}</h2>
+      <form method="post" action="{% url 'league:match_report' match.pk %}">
+        {% csrf_token %}
+        {{ result_form|crispy }}
+        <button type="submit" class="btn btn-primary">{% trans "Melden" %}</button>
+      </form>
+    </div>
+  {% endif %}
+  {% if can_respond %}
+    <div class="hud-panel mb-4">
+      <h2 class="h6 mb-3">
+        {% blocktrans with home=match.home_team.name away=match.away_team.name score_home=match.score_home score_away=match.score_away %}Gemeldetes Ergebnis: {{ home }} {{ score_home }}:{{ score_away }} {{ away }}{% endblocktrans %}
+      </h2>
+      <div class="d-flex flex-wrap gap-2">
+        <form method="post" action="{% url 'league:match_confirm' match.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline-success btn-sm">{% trans "Bestätigen" %}</button>
+        </form>
+      </div>
+      <form method="post" action="{% url 'league:match_dispute' match.pk %}" class="mt-3">
+        {% csrf_token %}
+        {{ dispute_form|crispy }}
+        <button type="submit" class="btn btn-outline-danger btn-sm">{% trans "Bestreiten" %}</button>
+      </form>
+    </div>
+  {% endif %}
+  {% if is_staff %}
+    <div class="hud-panel">
+      <h2 class="h6 mb-3">{% trans "Organizer" %}</h2>
+      {% if match.status == "disputed" %}
+        <form method="post" action="{% url 'league:match_resolve_dispute' match.pk %}" class="mb-3">
+          {% csrf_token %}
+          {{ result_form|crispy }}
+          <button type="submit" class="btn btn-outline-light btn-sm">{% trans "Dispute auflösen" %}</button>
+        </form>
+      {% endif %}
+      {% if match.status != "confirmed" and match.status != "cancelled" %}
+        <div class="d-flex flex-wrap gap-2">
+          <form method="post"
+                action="{% url 'league:match_forfeit' match.pk match.home_team.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger btn-sm">
+              {% blocktrans with team=match.home_team.name %}{{ team }} kampflos verloren{% endblocktrans %}
+            </button>
+          </form>
+          <form method="post"
+                action="{% url 'league:match_forfeit' match.pk match.away_team.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger btn-sm">
+              {% blocktrans with team=match.away_team.name %}{{ team }} kampflos verloren{% endblocktrans %}
+            </button>
+          </form>
+          <form method="post" action="{% url 'league:match_cancel' match.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-secondary btn-sm">{% trans "Match absagen" %}</button>
+          </form>
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endblock content %}
