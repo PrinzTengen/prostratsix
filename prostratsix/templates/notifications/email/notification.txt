@@ -1,6 +1,8 @@
 {{ notification.title }}
 
 {{ notification.message }}
-
+{% if notification.url %}
+{{ notification.url }}
+{% endif %}
 —
 ProStratSix
