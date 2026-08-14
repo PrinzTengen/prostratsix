@@ -1,21 +1,28 @@
 {% extends "base.html" %}
 
-{% load crispy_forms_tags %}
+{% load i18n crispy_forms_tags %}
 
 {% block title %}
-  {{ user.username }}
+  {{ user.username }} — ProStratSix
 {% endblock title %}
 {% block content %}
-  <h1>{{ user.username }}</h1>
-  <form class="form-horizontal"
-        method="post"
-        action="{% url 'users:update' %}">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <div class="control-group">
-      <div class="controls">
-        <button type="submit" class="btn btn-primary">Update</button>
-      </div>
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+      <form method="post" action="{% url 'users:update' %}" class="form-panel">
+        <div class="form-panel__head">
+          <div>
+            {% include "components/callsign.html" with prefix="ACCOUNT" label="PROFIL" %}
+            <h1 class="form-panel__title mt-1">{{ user.username }}</h1>
+          </div>
+        </div>
+        <div class="form-panel__body">
+          {% csrf_token %}
+          {{ form|crispy }}
+        </div>
+        <div class="form-panel__foot">
+          <button type="submit" class="btn btn-primary btn-angular">{% trans "Update" %}</button>
+        </div>
+      </form>
     </div>
-  </form>
+  </div>
 {% endblock content %}

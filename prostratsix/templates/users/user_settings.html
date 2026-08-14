@@ -7,7 +7,7 @@
 {% endblock title %}
 {% block content %}
   <header class="mb-4">
-    <span class="eyebrow"><span class="slash-divider"></span>{% trans "Account" %}</span>
+    {% include "components/callsign.html" with prefix="ACCOUNT" label="EINSTELLUNGEN" %}
     <h1 class="page-title mt-2 mb-0">{% trans "Einstellungen" %}</h1>
   </header>
   <div class="row g-4">

@@ -6,7 +6,8 @@
   {{ team.name }} — ProStratSix
 {% endblock title %}
 {% block content %}
-  <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+  {% include "components/callsign.html" with prefix="OPS" label="TEAM" %}
+  <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4 mt-1">
     <div class="d-flex align-items-center gap-3">
       {% if team.thumbnail %}
         <img src="{{ team.thumbnail.url }}"
@@ -37,36 +38,54 @@
     </div>
   </div>
   {% if team.bio %}<p class="mb-4">{{ team.bio|linebreaksbr }}</p>{% endif %}
-  <h2 class="h5 mb-3">{% trans "Roster" %}</h2>
-  <ul class="list-group mb-4">
-    {% for membership in memberships %}
-      <li class="list-group-item d-flex justify-content-between align-items-center">
-        <span>
-          {{ membership.user }}
-          <span class="badge bg-secondary ms-2">{{ membership.get_role_display }}</span>
-        </span>
-        {% if can_manage and membership.role != "owner" %}
-          <span class="d-flex gap-2">
-            {% if is_owner %}
-              <form method="post"
-                    action="{% url 'teams:transfer_ownership' team.slug membership.user.pk %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-outline-light btn-sm">{% trans "Zum Owner machen" %}</button>
-              </form>
-            {% endif %}
-            <form method="post"
-                  action="{% url 'teams:remove_member' team.slug membership.user.pk %}">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-outline-danger btn-sm">{% trans "Entfernen" %}</button>
-            </form>
-          </span>
-        {% endif %}
-      </li>
-    {% endfor %}
-  </ul>
   {% if can_manage %}
-    <div class="card mb-4">
-      <div class="card-body">
+    <ul class="nav site-tabs" id="teamTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active"
+                id="roster-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#roster-pane"
+                type="button"
+                role="tab"
+                aria-controls="roster-pane"
+                aria-selected="true">{% trans "Roster" %}</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link"
+                id="invites-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#invites-pane"
+                type="button"
+                role="tab"
+                aria-controls="invites-pane"
+                aria-selected="false">{% trans "Invites" %}</button>
+      </li>
+      {% if is_owner %}
+        <li class="nav-item" role="presentation">
+          <button class="nav-link"
+                  id="danger-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#danger-pane"
+                  type="button"
+                  role="tab"
+                  aria-controls="danger-pane"
+                  aria-selected="false">{% trans "Danger Zone" %}</button>
+        </li>
+      {% endif %}
+    </ul>
+    <div class="tab-content" id="teamTabsContent">
+      <div class="tab-pane fade show active"
+           id="roster-pane"
+           role="tabpanel"
+           aria-labelledby="roster-tab"
+           tabindex="0">
+        {% include "teams/_roster_list.html" %}
+      </div>
+      <div class="tab-pane fade"
+           id="invites-pane"
+           role="tabpanel"
+           aria-labelledby="invites-tab"
+           tabindex="0">
         <h2 class="h5 mb-3">{% trans "Spieler einladen" %}</h2>
         <form method="post" action="{% url 'teams:invite' team.slug %}">
           {% csrf_token %}
@@ -91,14 +110,24 @@
           </ul>
         {% endif %}
       </div>
+      {% if is_owner %}
+        <div class="tab-pane fade"
+             id="danger-pane"
+             role="tabpanel"
+             aria-labelledby="danger-tab"
+             tabindex="0">
+          <p class="text-muted small mb-3">{% trans "Diese Aktion kann nicht rückgängig gemacht werden." %}</p>
+          <form method="post" action="{% url 'teams:delete' team.slug %}">
+            {% csrf_token %}
+            <button type="submit"
+                    class="btn btn-outline-danger btn-sm"
+                    onclick="return confirm('{% trans "Team wirklich löschen?" %}');">{% trans "Team löschen" %}</button>
+          </form>
+        </div>
+      {% endif %}
     </div>
-    {% if is_owner %}
-      <form method="post" action="{% url 'teams:delete' team.slug %}">
-        {% csrf_token %}
-        <button type="submit"
-                class="btn btn-outline-danger btn-sm"
-                onclick="return confirm('{% trans "Team wirklich löschen?" %}');">{% trans "Team löschen" %}</button>
-      </form>
-    {% endif %}
+  {% else %}
+    <h2 class="h5 mb-3">{% trans "Roster" %}</h2>
+    {% include "teams/_roster_list.html" %}
   {% endif %}
 {% endblock content %}

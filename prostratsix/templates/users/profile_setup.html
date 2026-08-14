@@ -14,8 +14,8 @@
             class="form-panel">
         <div class="form-panel__head">
           <div>
-            <span class="eyebrow">{% trans "Willkommen" %}</span>
-            <h1 class="form-panel__title">{% trans "Profil vervollständigen" %}</h1>
+            {% include "components/callsign.html" with prefix="ACCESS" label="ONBOARDING" %}
+            <h1 class="form-panel__title mt-1">{% trans "Profil vervollständigen" %}</h1>
           </div>
           <span class="tag tag--gold">{% trans "Schritt 1 / 2" %}</span>
         </div>

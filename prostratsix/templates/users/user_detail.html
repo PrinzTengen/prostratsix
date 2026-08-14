@@ -6,7 +6,8 @@
   {{ object.username }} — ProStratSix
 {% endblock title %}
 {% block content %}
-  <section aria-labelledby="profile-name">
+  {% include "components/callsign.html" with prefix="OPS" label="PROFIL" %}
+  <section aria-labelledby="profile-name" class="mt-1">
     <div class="profile-header">
       {% if object.profile.avatar %}
         <img src="{{ object.profile.avatar.url }}"

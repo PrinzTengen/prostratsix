@@ -17,36 +17,49 @@
            height="1100" />
     </div>
     <div class="container position-relative z-1">
-      <span class="eyebrow"><span class="slash-divider"></span>Rainbow Six Siege · Liga &amp; Turniere</span>
-      <h1 class="hero__title mt-3">
-        WO <em>STRATS</em>
-        <br />
-        GEWINNEN
-      </h1>
-      <p class="hero__lead lead mt-3">
-        Kompetitive R6-Ligen, Wochen-Turniere und ein Ranking, das zählt.
-        Tritt an, klettere die Tabelle hoch und werde Champion.
-      </p>
-      <div class="d-flex flex-column flex-sm-row gap-2 mt-4">
-        <a href="{% url 'account_signup' %}"
-           class="btn btn-primary btn-lg btn-angular">Team anmelden</a>
-        <a href="#standings" class="btn btn-outline-light btn-lg">Tabelle ansehen</a>
-      </div>
-      <div class="hero__ticker mt-4">
-        <span><span class="live-dot me-1"></span><strong>LIVE</strong> · Conviction vs Luminosity</span>
-        <span><strong>NEXT</strong> · Blue Otter vs SuperNova — 20:00</span>
-        <span><strong>SPLIT 2</strong> · Woche 10 / 12</span>
+      <div class="split-bleed">
+        <div class="split-bleed__panel">
+          {% include "components/callsign.html" with prefix="SEASON 3" label="LIGA" %}
+          <h1 class="hero__title mt-3">
+            WO <em>STRATS</em>
+            <br />
+            GEWINNEN
+          </h1>
+          <p class="hero__lead lead mt-3">
+            Kompetitive R6-Ligen, Wochen-Turniere und ein Ranking, das zählt.
+            Tritt an, klettere die Tabelle hoch und werde Champion.
+          </p>
+          <div class="d-flex flex-column flex-sm-row gap-2 mt-4">
+            <a href="{% url 'account_signup' %}"
+               class="btn btn-primary btn-lg btn-angular">Team anmelden</a>
+            <a href="#standings" class="btn btn-outline-light btn-lg">Tabelle ansehen</a>
+          </div>
+        </div>
+        <div class="hud-panel">
+          <span class="match-status is-live"><span class="live-dot me-1"></span>Live</span>
+          <div class="match-card__teams mt-2">
+            <span class="match-card__team is-winner"><span class="mono">CV</span>Conviction</span>
+            <span class="match-card__score">2 : 1</span>
+            <span class="match-card__team is-loser">Luminosity<span class="mono">LG</span></span>
+          </div>
+          <hr class="my-3" />
+          <div class="hero__ticker">
+            <span><strong>NEXT</strong> · Blue Otter vs SuperNova — 20:00</span>
+            <span><strong>SPLIT 2</strong> · Woche 10 / 12</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
+  <div class="diagonal-divider" aria-hidden="true"></div>
 {% endblock hero %}
 {% block content %}
   {# =================== MATCHDAY =================== #}
   <section class="section" aria-labelledby="matchday-h">
     <div class="section-head">
       <div>
-        <span class="eyebrow"><span class="slash-divider"></span>Matchday · Split 2</span>
-        <h2 id="matchday-h" class="section-head__title">Jetzt &amp; als Nächstes</h2>
+        {% include "components/callsign.html" with prefix="OPS" label="MATCHDAY" %}
+        <h2 id="matchday-h" class="section-head__title mt-1">Jetzt &amp; als Nächstes</h2>
       </div>
       <a href="#" class="section-head__link">Alle Matches →</a>
     </div>
@@ -117,8 +130,8 @@
   <section class="section" id="standings" aria-labelledby="standings-h">
     <div class="section-head">
       <div>
-        <span class="eyebrow"><span class="slash-divider"></span>Tabelle</span>
-        <h2 id="standings-h" class="section-head__title">Race to Playoffs</h2>
+        {% include "components/callsign.html" with prefix="OPS" label="TABELLE" %}
+        <h2 id="standings-h" class="section-head__title mt-1">Race to Playoffs</h2>
       </div>
       <a href="#" class="section-head__link">Volle Tabelle →</a>
     </div>
@@ -190,8 +203,8 @@
   <section class="section" aria-labelledby="roster-h">
     <div class="section-head">
       <div>
-        <span class="eyebrow"><span class="slash-divider"></span>Spotlight</span>
-        <h2 id="roster-h" class="section-head__title">Roster der Woche</h2>
+        {% include "components/callsign.html" with prefix="OPS" label="SPOTLIGHT" %}
+        <h2 id="roster-h" class="section-head__title mt-1">Roster der Woche</h2>
       </div>
       <a href="#" class="section-head__link">Alle Spieler →</a>
     </div>

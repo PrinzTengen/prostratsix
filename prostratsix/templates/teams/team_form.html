@@ -16,8 +16,8 @@
       <form method="post" enctype="multipart/form-data" class="form-panel">
         <div class="form-panel__head">
           <div>
-            <span class="eyebrow">{% trans "Team" %}</span>
-            <h1 class="form-panel__title">
+            {% include "components/callsign.html" with prefix="OPS" label="TEAM" %}
+            <h1 class="form-panel__title mt-1">
               {% if team %}
                 {% trans "Team bearbeiten" %}
               {% else %}

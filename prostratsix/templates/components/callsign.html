@@ -1,0 +1,10 @@
+{# Two-part radio-callsign label: KATEGORIE · KONTEXT. Answers "where am I" #}
+{# on every page — see the site-wide design brief. Usage:                   #}
+{# {% include "components/callsign.html" with prefix="OPS" label="TEAMS" %} #}
+{# Note: the include's `with` kwargs are reserved by Django's own          #}
+{# Context.push() when named `context`, so this uses `label` instead.     #}
+<span class="callsign">
+  <span class="callsign__prefix">{{ prefix }}</span>
+  <span class="callsign__sep">·</span>
+  <span class="callsign__context">{{ label }}</span>
+</span>

@@ -6,27 +6,33 @@
   {% trans "Teams" %} — ProStratSix
 {% endblock title %}
 {% block content %}
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 mb-0">{% trans "Teams" %}</h1>
-    {% if request.user.is_authenticated %}
-      <a href="{% url 'teams:create' %}" class="btn btn-primary btn-angular">{% trans "Team erstellen" %}</a>
-    {% endif %}
-  </div>
-  <form method="get" class="mb-4">
-    <div class="input-group">
-      <input type="search"
-             name="q"
-             value="{{ q }}"
-             class="form-control"
-             placeholder="{% trans 'Team oder Tag suchen…' %}" />
-      <button type="submit" class="btn btn-outline-light">{% trans "Suchen" %}</button>
+  <div class="split-bleed mb-4">
+    <div>
+      {% include "components/callsign.html" with prefix="OPS" label="TEAMS" %}
+      <h1 class="page-title mt-1 mb-0">{% trans "Teams" %}</h1>
     </div>
-  </form>
+    <div class="hud-panel">
+      <form method="get" class="mb-0">
+        <div class="input-group">
+          <input type="search"
+                 name="q"
+                 value="{{ q }}"
+                 class="form-control"
+                 placeholder="{% trans 'Team oder Tag suchen…' %}" />
+          <button type="submit" class="btn btn-outline-light">{% trans "Suchen" %}</button>
+        </div>
+      </form>
+      {% if request.user.is_authenticated %}
+        <a href="{% url 'teams:create' %}"
+           class="btn btn-primary btn-angular w-100 mt-3">{% trans "Team erstellen" %}</a>
+      {% endif %}
+    </div>
+  </div>
   <div class="row g-3">
     {% for team in teams %}
-      <div class="col-sm-6 col-lg-4">
+      <div class="col-sm-6 col-lg-4 col-xl-3">
         <a href="{{ team.get_absolute_url }}"
-           class="card h-100 text-decoration-none">
+           class="card card--hover h-100 text-decoration-none">
           {% if team.thumbnail %}
             <img src="{{ team.thumbnail.url }}"
                  class="card-img-top"

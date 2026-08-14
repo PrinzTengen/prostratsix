@@ -10,7 +10,7 @@
     <div class="col-lg-6">
       <div class="card">
         <div class="card-body p-4 text-center">
-          <span class="eyebrow">{% trans "Einladung" %}</span>
+          {% include "components/callsign.html" with prefix="COMMS" label="EINLADUNG" %}
           <h1 class="h4 my-3">
             {% blocktrans with team=invitation.team.name %}You've been invited to {{ team }}{% endblocktrans %}
           </h1>

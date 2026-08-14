@@ -6,7 +6,8 @@
   {% trans "Sign In" %} — ProStratSix
 {% endblock head_title %}
 {% block content %}
-  <h1 class="auth__title">{% trans "Sign In" %}</h1>
+  {% include "components/callsign.html" with prefix="ACCESS" label="SIGN IN" %}
+  <h1 class="auth__title mt-2">{% trans "Sign In" %}</h1>
   <p class="auth__subtitle">{% trans "Willkommen zurück — melde dich an." %}</p>
   <form method="post" action="{% url 'account_login' %}">
     {% csrf_token %}

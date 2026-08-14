@@ -7,7 +7,10 @@
 {% endblock title %}
 {% block content %}
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="h4 mb-0">{% trans "Notifications" %}</h1>
+    <div>
+      {% include "components/callsign.html" with prefix="COMMS" label="LOG" %}
+      <h1 class="h4 mb-0 mt-1">{% trans "Notifications" %}</h1>
+    </div>
     {% if notifications %}
       <form method="post" action="{% url 'notifications:mark_all_read' %}">
         {% csrf_token %}
@@ -17,7 +20,7 @@
   </div>
   <div class="list-group">
     {% for notification in notifications %}
-      <div class="list-group-item {% if not notification.is_read %}list-group-item-{{ notification.level }}{% endif %}">
+      <div class="list-group-item comms-log__item {% if not notification.is_read %}is-unread level-{{ notification.level }}{% endif %}">
         <div class="d-flex justify-content-between">
           <h2 class="h6 mb-1">{{ notification.title }}</h2>
           <small class="text-muted">{{ notification.created_at|date:"d.m.Y H:i" }}</small>
