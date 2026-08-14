@@ -1,0 +1,36 @@
+// ==========================================================================
+// Offcanvas — glass menu panel.
+//
+// Bootstrap drives the open/close transform + backdrop natively; that
+// transition already respects prefers-reduced-motion via the blanket
+// override in base/_global.scss. We only theme the material here, we don't
+// replace Bootstrap's accessible open/close mechanism (focus trap, ESC,
+// backdrop click) with custom gesture code.
+// ==========================================================================
+
+.offcanvas {
+  // A larger surface than the navbar reads as a thicker material: denser
+  // background, stronger blur.
+  background-color: rgba($rs-surface, 0.85);
+  backdrop-filter: blur(24px) saturate(160%);
+  border-right: 1px solid $rs-border;
+}
+
+.offcanvas-header {
+  border-bottom: 1px solid $rs-border;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .offcanvas {
+    background-color: $rs-surface;
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .offcanvas {
+    background-color: $rs-surface;
+    backdrop-filter: none;
+    border-right: 1px solid $rs-text;
+  }
+}

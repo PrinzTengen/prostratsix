@@ -1,0 +1,43 @@
+// ==========================================================================
+// Site-tabs — Bootstrap's native tab component (accessible keyboard/ARIA
+// behaviour kept as-is, see components/_offcanvas.scss for the same
+// reuse-don't-reinvent call), restyled as tactical "site selection" pills.
+// Only used where a page genuinely has multiple peer sections (currently:
+// team_detail.html for managers).
+// ==========================================================================
+
+.site-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.25rem;
+  border-bottom: 1px solid $rs-border;
+  margin-bottom: 1.5rem;
+
+  .nav-link {
+    font-family: $headings-font-family;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $rs-muted;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    padding: 0.6rem 0.1rem;
+    // `transform` is spring-driven in JS (project.js), so only colour/border
+    // are CSS-transitioned here.
+    transition:
+      color $dur-base $ease-snappy,
+      border-color $dur-base $ease-snappy;
+
+    &:hover {
+      color: $rs-text;
+    }
+
+    &.active {
+      color: #ffffff;
+      border-bottom-color: $rs-red;
+    }
+  }
+}

@@ -32,11 +32,17 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 // 6. Theme layers
 @import "base/typography";
 @import "base/global";
+// hud defines the @mixin hud-corners used by later component partials, so it
+// must import before anything that calls it.
+@import "components/hud";
 @import "components/buttons";
 @import "components/badges";
 @import "components/forms";
 @import "components/cards";
 @import "components/navbar";
+@import "components/offcanvas";
+@import "components/tabs";
+@import "components/comms-log";
 @import "components/trading_cards";
 @import "components/standings";
 @import "components/bracket";

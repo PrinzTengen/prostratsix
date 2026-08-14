@@ -1,0 +1,83 @@
+// ==========================================================================
+// HUD system — the site's structural signature (see the "Broadcast HUD
+// Overlay" design brief): floating bracket-cornered panels, glass, and
+// diagonal section cuts, breaking the layout out of the centred Bootstrap
+// container instead of just decorating buttons.
+// ==========================================================================
+
+// Four L-shaped corner brackets (one vertical + one horizontal stroke per
+// corner), drawn with background gradients so no extra markup is needed on
+// every panel that uses them.
+@mixin hud-corners($color: $rs-red, $size: 14px, $thickness: 2px, $inset: 0px) {
+  background-image:
+    linear-gradient($color, $color), linear-gradient($color, $color),
+    linear-gradient($color, $color), linear-gradient($color, $color),
+    linear-gradient($color, $color), linear-gradient($color, $color),
+    linear-gradient($color, $color), linear-gradient($color, $color);
+  background-repeat: no-repeat;
+  background-size:
+    $thickness $size, $size $thickness,
+    $thickness $size, $size $thickness,
+    $thickness $size, $size $thickness,
+    $thickness $size, $size $thickness;
+  background-position:
+    top #{$inset} left #{$inset}, top #{$inset} left #{$inset},
+    top #{$inset} right #{$inset}, top #{$inset} right #{$inset},
+    bottom #{$inset} right #{$inset}, bottom #{$inset} right #{$inset},
+    bottom #{$inset} left #{$inset}, bottom #{$inset} left #{$inset};
+}
+
+// A floating panel that reads as a HUD readout: glass material, bracket
+// corners instead of a full border, no fill competing with what's behind it.
+.hud-panel {
+  position: relative;
+  padding: 1.25rem;
+  background: rgba($rs-surface, 0.72);
+  backdrop-filter: blur(16px) saturate(160%);
+  @include hud-corners($rs-red, 16px, 2px, -1px);
+}
+
+.hud-panel--gold {
+  @include hud-corners($rs-gold, 16px, 2px, -1px);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .hud-panel {
+    background: $rs-surface;
+    backdrop-filter: none;
+  }
+}
+
+// Full-bleed diagonal cut between two sections, replacing a straight
+// border — reads as a broadcast wipe rather than a hairline.
+.diagonal-divider {
+  position: relative;
+  height: clamp(2.5rem, 6vw, 4.5rem);
+  overflow: hidden;
+  background: $rs-bg;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -1px 0 50% 0;
+    background: $rs-surface;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 40%);
+  }
+}
+
+// Asymmetric bleed grid — breaks a section out of the centred `.container`
+// into an uneven split, one side running to the viewport edge.
+.split-bleed {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+
+  @include media-breakpoint-up(lg) {
+    grid-template-columns: 3fr 2fr;
+    gap: clamp(1.5rem, 4vw, 3rem);
+  }
+}
+
+.split-bleed__panel {
+  position: relative;
+}

@@ -17,9 +17,30 @@
   font-display: swap;
 }
 
-h1, h2, h3, h4, h5, h6,
-.h1, .h2, .h3, .h4, .h5, .h6 {
+// Tracking (letter-spacing) and leading (line-height) are size-specific —
+// negative tracking + tight leading as headings get larger, positive
+// tracking + looser leading as they shrink toward label-sized text.
+h1, .h1 {
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+h2, .h2 {
+  letter-spacing: 0;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+h3, h4, .h3, .h4 {
   letter-spacing: 0.01em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+h5, h6, .h5, .h6 {
+  letter-spacing: 0.02em;
+  line-height: 1.3;
   text-transform: uppercase;
 }
 
@@ -57,7 +78,8 @@ h1, h2, h3, h4, h5, h6,
   color: $rs-muted !important;
 }
 
-// Eyebrow / kicker label above headings (e.g. "LIVE MATCH").
+// Eyebrow / kicker label above headings (e.g. "LIVE MATCH"). Used for
+// section-level micro-labels; page-level identity uses .callsign below.
 .eyebrow {
   display: inline-block;
   font-family: $headings-font-family;
@@ -66,6 +88,32 @@ h1, h2, h3, h4, h5, h6,
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: $rs-gold;
+}
+
+// Callsign — two-part radio-callsign label (KATEGORIE · KONTEXT) used once
+// per page, near the primary heading, as consistent wayfinding. The category
+// carries the accent colour, the context is the specific page.
+.callsign {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-family: $headings-font-family;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.callsign__prefix {
+  color: $rs-gold;
+}
+
+.callsign__sep {
+  color: $rs-border;
+}
+
+.callsign__context {
+  color: $rs-muted;
 }
 
 // Accent text colours used for highlights.

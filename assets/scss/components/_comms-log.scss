@@ -1,0 +1,17 @@
+// ==========================================================================
+// Comms-log — notification list rows. A coloured left edge signals unread
+// level instead of tinting the whole row, so a busy log stays scannable
+// (see the site-wide design brief's "Comms-Log" pattern).
+// ==========================================================================
+
+.comms-log__item {
+  border-left: 3px solid transparent;
+  background-color: $rs-surface;
+
+  &.is-unread {
+    &.level-info    { border-left-color: $rs-cyan; }
+    &.level-success { border-left-color: $rs-green; }
+    &.level-warning { border-left-color: $rs-gold; }
+    &.level-error   { border-left-color: $rs-red; }
+  }
+}

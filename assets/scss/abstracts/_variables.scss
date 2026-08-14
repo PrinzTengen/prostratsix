@@ -92,8 +92,10 @@ $btn-border-radius-lg: $border-radius-lg;
 // Effects
 $btn-focus-width:      0.2rem;
 $btn-disabled-opacity: 0.55;
+// `transform` is intentionally absent — press/lift feedback is spring-driven
+// in JS (see project.js `springify()`), not CSS-transitioned, so it stays
+// interruptible and can be grabbed mid-motion.
 $btn-transition:
-  transform 0.12s ease,
   box-shadow 0.12s ease,
   background-color 0.12s ease,
   border-color 0.12s ease;
