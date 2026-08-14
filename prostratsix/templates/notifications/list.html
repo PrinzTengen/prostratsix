@@ -22,10 +22,29 @@
     {% for notification in notifications %}
       <div class="list-group-item comms-log__item {% if not notification.is_read %}is-unread level-{{ notification.level }}{% endif %}">
         <div class="d-flex justify-content-between">
-          <h2 class="h6 mb-1">{{ notification.title }}</h2>
+          <h2 class="h6 mb-1">
+            {% if notification.url %}
+              <a href="{{ notification.url }}" class="text-decoration-none">{{ notification.title }}</a>
+            {% else %}
+              {{ notification.title }}
+            {% endif %}
+          </h2>
           <small class="text-muted">{{ notification.created_at|date:"d.m.Y H:i" }}</small>
         </div>
         {% if notification.message %}<p class="mb-1 small">{{ notification.message }}</p>{% endif %}
+        {% if notification.actions %}
+          <div class="d-flex flex-wrap gap-2 mt-2">
+            {% for action in notification.actions %}
+              <form method="post" action="{{ action.url }}">
+                {% csrf_token %}
+                <button type="submit"
+                        class="btn btn-sm {% if forloop.first %}btn-primary{% else %}btn-outline-light{% endif %}">
+                  {{ action.label }}
+                </button>
+              </form>
+            {% endfor %}
+          </div>
+        {% endif %}
         {% if not notification.is_read %}
           <form method="post"
                 action="{% url 'notifications:mark_read' notification.pk %}"

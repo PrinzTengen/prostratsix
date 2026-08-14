@@ -44,6 +44,12 @@ class Notification(models.Model):
         default=NotificationCategory.GENERAL,
     )
     url = models.URLField(blank=True)
+    actions = models.JSONField(
+        default=list,
+        blank=True,
+        help_text="Quick actions rendered as POST buttons, e.g. "
+        '[{"label": "Accept", "url": "/teams/invitations/<token>/accept/"}].',
+    )
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 

@@ -14,11 +14,16 @@ def notify(  # noqa: PLR0913
     level: str = NotificationLevel.INFO,
     category: str = NotificationCategory.GENERAL,
     url: str = "",
+    actions: list[dict[str, str]] | None = None,
     send_email: bool = True,
 ) -> Notification:
     """
     Create an in-app notification for ``user`` and, depending on the user's
     preferences, enqueue an e-mail.
+
+    ``actions`` are rendered as inline POST buttons on the notification (e.g.
+    accept/decline a team invitation) without requiring the user to open
+    ``url`` first: ``[{"label": "Accept", "url": "/teams/.../accept/"}]``.
     """
     notification = Notification.objects.create(
         recipient=user,
@@ -27,6 +32,7 @@ def notify(  # noqa: PLR0913
         level=level,
         category=category,
         url=url,
+        actions=actions or [],
     )
 
     if send_email and user.email:
