@@ -63,14 +63,27 @@
   position: relative;
   display: none;
   overflow: hidden;
-  border-left: 2px solid $rs-red;
 
   @include media-breakpoint-up(lg) { display: block; }
 
-  // The graded image fills the column.
+  // The graded image fills the column, clipped to a diagonal edge — the
+  // same broadcast-wipe cut used on the marketing hero.
   .img-grade {
     position: absolute;
     inset: 0;
+    clip-path: polygon(4% 0, 100% 0, 100% 100%, 0 100%);
+  }
+
+  // A glowing edge along the cut, since clip-path drops the plain border.
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 2px;
+    background: $rs-red;
+    box-shadow: 0 0 16px rgba($rs-red, 0.6);
+    transform: skewX(-4deg);
+    transform-origin: top;
   }
 }
 

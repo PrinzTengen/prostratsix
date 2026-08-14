@@ -5,16 +5,21 @@
 .card {
   border: 1px solid $rs-border;
   background-color: $rs-surface;
+  // `transform` is spring-driven in JS for clickable `.card--hover` cards
+  // (see project.js), so only colour/shadow are CSS-transitioned here.
   transition:
-    transform $dur-base $ease-overshoot,
     border-color $dur-base $ease-snappy,
     box-shadow $dur-base $ease-snappy;
 }
 
-// Interactive cards (clickable tiles) lift and highlight on hover.
+// Interactive cards (clickable tiles) lift and highlight on hover. Corner
+// brackets replace the full border — the HUD-panel language applied to the
+// site's primary clickable tiles (see components/_hud.scss).
 .card--hover {
   cursor: pointer;
   position: relative;
+  border-color: transparent;
+  @include hud-corners($rs-border, 16px, 1px, -1px);
 
   // A thin accent line that draws in along the top edge on hover.
   &::before {
@@ -32,18 +37,11 @@
   }
 
   &:hover {
-    transform: translateY(-4px);
-    border-color: rgba($rs-red, 0.55);
-    box-shadow: 0 14px 34px -16px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba($rs-red, 0.2);
+    @include hud-corners($rs-red, 18px, 2px, -1px);
+    box-shadow: 0 14px 34px -16px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba($rs-red, 0.15);
   }
 
   &:hover::before { transform: scaleX(1); }
-
-  // Tactile press — settle back down slightly.
-  &:active {
-    transform: translateY(-1px);
-    transition-duration: $dur-fast;
-  }
 }
 
 // Accent edge along the top — flags a card's category. Colour via modifiers.
@@ -117,8 +115,9 @@
   }
 
   &.is-live {
-    border-color: rgba($rs-red, 0.7);
+    border-color: transparent;
     box-shadow: 0 0 0 1px rgba($rs-red, 0.25);
+    @include hud-corners($rs-red, 18px, 2px, -1px);
 
     // Slow light sweep across the top edge — reads "on air" without shouting.
     &::after {

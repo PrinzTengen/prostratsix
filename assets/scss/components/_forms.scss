@@ -228,9 +228,9 @@ textarea.form-control {
   background:
     radial-gradient(circle at 100% 0%, rgba($rs-red, 0.08), transparent 42%),
     $rs-surface;
-  border: 1px solid $rs-border;
-  border-radius: $border-radius-lg;
-  overflow: hidden;
+  border-color: transparent;
+  border-radius: 0;
+  @include hud-corners($rs-red, 20px, 2px, -1px);
 
   .form-panel__head {
     display: flex;

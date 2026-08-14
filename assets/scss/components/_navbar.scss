@@ -3,9 +3,24 @@
 // ==========================================================================
 
 .navbar {
-  background-color: rgba($rs-bg, 0.85);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid $rs-border;
+  position: sticky;
+  top: 0;
+  z-index: $zindex-sticky;
+  background-color: rgba($rs-bg, 0.72);
+  backdrop-filter: blur(20px) saturate(160%);
+  border-bottom: none;
+
+  // Scroll-edge fade instead of a hard divider — only where content
+  // actually scrolls underneath this floating glass layer.
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba($rs-border, 0.9) 15%, rgba($rs-border, 0.9) 85%, transparent);
+  }
 
   .navbar-brand {
     font-family: $headings-font-family;
@@ -44,5 +59,22 @@
       background-color: $rs-red;
       box-shadow: 0 0 8px rgba($rs-red, 0.7);
     }
+  }
+}
+
+// Frostier / fully solid instead of blurred-translucent.
+@media (prefers-reduced-transparency: reduce) {
+  .navbar {
+    background-color: $rs-bg;
+    backdrop-filter: none;
+  }
+}
+
+// Near-solid background with a defined, contrasting border.
+@media (prefers-contrast: more) {
+  .navbar {
+    background-color: $rs-bg;
+    backdrop-filter: none;
+    border-bottom: 1px solid $rs-text;
   }
 }
