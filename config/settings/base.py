@@ -43,6 +43,11 @@ SITE_ID = 1
 # placeholder the sites migration ships with.
 DJANGO_SITE_DOMAIN = env("DJANGO_SITE_DOMAIN", default="localhost:8000")
 DJANGO_SITE_NAME = env("DJANGO_SITE_NAME", default="ProStratSix")
+# Scheme used when building absolute URLs from DJANGO_SITE_DOMAIN (see
+# teams.services._absolute_url / league.services._absolute_url). Defaults to
+# "https" for production; local.py overrides it to "http" since the local
+# runserver has no TLS listener.
+DJANGO_SITE_SCHEME = env("DJANGO_SITE_SCHEME", default="https")
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-i18n
 USE_I18N = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-tz

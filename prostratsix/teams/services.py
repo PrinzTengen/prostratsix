@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from django.conf import settings
 from django.contrib.sites.models import Site
 from django.db import transaction
 from django.urls import NoReverseMatch
@@ -57,7 +58,7 @@ def _absolute_url(get_path) -> str:
     except NoReverseMatch:
         return ""
     site = Site.objects.get_current()
-    return f"https://{site.domain}{path}"
+    return f"{settings.DJANGO_SITE_SCHEME}://{site.domain}{path}"
 
 
 @transaction.atomic

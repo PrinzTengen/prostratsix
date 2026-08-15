@@ -7,6 +7,10 @@ from .base import env
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
 DEBUG = True
+# The local runserver has no TLS listener, so notification/invite links
+# built from DJANGO_SITE_DOMAIN (e.g. "localhost:8000") must use "http" —
+# otherwise browsers hit "no secure connection" on those links.
+DJANGO_SITE_SCHEME = env("DJANGO_SITE_SCHEME", default="http")
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 SECRET_KEY = env(
     "DJANGO_SECRET_KEY",
