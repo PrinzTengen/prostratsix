@@ -33,8 +33,6 @@ class MarkReadView(LoginRequiredMixin, View):
         )
         notification.is_read = True
         notification.save(update_fields=["is_read"])
-        if notification.url:
-            return redirect(notification.url)
         return redirect("notifications:list")
 
 
