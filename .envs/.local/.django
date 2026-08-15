@@ -2,6 +2,11 @@
 # ------------------------------------------------------------------------------
 USE_DOCKER=yes
 IPYTHONDIR=/app/.ipython
+# django.contrib.sites — used to build absolute URLs (notification e-mail/
+# action links). Without this it defaults to the sites migration's
+# "example.com" placeholder.
+DJANGO_SITE_DOMAIN=localhost:8000
+DJANGO_SITE_NAME=ProStratSix (local)
 # Redis
 # ------------------------------------------------------------------------------
 REDIS_URL=redis://redis:6379/0

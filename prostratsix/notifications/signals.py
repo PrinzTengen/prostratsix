@@ -2,11 +2,32 @@ from allauth.account.signals import email_added
 from allauth.account.signals import email_changed
 from allauth.account.signals import password_changed
 from allauth.account.signals import password_reset
+from django.conf import settings
+from django.contrib.sites.models import Site
 from django.dispatch import receiver
 
 from .models import NotificationCategory
 from .models import NotificationLevel
 from .services import notify
+
+
+def sync_site_domain(sender, **kwargs):
+    """Keep django.contrib.sites in sync with DJANGO_SITE_DOMAIN/-NAME.
+
+    Connected in NotificationsConfig.ready() with sender=<app config
+    instance> (post_migrate is sent with the instance, not the class —
+    a plain ``@receiver(post_migrate, sender=NotificationsConfig)`` here
+    would silently never match). Runs once per `migrate` invocation so
+    absolute URLs built via Site.objects.get_current() (notification
+    e-mails, invite links) point at the right host per environment
+    instead of the "example.com" placeholder the sites migration ships
+    with.
+    """
+    Site.objects.update_or_create(
+        id=settings.SITE_ID,
+        defaults={"domain": settings.DJANGO_SITE_DOMAIN, "name": settings.DJANGO_SITE_NAME},
+    )
+
 
 try:  # allauth.mfa ships its own signals
     from allauth.mfa.signals import authenticator_added

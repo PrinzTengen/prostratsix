@@ -36,6 +36,13 @@ LANGUAGE_CODE = "en-us"
 # ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#site-id
 SITE_ID = 1
+# Kept in sync with the DB via notifications.signals.sync_site_domain
+# (runs on every `migrate`) — absolute URLs built via
+# Site.objects.get_current() (notification e-mail/action links) depend on
+# this, so it must be set per environment instead of the "example.com"
+# placeholder the sites migration ships with.
+DJANGO_SITE_DOMAIN = env("DJANGO_SITE_DOMAIN", default="localhost:8000")
+DJANGO_SITE_NAME = env("DJANGO_SITE_NAME", default="ProStratSix")
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-i18n
 USE_I18N = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
